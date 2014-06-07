@@ -15,3 +15,5 @@ python ConCat.py -h
 Requirements:
 
 BioPython and python 2.7 and above
+
+use -RNA option if RNAfold installed on the system
