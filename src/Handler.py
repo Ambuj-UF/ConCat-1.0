@@ -1130,14 +1130,15 @@ class NexusHandler:
         remTaxDict = dict()
 
         for delTaxa in listExclude:
+            print delTaxa
             if delTaxa in combined.taxlabels:
                 remTaxList.append(delTaxa)
                 if delTaxa in combined.matrix: del combined.matrix[delTaxa]
                 if delTaxa in combined.taxlabels: combined.taxlabels.remove(delTaxa)
                 combined = self.missingScan(combined)
             else:
-                raise ValueError("% not found in the alignment. Check for spelling mistakes in taxa editing input file" % delTaxa)
-    
+                print '%s not found in the alignment. Check for spelling mistakes in taxa editing input file' % delTaxa
+
         if usr_inpT == 1:
             os.chdir('Input')
             listIDs = BaseHandle(2).fileOpenID()
@@ -1160,7 +1161,9 @@ class NexusHandler:
         
         if runShanon == True:
             print "Checking alignment quality [Shannons Entropy] \n"
+            print "alignment %s" %MultipleSeqAlignment(self.combineToRecord(combined))
             entropyGenes = self.entropyCal(combined)
+
             entropyGenes = self.entropyDictUpdate(entropyGenes, positions)
         else:
             pass
@@ -1209,13 +1212,17 @@ class NexusHandler:
                     includeTax,
                     excludeTax
                     ):
+        print excludeTax
         if includeTax.isatty() == False:
-            print "Removing taxon \n"
-            listExclude = []
+            print "Removing taxon absent in include taxon file supplied by user \n"
+            
+            listInclude = []
             for lines in includeTax:
                 listExclude.append(lines.rstrip('\n'))
+
+            listExclude = [taxa for taxa in combined.taxlabels if taxa not in listInclude]
             
-            outWithTaxa = self.withTaxEdit(listExclude,
+            outWithTaxa = self.withTaxEdit(listInclude,
                                            combined,
                                            usr_inpT,
                                            RNAstrucData,
@@ -1225,12 +1232,13 @@ class NexusHandler:
             return outWithTaxa
 
         elif excludeTax.isatty() == False:
-            print "Removing taxon absent in include taxon file supplied by user \n"
-            listInclude = []
+            print "Removing taxon \n"
+            listExclude = []
             for lines in excludeTax:
-                listInclude.append(lines.rstrip('\n'))
+                listExclude.append(lines.rstrip('\n'))
             
-            listExclude = [taxa for taxa in combined.taxlabels if taxa not in listInclude]
+            print listExclude
+            
             self.withTaxEdit(listExclude,
                              combined,
                              usr_inpT,
