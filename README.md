@@ -33,9 +33,13 @@ ConCat block architecture:
 #NEXUS
 
 begin ConCat;
+
   Ali_Type = DNA; 
+
   RNA_Type = True; 
+
   RNA_Struc = (((((((...((...,6;
+
 end;
 
 begin data;
@@ -47,7 +51,9 @@ Homo_sapiens CCGAACAATTCTGCGCGAGGTAGGGAGGCCATGGCG....................
 
 
 Ali_Type: This variable is used for defining the alignment type. It can either be DNA, Codons, Introns, Proteins or any other alignment type. Program creates a partition file for RaxML using information supplied in Ali_Type variable.
+
 RNA_Type = True/None. If True then the ConCat program uses the alignment file for RNA structure prediction.
+
 RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA structure then avoid using RNA_Type function. Input contains RNA structure followed by comma and RNA structure starting position. By default the starting position is set to 0 (which is the starting position of alignment).
 
 
