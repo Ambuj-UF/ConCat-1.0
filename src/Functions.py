@@ -124,7 +124,7 @@ def Convert(input, output, filename):
             print "Bad Alignment\n"
 
 
-def ConvertAll(input):
+def ConvertAll(inp_format):
     formDict = {
         'fasta': '*.fas',
         'nexus': '*.nex',
@@ -133,7 +133,7 @@ def ConvertAll(input):
         'phylip-relaxed': '*.phy'
     }
     os.chdir('Input')
-    files = glob.glob(formDict[input])
+    files = glob.glob(formDict[inp_format])
     
     if input == 'fasta' and output == 'nexus':
         for filename in files:
@@ -146,7 +146,7 @@ def ConvertAll(input):
         for filename in files:
             try:
                 handle = open(filename, 'rU')
-                record = list(SeqIO.parse(handle, input))
+                record = list(SeqIO.parse(handle, inp_format))
                 fp = open(filename.split('.')[0] + '.nex', 'w')
                 SeqIO.write(record, fp, "nexus")
                 fp.close()

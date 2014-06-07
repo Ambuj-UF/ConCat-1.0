@@ -118,7 +118,7 @@ def main():
                       )
     
     else:
-        ConvertAll(input)
+        ConvertAll(args.ftype)
         richNexusCall(args.RNA,
                       args.inc,
                       args.exc,
