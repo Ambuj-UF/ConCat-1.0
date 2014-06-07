@@ -24,6 +24,7 @@ import sys
 import csv
 from Handler import *
 from Functions import *
+import timeit
 
 
 
@@ -37,7 +38,7 @@ def richNexusCall(runRNA,
                   pipeID,
                   RYcodingCall
                   ):
-
+    start = timeit.default_timer()
     def transferRNA(file_list):
         file_list = glob.glob("*.nex")
         typeDict = dict()
@@ -470,8 +471,9 @@ def richNexusCall(runRNA,
                     pass
     except:
         pass
-
+    stop = timeit.default_timer()
     print "Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!"
+    print stop - start
 
 
 

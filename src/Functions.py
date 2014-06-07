@@ -132,10 +132,14 @@ def ConvertAll(inp_format):
     
     if inp_format == 'fasta':
         for filename in files:
-            alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
-            g = open(filename.split(".")[0] + '.nex', 'w')
-            g.write(alignment.format("nexus"))
-            g.close()
+            try:
+                alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
+                g = open(filename.split(".")[0] + '.nex', 'w')
+                g.write(alignment.format("nexus"))
+                g.close()
+            
+            except ValueError:
+                continue
     
     else:
         for filename in files:
