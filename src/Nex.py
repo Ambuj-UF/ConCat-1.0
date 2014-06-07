@@ -278,11 +278,8 @@ def richNexusCall(runRNA,
         counter = 1
         while counter <= int(remTaxName):
             taxDict = dict()
-            try:
-                combined = taxanomyClass(taxDict, combined).remTaxanomy()
-            except:
-                print "Cant remove Species or genus name \n"
-                pass
+            combined = taxanomyClass(taxDict, combined).remTaxanomy()
+
             counter = counter + 1
 
         sequences = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
