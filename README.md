@@ -20,7 +20,7 @@ Handling different file formats: Importance of ConCat lies in its ability to sto
 
 Just type:
 
-python ConCat -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
+python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
 
 Now proceed to analysis. Don't bother removing old fileformat input files from Input directory. Run -convert function and your good to go.
 
