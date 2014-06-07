@@ -1231,8 +1231,18 @@ class NexusHandler:
                 listInclude.append(lines.rstrip('\n'))
             
             listExclude = [taxa for taxa in combined.taxlabels if taxa not in listInclude]
-            self.withTaxEdit(listExclude, combined, usr_inpT, RNAstrucData)
-            outWithTaxa = self.withTaxEdit(listExclude, combined, usr_inpT, RNAstrucData)
+            self.withTaxEdit(listExclude,
+                             combined,
+                             usr_inpT,
+                             RNAstrucData,
+                             runShanon,
+                             runRNA)
+            outWithTaxa = self.withTaxEdit(listExclude,
+                                           combined,
+                                           usr_inpT,
+                                           RNAstrucData,
+                                           runShanon,
+                                           runRNA)
             return outWithTaxa
 
             
