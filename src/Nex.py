@@ -18,7 +18,7 @@
 # under certain conditions;                                                                                    #
 #                                                                                                              #
 ################################################################################################################
-import timeit
+
 import glob
 import sys
 import Handler
@@ -30,7 +30,7 @@ from Bio.Nexus import Nexus
 from Handler import *
 from Functions import *
 
-start = timeit.default_timer()
+
 
 def richNexusCall(runRNA,
                   includeTax,
@@ -470,9 +470,9 @@ def richNexusCall(runRNA,
     print "Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!"
 
 
-    stop = timeit.default_timer()
 
-    print stop - start
+
+
 
 
 
