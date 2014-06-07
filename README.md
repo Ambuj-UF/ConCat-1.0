@@ -16,7 +16,7 @@ Requirements:
 
 BioPython and python 2.7 and above
 
-Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotations data in nexus output file. It allows user to define several features of alignemnt file through ConCat block as discussed above. Thus, it is important for ConCat to use nexus files as input for better functionality. To make this easier for users ConCat -convert function scans for the files with user defined file format in Input Directory and converts it into nexus file format. 
+Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotations data in nexus output file. It allows user to define several features of alignemnt file through ConCat block as discussed above. Thus, it is important for ConCat to use nexus files as input for better functionality. To make this easier for users, ConCat -convert function scans for the files with user defined file format in Input Directory and converts it into nexus file format. 
 
 Just type:
 
