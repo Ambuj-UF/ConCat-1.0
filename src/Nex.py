@@ -40,6 +40,7 @@ def richNexusCall(runRNA,
                   spellScan,
                   runBlock
                   ):
+    
     start = timeit.default_timer()
     def transferRNA(file_list):
         file_list = glob.glob("*.nex")
@@ -117,7 +118,7 @@ def richNexusCall(runRNA,
         fileTypes = transferRNAret[0]
         
         if spellScan == True:
-            print "Please wait! Searchng for spelling mistakes \n"
+            print "Please wait! Checking spelling mistakes \n"
             print "---------------------------------------------------------------------------"
             BaseHandle(2).fuzyName()
             print "---------------------------------------------------------------------------"
@@ -128,6 +129,7 @@ def richNexusCall(runRNA,
             nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
         except Bio.Nexus.Nexus.NexusError:
             sys.exit("Duplicate alignment files present in Input folder\nProgram Terminated\n")
+
         combined = Nexus.combine(nexi)
         os.chdir("..")
 
