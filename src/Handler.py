@@ -1132,7 +1132,6 @@ class NexusHandler:
         remTaxDict = dict()
 
         for delTaxa in listExclude:
-            remTaxList.append(delTaxa)
             if delTaxa in combined.taxlabels:
                 remTaxList.append(delTaxa)
                 if delTaxa in combined.matrix: del combined.matrix[delTaxa]
