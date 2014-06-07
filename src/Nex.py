@@ -21,12 +21,7 @@
 
 import glob
 import sys
-import Handler
-import Functions
 import csv
-import os
-import shutil
-from Bio.Nexus import Nexus
 from Handler import *
 from Functions import *
 

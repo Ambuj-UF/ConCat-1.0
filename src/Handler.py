@@ -29,7 +29,7 @@ import shutil
 import subprocess
 import math
 import collections
-import os.path
+
 
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from collections import Counter
