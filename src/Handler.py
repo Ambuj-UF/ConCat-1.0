@@ -1158,10 +1158,8 @@ class NexusHandler:
             pass
     
         positions = Nexus.Nexus.gaponly(combined, include_missing = True)
-        
         if runShanon == True:
             print "Checking alignment quality [Shannons Entropy] \n"
-            print "alignment %s" %MultipleSeqAlignment(self.combineToRecord(combined))
             entropyGenes = self.entropyCal(combined)
 
             entropyGenes = self.entropyDictUpdate(entropyGenes, positions)
@@ -1212,7 +1210,7 @@ class NexusHandler:
                     includeTax,
                     excludeTax
                     ):
-        print excludeTax
+
         if includeTax.isatty() == False:
             print "Removing taxon absent in include taxon file supplied by user \n"
             
@@ -1236,8 +1234,6 @@ class NexusHandler:
             listExclude = []
             for lines in excludeTax:
                 listExclude.append(lines.rstrip('\n'))
-            
-            print listExclude
             
             self.withTaxEdit(listExclude,
                              combined,

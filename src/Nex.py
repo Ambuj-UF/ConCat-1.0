@@ -37,7 +37,7 @@ def richNexusCall(runRNA,
                   pipeID,
                   RYcodingCall
                   ):
-    
+
     def transferRNA(file_list):
         file_list = glob.glob("*.nex")
         typeDict = dict()

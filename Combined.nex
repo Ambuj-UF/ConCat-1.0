@@ -53,6 +53,6 @@ begin sets;
 end;
 
 Begin ConCat Set; 
-	REMOVED_TAX = [];
+	REMOVED_TAX = [['Homo_sapiens']];
 	Database_IDs_Homo_sapiens = ['RAB7A.nex : gi|40807361|ref|NM_004637.5|', 'EMC7.nex : gi|164693088|dbj|AK314883.1|', 'GPI.nex : gi|296080692|ref|NM_001184722.1|', 'CHPM2A.nex : gi|571026644|ref|NM_014453.3|'];
 end;
