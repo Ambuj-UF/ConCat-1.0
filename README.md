@@ -1,8 +1,43 @@
 ConCat-1.0
 ==========
-COMMAND LINE OPERATION
 
-python ConCat.py -ftype [input filetype[defult is nexus]] -otype [output filetype[defult is nexus]] -RNA -rcv -pipe -shannon -RY -inc [filename] -exc [filename] -addT [value] -remT [integer value]
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -ftype {fasta,nexus,phylip,phylip-interleived,phylip-relaxed}
+                        Enter the input file format for Concatenation. Default
+                        is nexus.
+  -otype {fasta,nexus,phylip,phylip-interleived,phylip-relaxed}
+                        Enter the output file format for Concatenation.
+                        Default is nexus.
+  -spell                Include if you want to check spelling mistakes in
+                        alignment files
+  -block                Include if you have ConCat block defined in alignment
+                        files
+  -pipe                 Include if you have IDs stored in taxon names in the
+                        alignment file
+  -RNA                  Include if you want to run RNAfold structure
+                        prediction
+  -inc [INC]            Enter the text file with taxon names to be included in
+                        the alignment file
+  -exc [EXC]            Enter the tet file with taxon names to be removed from
+                        the alignment file
+  -shannon              Include if you want to run Shannons Entropy
+                        Calculation for the alignments
+  -rcv                  Include if you want to run RCV Calculation for the
+                        alignments
+  -addT {Class,Family,Order,Phylum,Kingdom}
+                        Enter the txaonomy classes to add in the final
+                        alignment taxa name. Sperate Multiple values using
+                        comma (-addT Class,Family,Order)
+  -remT REMT            Enter the numer of txaonomy classes to remove from the
+                        end of taxon namees
+  -RY [RY]              Enter the text file with alignment file names and
+                        positions for RY coding
+  -convert              Converts fasta and phylip alignment files to nexus
+                        alignment
+
+
 
 DEFAULT OPERATION
 
