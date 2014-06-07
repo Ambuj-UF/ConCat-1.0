@@ -1,11 +1,8 @@
 ConCat-1.0
 ==========
 
-optional arguments:
-<<<<<<< HEAD
-=======
 
->>>>>>> FETCH_HEAD
+=======
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -ftype {fasta,nexus,phylip,phylip-interleived,phylip-relaxed}
@@ -41,10 +38,8 @@ optional arguments:
   -convert              Converts fasta and phylip alignment files to nexus
                         alignment
 
-<<<<<<< HEAD
 =======
 
->>>>>>> FETCH_HEAD
 
 DEFAULT OPERATION
 
