@@ -125,15 +125,8 @@ def Convert(input, output, filename):
 
 
 def ConvertAll(inp_format):
-    formDict = {
-        'fasta': '*.fas',
-        'nexus': '*.nex',
-        'phylip': '*.phy',
-        'phylip-sequential': '*.phy',
-        'phylip-relaxed': '*.phy'
-    }
     os.chdir('Input')
-    files = glob.glob(formDict[inp_format])
+    files = glob.glob("*.*")
     
     if input == 'fasta' and output == 'nexus':
         for filename in files:
