@@ -73,6 +73,12 @@ parser.add_argument('-otype', type=str, default='nexus',
                     choices=['fasta', 'nexus', 'phylip', 'phylip-interleived', 'phylip-relaxed'],
                     help='Enter the output file format for Concatenation. Default is nexus.')
 
+parser.add_argument('-convert', action='store_true', default=False,
+                    help='Converts fasta and phylip alignment files to nexus alignment')
+
+parser.add_argument('-CA', action='store_true', default=False,
+                    help='Use this function if you want to perform file conversion and analysis simultaneously')
+
 parser.add_argument('-spell', action='store_true', default=False,
                     help='Include if you want to check spelling mistakes in alignment files')
 
@@ -107,9 +113,6 @@ parser.add_argument('-remT', type=int, default=None,
 parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the text file with alignment file names and positions for RY coding')
 
-parser.add_argument('-convert', action='store_true', default=False,
-                    help='Converts fasta and phylip alignment files to nexus alignment')
-
 
 
 args = parser.parse_args()
@@ -137,6 +140,9 @@ def main():
                           )
     
         else:
+            if args.CA == True:
+                ConvertAll(args.ftype)
+            
             richNexusCall(args.RNA,
                           args.inc,
                           args.exc,
