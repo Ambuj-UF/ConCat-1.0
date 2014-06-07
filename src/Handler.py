@@ -645,7 +645,7 @@ class NexusHandler:
             posLoop = [x.start() for x in re.finditer('\.', rnaData)]
             rnaList.append(posLoop)
             
-            posStem = [x.start() for x in re.finditer('\(', rnaData)]
+            posStem = [x.start() for x in re.finditer('\(', rnaData)] + [x.start() for x in re.finditer('\)', rnaData)]
             rnaList.append(posStem)
 
             rnaDict[geneName] = (rnaList)
