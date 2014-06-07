@@ -72,5 +72,16 @@ RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA
 
 
 
+Some commonly used operation:
+
+Run simultaneous fasta to nexus input file format conversion and analysis with RCV calculation, Alignment Entropy calculation and spellin check function set as True for a set of alignment files that has sequence IDs stored in taxon name:
+
+python ConCat.py -CA -rcv -shannon -spell -pipe
+
+
+
+
+
+
 
 
