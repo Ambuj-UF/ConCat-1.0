@@ -36,7 +36,9 @@ def richNexusCall(runRNA,
                   addTaxName,
                   remTaxName,
                   pipeID,
-                  RYcodingCall
+                  RYcodingCall,
+                  spellScan,
+                  runBlock
                   ):
     start = timeit.default_timer()
     def transferRNA(file_list):
@@ -77,17 +79,28 @@ def richNexusCall(runRNA,
         usr_inpT = 2
 
     if usr_inpT == 1:
+        
         idDictData = NexusHandler('').managePipes()
         os.chdir("Input/ProcInput")
         file_list = glob.glob("*.nex")
         os.chdir("..")
-        transferRNAret = transferRNA(file_list)
+        
+        if runBlock == True:
+            transferRNAret = transferRNA(file_list)
+        else:
+            transferRNAret = [{},'']
+        
         fileTypes = transferRNAret[0]
         os.chdir("ProcInput")
-        print "Please wait! Searchng for spelling mistakes \n"
-        print "---------------------------------------------------------------------------"
-        BaseHandle(2).fuzyName()
-        print "---------------------------------------------------------------------------"
+        
+        if spellScan == True:
+            print "Please wait! Searchng for spelling mistakes \n"
+            print "---------------------------------------------------------------------------"
+            BaseHandle(2).fuzyName()
+            print "---------------------------------------------------------------------------"
+        else:
+            pass
+
         nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
         combined = Nexus.combine(nexi)
         os.chdir("../..")
@@ -95,13 +108,26 @@ def richNexusCall(runRNA,
     elif usr_inpT == 2:
         os.chdir("Input")
         file_list = glob.glob("*.nex")
-        transferRNAret = transferRNA(file_list)
+        
+        if runBlock == True:
+            transferRNAret = transferRNA(file_list)
+        else:
+            transferRNAret = [{},'']
+        
         fileTypes = transferRNAret[0]
-        print "Please wait! Searchng for spelling mistakes \n"
-        print "---------------------------------------------------------------------------"
-        BaseHandle(2).fuzyName()
-        print "---------------------------------------------------------------------------"
-        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
+        
+        if spellScan == True:
+            print "Please wait! Searchng for spelling mistakes \n"
+            print "---------------------------------------------------------------------------"
+            BaseHandle(2).fuzyName()
+            print "---------------------------------------------------------------------------"
+        else:
+            pass
+
+        try:
+            nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
+        except Bio.Nexus.Nexus.NexusError:
+            sys.exit("Duplicate alignment files present in Input folder\nProgram Terminated\n")
         combined = Nexus.combine(nexi)
         os.chdir("..")
 

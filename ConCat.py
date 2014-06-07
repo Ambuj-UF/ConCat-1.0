@@ -73,6 +73,13 @@ parser.add_argument('-otype', type=str, default='nexus',
                     choices=['fasta', 'nexus', 'phylip', 'phylip-interleived', 'phylip-relaxed'],
                     help='Enter the output file format for Concatenation. Default is nexus.')
 
+parser.add_argument('-spell', action='store_true', default=False,
+                    help='Include if you want to check spelling mistakes in taxon name')
+
+parser.add_argument('-block', action='store_true', default=False,
+                    help='Include if you have ConCat block defined in alignment files')
+
+
 parser.add_argument('-RNA', action='store_true', default=False,
                     help='Include if you want to run RNAfold structure prediction')
 
@@ -125,7 +132,9 @@ def main():
                           args.addT,
                           args.remT,
                           args.pipe,
-                          args.RY
+                          args.RY,
+                          args.spell,
+                          args.block
                           )
     
         else:
@@ -137,7 +146,9 @@ def main():
                           args.addT,
                           args.remT,
                           args.pipe,
-                          args.RY
+                          args.RY,
+                          args.spell,
+                          args.block
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')
