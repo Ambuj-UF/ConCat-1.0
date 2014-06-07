@@ -43,8 +43,11 @@ begin ConCat;
 end;
 
 begin data;
+
 dimensions ntax=32 nchar=912;
+
 format datatype=protein missing=? gap=-;
+
 matrix
 
 Homo_sapiens CCGAACAATTCTGCGCGAGGTAGGGAGGCCATGGCG....................
