@@ -26,7 +26,12 @@ try:
 except ImportError, e:
     sys.exit('BioPython not found on your system. Program Terminated')
 
-import argparse
+try:
+    import argparse
+except ImportError, e:
+    sys.exit('Requires python 2.7 and above to run ConCat-1.0. Program Terminated')
+
+
 import textwrap
 from src.Nex import richNexusCall
 from src.Functions import Convert, ConvertAll
