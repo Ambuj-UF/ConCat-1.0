@@ -19,10 +19,15 @@
 #                                                                                                              #
 ################################################################################################################
 
+import sys
+
+try:
+    import Bio
+except ImportError, e:
+    sys.exit('BioPython not found on your system. Program Terminated')
 
 import argparse
 import textwrap
-import sys
 from src.Nex import richNexusCall
 from src.Functions import Convert, ConvertAll
 
