@@ -106,6 +106,7 @@ def richNexusCall(runRNA,
 
 
     RNAstrucData = transferRNAret[1]
+
     combinedRet = NexusHandler('filename').NexusHandle(combined,
                                                        usr_inpT,
                                                        RNAstrucData,

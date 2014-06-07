@@ -1126,6 +1126,8 @@ class NexusHandler:
                     runRNA,
                     runShanon
                     ):
+        
+
         remTaxList = []
         remTaxDict = dict()
 
@@ -1234,13 +1236,7 @@ class NexusHandler:
             listExclude = []
             for lines in excludeTax:
                 listExclude.append(lines.rstrip('\n'))
-            
-            self.withTaxEdit(listExclude,
-                             combined,
-                             usr_inpT,
-                             RNAstrucData,
-                             runShanon,
-                             runRNA)
+
             outWithTaxa = self.withTaxEdit(listExclude,
                                            combined,
                                            usr_inpT,
