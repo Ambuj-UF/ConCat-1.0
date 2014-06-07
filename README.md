@@ -8,6 +8,10 @@ DEFAULT OPERATION
 
 python ConCat.py
 
+Help:
+
+python ConCat.py -h
+
 Requirements:
 
 BioPython and python 2.7 and above
