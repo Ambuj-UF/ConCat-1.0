@@ -68,26 +68,26 @@ Requirements:
 
 BioPython and python 2.7 and above
 
-Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotations data in nexus output file. It allows user to define several features of alignemnt file through ConCat block as discussed above. Thus, it is important for ConCat to use nexus files as input for better functionality. To make this easier for users, ConCat -convert function scans for the files with user defined file format in Input Directory and converts it into nexus file format. 
+Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotation data in nexus output file. It allows user to define several features of alignemnt file through ConCat block. Thus, it is important for ConCat to use nexus files as input for extended functionality. To make this easier, ConCat -convert function scans for the files with user defined file format in 'Input' Directory and converts it into nexus file format. 
 
-Just type:
+Type:
 
 python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
 
-Now proceed to analysis. Don't bother removing old fileformat input files from Input directory. Run -convert function and your good to go.
+Now proceed to analysis. Don't bother removing old input files from Input directory. Run -convert and your good to go.
 
 
-use -RNA option if RNAfold installed on the system
+use -RNA option if RNAfold is installed on the system
 
 Prepare your own Taxonomy.csv file before using -remT and addT functions
 
-use -pipe option to run analysis on datasets that contaons database Id in taxon name:
+use -pipe option to run analysis on datasets that contains database Id in taxon name:
 
 example: Homo_sapiens|gi|571026644|ref|NM_014453.3| 
 
 ConCat Block:
 
-ConCat provide users to define the alignment file type, define files to run RNA structure mapping and supply user defined RNA structure through ConCat block option.
+ConCat allows users to define the alignment file type, define files to run RNA structure mapping and supply user defined RNA structure through ConCat block option.
 
 ConCat block architecture:
 
