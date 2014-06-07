@@ -74,7 +74,7 @@ parser.add_argument('-otype', type=str, default='nexus',
                     help='Enter the output file format for Concatenation. Default is nexus.')
 
 parser.add_argument('-spell', action='store_true', default=False,
-                    help='Include if you want to check spelling mistakes in taxon name')
+                    help='Include if you want to check spelling mistakes in alignment files')
 
 parser.add_argument('-block', action='store_true', default=False,
                     help='Include if you have ConCat block defined in alignment files')
