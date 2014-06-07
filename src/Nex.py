@@ -243,16 +243,21 @@ def richNexusCall(runRNA,
     except:
         pass
 
+    def nullTest(val):
+        if val is not None:
+            return True
+        else:
+            return False
 
 
-    if addTaxName or remTaxName:
+    if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
         d = dict()
         for row in csv.reader(open('Taxanomy.csv')):
             d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
 
     taxDict = dict()
 
-    if addTaxName:
+    if nullTest(addTaxName) == True:
         nameList = addTaxName.split(',')
         for lines in nameList:
             tID = lines.rstrip('\n')
@@ -269,13 +274,19 @@ def richNexusCall(runRNA,
         fopen.close()
 
 
-    if remTaxName:
+    elif nullTest(remTaxName) == True:
         counter = 1
         while counter <= int(remTaxName):
             taxDict = dict()
-            combined = taxanomyClass(taxDict, combined).remTaxanomy()
-        
+            try:
+                combined = taxanomyClass(taxDict, combined).remTaxanomy()
+            except:
+                print "Cant remove Species or genus name \n"
+                pass
+            counter = counter + 1
+
         sequences = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
+        print(sequences)
         fopen = open('ResultsEditedTaxon.nex', 'w')
         SeqIO.write(sequences, fopen, "nexus")
         fopen.close()

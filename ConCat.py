@@ -92,8 +92,7 @@ parser.add_argument('-addT', type=str, default=None,
                     choices=['Class', 'Family', 'Order', 'Phylum', 'Kingdom'],
                     help='Enter the txaonomy classes to add in the final alignment taxa name. Sperate Multiple values using comma (-addT Class,Family,Order)')
 
-parser.add_argument('-remT', type=str, default=None,
-                    choices=['Class', 'Family', 'Order', 'Phylum', 'Kingdom'],
+parser.add_argument('-remT', type=int, default=None,
                     help='Enter the numer of txaonomy classes to remove from the end of taxon namees')
 
 parser.add_argument('-pipe', action='store_true', default=False,

@@ -424,7 +424,11 @@ class taxanomyClass:
         combined = self.combined
         taxDict = self.taxDict
         for key, data in combined.matrix.items():
-            combined.matrix[key.rstrip('_' + key.split('_')[len(key.split('_'))-1])] = combined.matrix.pop(key)
+            if key.count('_') >= 1:
+                combined.matrix['_'.join(key.split('_')[:-1])] = combined.matrix.pop(key)
+        for i, labels in enumerate(combined.taxlabels):
+            if labels.count('_') >= 1:
+                combined.taxlabels[i] = '_'.join(labels.split('_')[:-1])
         combined.taxsets.clear()
         return combined
 
