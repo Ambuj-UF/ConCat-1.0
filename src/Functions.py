@@ -123,6 +123,7 @@ def Convert(input, output, filename):
         except:
             print "Bad Alignment\n"
 
+    print "Final output saved in %s" %filename.split('.')[0] + '.' + formDict[output].split('.')[1]
 
 def ConvertAll(inp_format):
     os.chdir('Input')

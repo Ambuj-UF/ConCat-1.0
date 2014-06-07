@@ -130,7 +130,6 @@ def main():
                           )
     
         else:
-            ConvertAll(args.ftype)
             richNexusCall(args.RNA,
                           args.inc,
                           args.exc,
@@ -142,7 +141,8 @@ def main():
                           args.RY
                           )
                       
-        Convert('nexus', args.otype, 'Combined.nex')
+            Convert('nexus', args.otype, 'Combined.nex')
+
 
 
 
