@@ -33,9 +33,9 @@ ConCat block architecture:
 #NEXUS
 
 begin ConCat;
-  Ali_Type = DNA 
-  RNA_Type = True 
-  RNA_Struc = (((((((...((...,6
+  Ali_Type = DNA; 
+  RNA_Type = True; 
+  RNA_Struc = (((((((...((...,6;
 end;
 
 begin data;
