@@ -22,6 +22,7 @@ from Bio.Alphabet import IUPAC, Gapped
 from Bio import SeqIO
 import glob
 import os
+from Bio import AlignIO
 
 
 def RCVcal(combine): # combined is a multiple sequence alignment object
@@ -129,11 +130,11 @@ def ConvertAll(inp_format):
     os.chdir('Input')
     files = glob.glob("*.*")
     
-    if input == 'fasta' and output == 'nexus':
+    if inp_format == 'fasta':
         for filename in files:
             alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
             g = open(filename.split(".")[0] + '.nex', 'w')
-            g.write (alignment.format("nexus"))
+            g.write(alignment.format("nexus"))
             g.close()
     
     else:
