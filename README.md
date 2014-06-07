@@ -17,3 +17,5 @@ Requirements:
 BioPython and python 2.7 and above
 
 use -RNA option if RNAfold installed on the system
+
+Prepare your own Taxonomy.csv file before using -remT and addT functions
