@@ -103,7 +103,7 @@ parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.s
                     help='Enter the text file with alignment file names and positions for RY coding')
 
 parser.add_argument('-convert', action='store_true', default=False,
-                    help='Include if you want to run Shannons Entropy Calculation for the alignments')
+                    help='Converts fasta and phylip alignment files to nexus alignment')
 
 
 
