@@ -79,6 +79,8 @@ parser.add_argument('-spell', action='store_true', default=False,
 parser.add_argument('-block', action='store_true', default=False,
                     help='Include if you have ConCat block defined in alignment files')
 
+parser.add_argument('-pipe', action='store_true', default=False,
+                    help='Include if you have IDs stored in taxon names in the alignment file')
 
 parser.add_argument('-RNA', action='store_true', default=False,
                     help='Include if you want to run RNAfold structure prediction')
@@ -101,9 +103,6 @@ parser.add_argument('-addT', type=str, default=None,
 
 parser.add_argument('-remT', type=int, default=None,
                     help='Enter the numer of txaonomy classes to remove from the end of taxon namees')
-
-parser.add_argument('-pipe', action='store_true', default=False,
-                    help='Include if you have IDs stored in taxon names in the alignment file')
 
 parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the text file with alignment file names and positions for RY coding')
