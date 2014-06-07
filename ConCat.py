@@ -63,6 +63,8 @@ parser = argparse.ArgumentParser(prog='ConCat',
                                                             '''))
 
 
+group = parser.add_mutually_exclusive_group()
+
 parser.add_argument('-ftype', type=str, default='nexus',
                     choices=['fasta', 'nexus', 'phylip', 'phylip-interleived', 'phylip-relaxed'],
                     help='Enter the input file format for Concatenation. Default is nexus.')
@@ -74,10 +76,10 @@ parser.add_argument('-otype', type=str, default='nexus',
 parser.add_argument('-RNA', action='store_true', default=False,
                     help='Include if you want to run RNAfold structure prediction')
 
-parser.add_argument('-inc', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
+group.add_argument('-inc', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the text file with taxon names to be included in the alignment file')
 
-parser.add_argument('-exc', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
+group.add_argument('-exc', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the tet file with taxon names to be removed from the alignment file')
 
 parser.add_argument('-shannon', action='store_true', default=False,
@@ -100,35 +102,45 @@ parser.add_argument('-pipe', action='store_true', default=False,
 parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the text file with alignment file names and positions for RY coding')
 
+parser.add_argument('-convert', action='store_true', default=False,
+                    help='Include if you want to run Shannons Entropy Calculation for the alignments')
+
 
 
 args = parser.parse_args()
 
+
+
+
 def main():
-    if args.ftype == 'nexus' and args.otype == 'nexus':
-        richNexusCall(args.RNA,
-                      args.inc,
-                      args.exc,
-                      args.shannon,
-                      args.rcv,
-                      args.addT,
-                      args.remT,
-                      args.pipe,
-                      args.RY
-                      )
+    if args.convert == True:
+        ConvertAll(args.ftype)
     
     else:
-        ConvertAll(args.ftype)
-        richNexusCall(args.RNA,
-                      args.inc,
-                      args.exc,
-                      args.shannon,
-                      args.rcv,
-                      args.addT,
-                      args.remT,
-                      args.pipe,
-                      args.RY
-                      )
+        if args.ftype == 'nexus' and args.otype == 'nexus':
+            richNexusCall(args.RNA,
+                          args.inc,
+                          args.exc,
+                          args.shannon,
+                          args.rcv,
+                          args.addT,
+                          args.remT,
+                          args.pipe,
+                          args.RY
+                          )
+    
+        else:
+            ConvertAll(args.ftype)
+            richNexusCall(args.RNA,
+                          args.inc,
+                          args.exc,
+                          args.shannon,
+                          args.rcv,
+                          args.addT,
+                          args.remT,
+                          args.pipe,
+                          args.RY
+                          )
                       
         Convert('nexus', args.otype, 'Combined.nex')
 
