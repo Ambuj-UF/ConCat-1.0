@@ -16,6 +16,15 @@ Requirements:
 
 BioPython and python 2.7 and above
 
+Handling different file formats: Importance of ConCat lie in its ability to store and generate rich annotations data in nexus output file. It allows user to define several features of alignemnt file through ConCat block as discussed above. Thus, it is important for ConCat to use nexus files as input for better functionality. To make this easier for users ConCat -convert function scans for the files with user defined file format in Input Directory and converts it into nexus file format. 
+
+Just type:
+
+python ConCat -convert filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
+
+Now proceed to analysis. Don't bother removing old fileformat input files from Input directory. Run -convert function and your good to go.
+
+
 use -RNA option if RNAfold installed on the system
 
 Prepare your own Taxonomy.csv file before using -remT and addT functions
