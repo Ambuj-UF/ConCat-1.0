@@ -1,8 +1,11 @@
 ConCat-1.0
 ==========
-COMMAND LINE OPERATION
 
 optional arguments:
+<<<<<<< HEAD
+=======
+
+>>>>>>> FETCH_HEAD
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -ftype {fasta,nexus,phylip,phylip-interleived,phylip-relaxed}
@@ -38,6 +41,10 @@ optional arguments:
   -convert              Converts fasta and phylip alignment files to nexus
                         alignment
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> FETCH_HEAD
 
 DEFAULT OPERATION
 
@@ -102,6 +109,17 @@ Ali_Type: This variable is used for defining the alignment type. It can either b
 RNA_Type = True/None. If True then the ConCat program uses the alignment file for RNA structure prediction.
 
 RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA structure then avoid using RNA_Type function. Input contains RNA structure followed by comma and RNA structure starting position. By default the starting position is set to 0 (which is the starting position of alignment).
+
+
+
+
+
+Some commonly used operation:
+
+Run simultaneous fasta to nexus input file format conversion and analysis with RCV calculation, Alignment Entropy calculation and spellin check function set as True for a set of alignment files that has sequence IDs stored in taxon name:
+
+python ConCat.py -CA -rcv -shannon -spell -pipe
+
 
 
 
