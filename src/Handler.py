@@ -1241,8 +1241,9 @@ class NexusHandler:
                                            combined,
                                            usr_inpT,
                                            RNAstrucData,
-                                           runShanon,
-                                           runRNA)
+                                           runRNA,
+                                           runShanon
+                                           )
             return outWithTaxa
 
             
