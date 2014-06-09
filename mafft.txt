@@ -1,2 +1,0 @@
-test.afa = --maxiterate 1000 --localpair
-test1.afa = --globalpair --maxiterate 1000
