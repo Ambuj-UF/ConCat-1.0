@@ -92,7 +92,10 @@ def main():
                             
             for filename in files:
                 fname = filename.replace('Align/', '').split('.')[0] + '.fas'
-                subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
+                try:
+                    subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
+                except:
+                    print "Error in argument passed for %s in %s file" %(filename.replace('Align/', ''), argmnts.argf)
 
 
         else:
