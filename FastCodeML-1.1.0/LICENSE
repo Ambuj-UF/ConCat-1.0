@@ -1,0 +1,8 @@
+This file is part of FastCodeML. FastCodeML is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+FastCodeML is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+However, if you find this software useful for your scientific publication, please cite
+M. Valle, H. Schabauer, C. Pacher, H. Stockinger, A. Stamatakis, M. Robinson-Rechavi, N. Salamin
+"Optimisation strategies for fast detection of positive selection on phylogenetic trees"
+published in Bioinformatics, Oxford University Press (2014).

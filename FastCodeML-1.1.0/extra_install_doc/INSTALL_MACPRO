@@ -1,0 +1,19 @@
+*) Create NLOpt in ~/lib
+./configure --prefix=/home/mac/lib/nlopt
+make
+make install
+
+*) Copy BLAS and LAPACK to ~/lib
+cp libblas.a ~/lib 
+cp liblapack.a ~/lib
+
+*) Setting environment variables
+export BLAS_LIB_DIR="/home/mac/lib" #we want to flexible here, hence we do not specify /usr/lib
+export LAPACK_LIB_DIR="/home/mac/lib" #we want to flexible here, hence we do not specify /usr/lib
+export NLOPT_LIB_DIR="/home/mac/lib/nlopt/lib"
+export NLOPT_INCLUDE_DIR="/home/mac/lib/nlopt/include"
+export MATH_LIB_NAMES="blas;lapack;lapack;blas;gfortranbegin;gfortran"
+#export MPI_INCLUDE_PATH="/usr/include" #might not be necessary if CXX set correctly
+#export MPI_LIBRARY="/usr/lib" #might not be necessary if CXX set correctly
+export CXX="/usr/bin/mpicxx.mpich2" #remember to run as mpirun.mpich2 -np 2 ./fast
+

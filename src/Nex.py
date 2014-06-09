@@ -182,10 +182,18 @@ def richNexusCall(runRNA,
         try:
             for key, val in combined.charsets.items():
                 try:
-                    if key != 'RNA_Stem' or key != 'RNA_Loop':
+                    if key != 'RNA_Stem' or key != 'RNA_Loop' or key != "'RNA_Stem'" or key != "'RNA_Loop'":
                         if any(fileTypes) == True:
                             if fileTypes[key] == 'Protein':
-                                continue
+                                print key
+                                try:
+                                    rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
+                                except ZeroDivisionError:
+                                    pass
+                                except IndexError:
+                                    print "Alignment files not found \n"
+                                
+
                             else:
                                 print key
                                 try:

@@ -1,0 +1,6 @@
+export BLAS_LIB_DIR="/home/hschabau/lib/lib_EPFLcluster_cpt15/" #we want to flexible here, hence we do not specify /usr/lib
+export LAPACK_LIB_DIR="/home/hschabau/lib/lib_EPFLcluster_cpt15/" #we want to flexible here, hence we do not specify /usr/lib
+export NLOPT_LIB_DIR="/home/hschabau/lib/lib_EPFLcluster_cpt15/nlopt/lib/"
+export NLOPT_INCLUDE_DIR="/home/hschabau/lib/lib_EPFLcluster_cpt15/nlopt/include/"
+export MATH_LIB_NAMES="blas;lapack;lapack;blas;gfortranbegin;gfortran"
+

@@ -99,6 +99,100 @@ def RCVcal(combine): # combined is a multiple sequence alignment object
     return totalRCV
 
 
+def RCVprotCal(combine): # combined is a multiple sequence alignment object
+    
+    # This section removes all the conserved sites from multiple sequence alignment object
+    similarityCount = {}
+    posMatrix = []
+    n=0
+    while n < len(combine[0]):
+        similarityCount[n] = 0
+        n = n + 1
+    i = 1
+    while i <= len(combine[0]):
+        j = 1
+        while j <= len(combine):
+            character = combine[j-1][i-1]
+            if character == combine[0][i-1]:
+                similarityCount[i-1] = similarityCount[i-1] + 1
+            j = j + 1
+        if similarityCount[i-1] == len(combine):
+            posMatrix.append(i)
+        i = i + 1
+    
+    cycles = 0
+    
+    
+    while cycles < len(posMatrix)-1:
+        if cycles == 0:
+            Position = posMatrix[1]
+            termPos =  Position - len(combine[1])
+            varFirst = Position-1
+            combine = combine[:, :varFirst] + combine[:, termPos:]
+        else:
+            Position = posMatrix[cycles+1]
+            termPos = (Position-cycles) - len(combine[1])
+            varFirst = Position-cycles-1
+            combine = combine[:, :varFirst] + combine[:, termPos:]
+        cycles = cycles + 1
+    
+    ########################################################################################
+    # RCV calculation begins here
+    
+    numA = 0
+    numB = 0
+    numI = 0
+    numL = 0
+    numF = 0
+    numN = 0
+    numS = 0
+    
+    for i, val in enumerate(combine):
+        numA = numA + val.seq.count('D') + val.seq.count('d') + val.seq.count('E') + val.seq.count('e')
+        numB = numB + val.seq.count('R') + val.seq.count('r') + val.seq.count('K') + val.seq.count('k')
+        numI = numI + val.seq.count('I') + val.seq.count('i') + val.seq.count('V') + val.seq.count('v')
+        numL = numL + val.seq.count('L') + val.seq.count('l') + val.seq.count('M') + val.seq.count('m')
+        numF = numF + val.seq.count('F') + val.seq.count('f') + val.seq.count('W') + val.seq.count('w') + val.seq.count('Y') + val.seq.count('y')
+        numN = numN + val.seq.count('N') + val.seq.count('n') + val.seq.count('Q') + val.seq.count('q')
+        numS = numS + val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t')
+    
+    countDict = dict()
+    for i, val in enumerate(combine):
+        countDict[combine[i].id] = ([val.seq.count('D') + val.seq.count('d') + val.seq.count('E') + val.seq.count('e'), \
+                                     val.seq.count('R') + val.seq.count('r') + val.seq.count('K') + val.seq.count('k'), \
+                                     val.seq.count('I') + val.seq.count('i') + val.seq.count('V') + val.seq.count('v'), \
+                                     val.seq.count('L') + val.seq.count('l') + val.seq.count('M') + val.seq.count('m'), \
+                                     val.seq.count('F') + val.seq.count('f') + val.seq.count('W') + val.seq.count('w') + val.seq.count('Y') + val.seq.count('y'), \
+                                     val.seq.count('N') + val.seq.count('n') + val.seq.count('Q') + val.seq.count('q'), \
+                                     val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t')])
+    
+    def abs(number):
+        if number > 0 or number == 0:
+            pass
+        else:
+            number = - number
+        return number
+    
+    rcvCalc = 0
+    
+    nTaxa = len(combine)
+    
+    for key, val in countDict.items():
+        rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + \
+                            abs(val[1] - (numB/nTaxa)) + \
+                            abs(val[2] - (numI/nTaxa)) + \
+                            abs(val[3] - (numL/nTaxa)) + \
+                            abs(val[4] - (numF/nTaxa)) + \
+                            abs(val[5] - (numN/nTaxa)) + \
+                            abs(val[6] - (numS/nTaxa))
+    
+    totalRCV = float(rcvCalc)/float(len(combine)*len(combine[0]))
+    
+    return totalRCV
+
+
+
+
 def Convert(input, output, filename):
     formDict = {
         'fasta': '*.fas',

@@ -1,0 +1,22 @@
+#!/bin/bash
+# This is the same script as for the sequential version, just apply USE_OMP when using ccmake!
+# Build FastcodeML on castor, sequential version; use ccmake and assure that OMP and MPI are switched off!!
+#One working library path is:
+#echo $LD_LIBRARY_PATH
+#/apps/castor/boost_1_50_0/lib:/apps/castor/boost_1_51_0/lib:/apps/castor/mvapich2/1.8.1/mvapich2-intel-woCUDA/lib:/apps/castor/slurm/default/lib:/apps/castor/intel-2013/compiler/lib/intel64:/apps/castor/intel-2013/mkl/lib/intel64:/apps/castor/intel-2013/ipp/lib/intel64:/apps/castor/intel-2013/tbb/lib/intel64
+# Loading modules
+module load intel/2013
+module load cmake
+module load boost
+#
+# Setting environment variables
+export BLAS_LIB_DIR="/apps/castor/intel/mkl/lib/intel64/" #we want to flexible here, hence we do not specify /usr/lib
+export LAPACK_LIB_DIR="/apps/castor/intel/mkl/lib/intel64/" #we want to flexible here, hence we do not specify /usr/lib
+export NLOPT_LIB_DIR="/users/schabaue/lib/nlopt/lib"
+export NLOPT_INCLUDE_DIR="/users/schabaue/lib/nlopt/include"
+export MATH_LIB_NAMES="mkl_intel_lp64;mkl_sequential;mkl_core;mkl_intel_lp64;mkl_sequential;mkl_core;gfortranbegin;gfortran"
+export LINK_DIR_BLAS="/apps/castor/intel/mkl/lib/intel64/"
+export LINK_DIR_LAPACK="/apps/castor/intel/mkl/lib/intel64/"
+export INCLUDE_DIR_MKL="/apps/castor/intel/mkl/include/"
+export USE_MKL_VML ON
+export CXX=g++

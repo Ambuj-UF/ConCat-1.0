@@ -1,0 +1,9 @@
+export BLAS_LIB_DIR="/home/hschabau/lib" #we want to flexible here, hence we do not specify /usr/lib
+export LAPACK_LIB_DIR="/home/hschabau/lib" #we want to flexible here, hence we do not specify /usr/lib
+export NLOPT_LIB_DIR="/home/hschabau/lib/nlopt/lib"
+export NLOPT_INCLUDE_DIR="/home/hschabau/lib/nlopt/include"
+export MATH_LIB_NAMES="blas;lapack;lapack;blas;gfortranbegin;gfortran"
+#export MPI_INCLUDE_PATH="/usr/include" #might not be necessary if CXX set correctly
+#export MPI_LIBRARY="/usr/lib" #might not be necessary if CXX set correctly
+export CXX=g++
+
