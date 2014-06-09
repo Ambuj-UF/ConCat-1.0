@@ -119,7 +119,7 @@ args = parser.parse_args()
 
 
 if args.RNA == True and not args.block:
-    parser.error('-RNA argument is required in "-block" mode.')
+    parser.error('-block argument is required in "-RNA" mode.')
 
 
 
