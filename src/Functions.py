@@ -47,6 +47,7 @@ def RCVcal(combine): # combined is a multiple sequence alignment object
         i = i + 1
 
     cycles = 0
+    
 
     while cycles < len(posMatrix)-1:
         if cycles == 0:
@@ -70,14 +71,14 @@ def RCVcal(combine): # combined is a multiple sequence alignment object
     numT = 0
 
     for i, val in enumerate(combine):
-        numA = numA + val.seq.count('A')
-        numC = numC + val.seq.count('C')
-        numG = numG + val.seq.count('G')
-        numT = numT + val.seq.count('T')
+        numA = numA + val.seq.count('A') + val.seq.count('a')
+        numC = numC + val.seq.count('C') + val.seq.count('c')
+        numG = numG + val.seq.count('G') + val.seq.count('g')
+        numT = numT + val.seq.count('T') + val.seq.count('t')
 
     countDict = dict()
     for i, val in enumerate(combine):
-        countDict[combine[i].id] = ([val.seq.count('A'), val.seq.count('C'), val.seq.count('G'), val.seq.count('T')])
+        countDict[combine[i].id] = ([val.seq.count('A') + val.seq.count('a'), val.seq.count('C') + val.seq.count('c'), val.seq.count('G') + val.seq.count('g'), val.seq.count('T') + val.seq.count('t')])
 
     def abs(number):
         if number > 0 or number == 0:

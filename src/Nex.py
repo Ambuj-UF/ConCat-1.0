@@ -65,6 +65,7 @@ def richNexusCall(runRNA,
                 if line.rstrip('\n') == "begin ConCat;":
                     parsing = True
 
+        
         try:
             for files in RNAfileList:
                 shutil.copy2(os.path.abspath('') + "/" + files, os.path.abspath('..') + "/" + 'RNAdata')
@@ -85,8 +86,7 @@ def richNexusCall(runRNA,
         os.chdir("Input/ProcInput")
         file_list = glob.glob("*.nex")
         os.chdir("..")
-        
-        if runBlock == True:
+        if runRNA == True:
             transferRNAret = transferRNA(file_list)
         else:
             transferRNAret = [{},'']
@@ -320,7 +320,6 @@ def richNexusCall(runRNA,
             counter = counter + 1
 
         sequences = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
-        print(sequences)
         fopen = open('ResultsEditedTaxon.nex', 'w')
         SeqIO.write(sequences, fopen, "nexus")
         fopen.close()
@@ -361,14 +360,14 @@ def richNexusCall(runRNA,
         if calRCVvalue == True:
             for key, val in rcvDict.items():
                 for i, lineVal in enumerate(newList):
-                    if key == lineVal.split(' ')[1]:
+                    if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
                         newstrng = "[ RCV Score :" + val + "];"
                         lineVal = " ".join((lineVal.rstrip(';'), newstrng))
                     newList[i] = lineVal
 
         for key, val in fileTypes.items():
             for i, lineVal in enumerate(newList):
-                if key == lineVal.split(' ')[1]:
+                if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
                     newstrng = "[ Alignment Type = " + val + "];"
                     lineVal = " ".join((lineVal.rstrip(';'), newstrng))
                 newList[i] = lineVal
@@ -442,6 +441,7 @@ def richNexusCall(runRNA,
             for key, val in idDict.items():
                 if key not in combined.taxlabels:
                     fp.write("\t%s = %s;\n" % ("Database_IDs_" + key, val))
+    
             
         if flag == True:
             fp.write("end;")

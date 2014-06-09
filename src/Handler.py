@@ -452,6 +452,7 @@ class NexusHandler:
     def RNAfoldConsensus(self):
         os.chdir("RNAdata")
         fileList = glob.glob('*.nex')
+
         newFileList = []
     
         for name in fileList:
@@ -576,7 +577,7 @@ class NexusHandler:
                 posLoop = [x.start() for x in re.finditer('\.', rnaData)]
                 rnaList.append([x + startPos for x in posLoop])
             
-                posStem = [x.start() for x in re.finditer('\(', rnaData)]
+                posStem = [x.start() for x in re.finditer('\(', rnaData)] + [x.start() for x in re.finditer('\)', rnaData)]
                 rnaList.append([x + startPos for x in posStem])
             
                 rnaDict[key] = (rnaList)
@@ -874,11 +875,23 @@ class NexusHandler:
     
             except IndexError:
                 pass
+
+        if missingList == {}:
+            print "No missing taxa found"
         
-        for key, val in missingList.items():
-            missingList["Missing_"+key] = missingList.pop(key)
-    
-        combined.taxsets.update(missingList)
+        else:
+
+            for key, val in missingList.items():
+                missingList["Missing_"+key] = missingList.pop(key)
+        
+            if combined.taxsets == {}:
+                combined.taxsets = dict()
+                for key, val in missingList.items():
+                    combined.taxsets[key] = (val)
+
+        
+            else:
+                combined.taxsets.update(missingList)
         
         return combined
 
