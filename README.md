@@ -77,7 +77,7 @@ python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interl
 Now proceed to analysis. Don't bother removing old input files from Input directory. Run -convert and your good to go.
 
 
-use -RNA option if RNAfold is installed on the system
+use -RNA option if RNAfold is installed on the system. -RNA option can be initiated with -block argument
 
 Prepare your own Taxonomy.csv file before using -remT and addT functions
 

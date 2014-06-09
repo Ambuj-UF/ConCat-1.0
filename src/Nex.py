@@ -86,7 +86,7 @@ def richNexusCall(runRNA,
         os.chdir("Input/ProcInput")
         file_list = glob.glob("*.nex")
         os.chdir("..")
-        if runRNA == True:
+        if runBlock == True:
             transferRNAret = transferRNA(file_list)
         else:
             transferRNAret = [{},'']

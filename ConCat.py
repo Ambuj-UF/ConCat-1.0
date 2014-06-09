@@ -118,6 +118,10 @@ parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.s
 args = parser.parse_args()
 
 
+if args.RNA == True and not args.block:
+    parser.error('-RNA argument is required in "-block" mode.')
+
+
 
 
 def main():
