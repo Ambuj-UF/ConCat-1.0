@@ -136,6 +136,7 @@ Steps:
 
 Special Note for using Mafft program:  
 We provide two options for passing arguments to run Mafft.
+
 1. You can directly pass the argument through -args for conducting batch alignment with same argument.
 
 python ConCat-Align.py -pkg mafft -args "--maxiterate 1000 --localpair"
