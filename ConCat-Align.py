@@ -22,6 +22,7 @@
 import os
 import glob
 import subprocess
+import platform
 import argparse
 import textwrap
 from Bio import AlignIO
@@ -80,7 +81,11 @@ def main():
     if argmnts.pkg == 'muscle':
         for filename in files:
             fname = filename.replace('Align/', '').split('.')[0] + '.fas'
-            subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+            if 'Darwin' in platform.system():
+                subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+            else:
+                subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+
 
     elif argmnts.pkg == 'mafft':
         if argmnts.sep == True:
