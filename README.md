@@ -1,4 +1,4 @@
-ConCat-1.0
+#ConCat-1.0
 ==========
 
 
@@ -91,8 +91,6 @@ ConCat allows users to define the alignment file type, define files to run RNA s
 
 ConCat block architecture:
 
-#NEXUS
-
 begin ConCat;
 
   Ali_Type = DNA; 
@@ -121,9 +119,6 @@ RNA_Type = True/None. If True then the ConCat program uses the alignment file fo
 RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA structure then avoid using RNA_Type function. Input contains RNA structure followed by comma and RNA structure starting position. By default the starting position is set to 0 (which is the starting position of alignment).
 
 
-
-
-
 Some commonly used operation:
 
 Run simultaneous fasta to nexus input file format conversion and analysis with RCV calculation, Alignment Entropy calculation and spellin check function set as True for a set of alignment files that has sequence IDs stored in taxon name:
@@ -132,7 +127,28 @@ python ConCat.py -CA -rcv -shannon -spell -pipe -ftype fasta
 
 
 
+#ConCat-Align
+ConCat-Align module conducts batch sequence alignment of raw input sequence file. Direct implementation of Muscle and Mafft sequence alignment programs can be performed through ConCat-1.0.
+Steps:
+1. Place all your raw sequence data in Align directory. 
+2. Run python ConCat-Align script in terminal
+3. Choose between Muscle[muscle] and Mafft[mafft] program through -pkg. 
 
+Special Note for using Mafft program:  
+We provide two options for passing arguments to run Mafft.
+1. You can directly pass the argument through -args for conducting batch alignment with same argument.
+python ConCat-Align.py -pkg mafft -args "--maxiterate 1000 --localpair"
+
+Enter arguments as within " ".
+
+2. We also provide an option to pass separate arguments for each alignment files. Add alignment file name and the corresponding arguments in text file and run.
+
+python ConCat-Align.py -pkg mafft -sep -argf argumrntFileName.txt
+
+Architecture of argument file is shown below:
+
+test.afa = --maxiterate 1000 --localpair
+test1.afa = --globalpair --maxiterate 1000
 
 
 
