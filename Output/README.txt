@@ -1,0 +1,1 @@
+This folder contains alignment output produced from ConCat-Align program
