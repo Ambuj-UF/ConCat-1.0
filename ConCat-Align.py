@@ -68,7 +68,7 @@ if argmnts.pkg == 'mafft' and argmnts.sep == False and not argmnts.args:
     parser.error('-CMND argument is required in "mafft" mode.')
 
 if argmnts.sep == True and not argmnts.argf:
-    parser.error('-argf argument is required in "-sep" mode.')
+    parser.error('-sep argument is required in "-argf" mode.')
 
 
 
