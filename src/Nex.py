@@ -38,7 +38,8 @@ def richNexusCall(runRNA,
                   pipeID,
                   RYcodingCall,
                   spellScan,
-                  runBlock
+                  runBlock,
+                  cutOff
                   ):
     
     start = timeit.default_timer()
@@ -332,6 +333,15 @@ def richNexusCall(runRNA,
         SeqIO.write(sequences, fopen, "nexus")
         fopen.close()
 
+    if cutOff != None:
+        print "Searching fast evolving sites"
+        fast_evolv_site = fastEvol(combined, cutOff)
+        if fast_evolv_site != []:
+            with open('Fast_Evolving_Sites', 'w') as fp:
+                for val in fast_evolv_site:
+                    fp.write("%s" %val)
+        else:
+            print "No fast Evolving site found"
 
     os.remove("Results1.nex")
 
@@ -449,8 +459,14 @@ def richNexusCall(runRNA,
             for key, val in idDict.items():
                 if key not in combined.taxlabels:
                     fp.write("\t%s = %s;\n" % ("Database_IDs_" + key, val))
+
+        if fast_evolv_site != [] and flag == True:
+            fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
+        elif fast_evolv_site != [] and flag == False:
+            fp.write("\nBegin ConCat Set;\n")
+            fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
+            fp.write("end;\n")
     
-            
         if flag == True:
             fp.write("end;")
 

@@ -113,6 +113,8 @@ parser.add_argument('-remT', type=int, default=None,
 parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.stdin,
                     help='Enter the text file with alignment file names and positions for RY coding')
 
+parser.add_argument('-OV', type=float, default=None,
+                    help='Enter the OV cutoff value for detecting fast evolving sites')
 
 
 args = parser.parse_args()
@@ -140,7 +142,8 @@ def main():
                           args.pipe,
                           args.RY,
                           args.spell,
-                          args.block
+                          args.block,
+                          args.OV
                           )
     
         else:
@@ -157,7 +160,8 @@ def main():
                           args.pipe,
                           args.RY,
                           args.spell,
-                          args.block
+                          args.block,
+                          args.OV
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')

@@ -270,7 +270,7 @@ def fastEvol(combined, cutOff):
 
         OVdict = dict()
         for i, val in enumerate(charList):
-            val = list(''.join(val).replace('-', '').replace('?', ''))
+            val = list(''.join(val).replace('?', ''))
             posVal = []
 
             if len(set(val)) == 1:
@@ -299,11 +299,12 @@ def fastEvol(combined, cutOff):
             for j, val in enumerate(listVal):
                 if j < len(listVal) - 1:
                     if listVal[j+1] - listVal[j] > cutOff:
-                        cutVal = listVal[j+1]
-                        listPos = [[x, val] for x, val in OVdict.items() if val >= cutVal]
+                        cutVal = listVal[i]                    
                     else:
-                        listPos = []
-
+                        cutVal = listVal[-1]
+                                         
+        listPos = [[x, val] for x, val in OVdict.items() if val > cutVal]
+                                         
     return listPos
 
 
