@@ -89,10 +89,10 @@ def main():
             return sets
 
         combined.charsets = setUpdate(combined.charsets, posMatrix)
-        combined.write_nexus_data(filename=open('FastEvolRemoved.nex', 'w'))
+        combined.write_nexus_data(filename=open(args.o, 'w'))
                                  
     else:
-        with open('FastEvolRemoved.' + args.fout[:3], 'w') as fp:
+        with open(args.o, 'w') as fp:
             SeqIO.write(msaObject, fp, args.fout)
 
 
