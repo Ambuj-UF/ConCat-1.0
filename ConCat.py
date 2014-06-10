@@ -51,14 +51,6 @@ parser = argparse.ArgumentParser(prog='ConCat',
                                                             
                                                             ----------------------------------------------------------------------------------------------------------
                                                             
-                                                            COMMAND LINE OPERATION
-                                                            
-                                                            python ConCat.py -ftype [input filetype[defult is nexus]]
-                                                                    -otype [output filetype[defult is nexus]] -RNA -rcv -pipe
-                                                                    -shannon -RY -inc [filename] -exc [filename] -addT [value]
-                                                                    -remT [integer value]
-                                                                    
-                                                            ----------------------------------------------------------------------------------------------------------
                                                             
                                                             '''))
 
