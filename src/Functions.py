@@ -374,6 +374,117 @@ def GCcontent(combined):
 
 
 
+import math
+import functools
+
+def percentile(N, percent, key=lambda x:x):
+    """
+        Find the percentile of a list of values.
+        
+        @parameter N - is a list of values. Note N MUST BE already sorted.
+        @parameter percent - a float value from 0.0 to 1.0.
+        @parameter key - optional key function to compute value from each element of N.
+        
+        @return - the percentile of the values
+        """
+    if not N:
+        return None
+    k = (len(N)-1) * percent
+    f = math.floor(k)
+    c = math.ceil(k)
+    if f == c:
+        return key(N[int(k)])
+    d0 = key(N[int(f)]) * (c-k)
+    d1 = key(N[int(c)]) * (k-f)
+    return d0+d1
+
+
+
+def rcvPercetile(RCVdict, entropyDict, gcDict, combined):
+    """
+        Finds the values between 25th and 75th percentile form input dictionary data.
+        
+        @parameter RCVdict - is RCV dictionary element.
+        @parameter entropyDict - is Entropy dictionary element.
+        @parameter gcDict - is GC content dictionary element.
+        @parameter combined - is a 3D nexus data matrix
+        
+        @return - the percentile of the values
+        """
+
+    for key, val in RCVdict.items():
+        rcvList.append(val[0])
+
+    rcv25 = percentile(rcvList.sort(), 0.25)
+    rcv75 = percentile(rcvList.sort(), 0.75)
+
+    v0to25 = [x for x in rcvList if x >= 0 and x < rcv25]
+    v25to75 = [x for x in rcvList if x >= rcv25 and x < rcv75]
+    v75to100 = [x for x in rcvList if x >= rcv75]
+
+    for key, val in RCVdict.items():
+        if val in v0to25:
+            rcvPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                 %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
+        elif val in v25to75:
+            rcvPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
+        else:
+            rcvPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
+
+    rcvPdict['0_to_25'] = (rcvPlist0to25)
+    rcvPdict['25_to_75'] = (rcvPlist25to75)
+    rcvPdict['75_to_100'] = (rcvPlist75to100)
+
+    return rcvPdict
+
+
+def gcEntropyPer(RCVdict, entropyDict, gcDict, combined):
+    """
+        Finds the values between 25th and 75th percentile form input dictionary data.
+        
+        @parameter RCVdict - is RCV dictionary element.
+        @parameter entropyDict - is Entropy dictionary element.
+        @parameter gcDict - is GC content dictionary element.
+        @parameter combined - is a 3D nexus data matrix
+        
+        @return - the percentile of the values
+        """
+
+
+    for key, val in supDict.items():
+        supList.append(val)
+
+    sup25 = percentile(supList.sort(), 0.25)
+    sup75 = percentile(supList.sort(), 0.75)
+
+    v0to25 = [x for x in supList if x >= 0 and x < sup25]
+    v25to75 = [x for x in supList if x >= ent25 and x < sup75]
+    v75to100 = [x for x in supList if x >= sup75]
+
+    for key, val in supDict.items():
+        if val in v0to25:
+            entPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                 %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+        elif val in v25to75:
+            entPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+        else:
+            entPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+
+    supPdict['0_to_25'] = (entPlist0to25)
+    supPdict['25_to_75'] = (entPlist25to75)
+    supPdict['75_to_100'] = (entPlist75to100)
+
+    return supPdict
+
+
+
+
+
+
 
 
 
