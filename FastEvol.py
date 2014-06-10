@@ -2,7 +2,8 @@ import argparse
 import textwrap
 from Bio.Nexus import Nexus
 from Bio import SeqIO
-from Functions import fastEvol, Convert
+import sys
+from src.Functions import fastEvol, Convert
 from Bio.AlignIO import MultipleSeqAlignment
 from src.Handler import NexusHandler
 
@@ -38,6 +39,8 @@ parser.add_argument('-fout', type=str, required=True, default = 'nexus',
 parser.add_argument('-auto', action='store_true', default=False,
                     help='Include if you want to run remove the list of fast evoling sites in Fast_Evolving_Sites.txt file')
 
+parser.add_argument('-OV', type=float, default=None,
+                    help='Enter the OV cutoff value for detecting fast evolving sites')
 
 
 args = parser.parse_args()
@@ -49,32 +52,31 @@ def main():
     posMatrix = []
 
     if args.auto == True:
-        with open('Fast_Evolving_Sites.txt', 'r') as fr:
+        with open('Fast_Evolving_Sites', 'r') as fr:
             data = fr.readlines()
             for lines in data:
-                posMatrix.append(int(lines.rstrip('\n'))
+                posMatrix.append(int(lines.rstrip('\n')))
 
     else:
-        data = Functions.fastEvol(nex[1][0], args.OV)
-        for val in data:
-            posMatrix.append(int(val[0].split('_')[1]))
+        data = fastEvol(nexi[0][1], args.OV)
+        if data != []:
+            for val in data:
+                posMatrix.append(int(val[0].split('_')[1]))
+        else:
+            sys.exit('Zero fast evolvong site found. Program Terminated \n')
 
     cycles = 0
-
-    while cycles < len(posMatrix)-1:
-        if cycles == 0:
-            Position = posMatrix[1]
-            termPos =  Position - len(msaObject[1])
-            varFirst = Position-1
-            msaObject = msaObject[:, :varFirst] + msaObject[:, termPos:]
+    posMatrix.sort()
+    msanewObject = msaObject[:, :posMatrix[0]]
+    for i, val in enumerate(posMatrix):
+        if i > 0:
+            if posMatrix[i] == posMatrix[-1]:
+                msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
+                break
+            else:
+                msanewObject = msanewObject + msaObject[:, val:posMatrix[i+1]]
     
-        else:
-            Position = posMatrix[cycles+1]
-            termPos = (Position-cycles) - len(msaObject[1])
-            varFirst = Position-cycles-1
-            msaObject = msaObject[:, :varFirst] + msaObject[:, termPos:]
-        cycles = cycles + 1
-
+    msaObject = msanewObject
     if args.fout == 'nexus':
         combined = nexi[0][1]
         combined = NexusHandler(1).msaToMatrix(msaObject, combined)

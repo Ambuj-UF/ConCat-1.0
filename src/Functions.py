@@ -53,7 +53,7 @@ def RCVcal(combine): # combined is a multiple sequence alignment object
 
     while cycles < len(posMatrix)-1:
         if cycles == 0:
-            Position = posMatrix[1]
+            Position = posMatrix[0]
             termPos =  Position - len(combine[1])
             varFirst = Position-1
             combine = combine[:, :varFirst] + combine[:, termPos:]
