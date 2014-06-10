@@ -25,6 +25,8 @@ import os
 from Bio import AlignIO
 from Handler import *
 import operator
+import math
+import functools
 
 
 def RCVcal(combine): # combined is a multiple sequence alignment object
@@ -374,8 +376,6 @@ def GCcontent(combined):
 
 
 
-import math
-import functools
 
 def percentile(N, percent, key=lambda x:x):
     """
@@ -402,14 +402,13 @@ def percentile(N, percent, key=lambda x:x):
 
 def rcvPercetile(RCVdict, entropyDict, gcDict, combined):
     """
-        Finds the values between 25th and 75th percentile form input dictionary data.
+        Finds the values grouped in percentile from input dictionary data.
         
         @parameter RCVdict - is RCV dictionary element.
         @parameter entropyDict - is Entropy dictionary element.
         @parameter gcDict - is GC content dictionary element.
         @parameter combined - is a 3D nexus data matrix
-        
-        @return - the percentile of the values
+
         """
 
     for key, val in RCVdict.items():
@@ -440,18 +439,26 @@ def rcvPercetile(RCVdict, entropyDict, gcDict, combined):
     return rcvPdict
 
 
-def gcEntropyPer(RCVdict, entropyDict, gcDict, combined):
+def gcEntropyPer(RCVdict,
+                 entropyDict,
+                 gcDict,
+                 combined,
+                 which
+                 ):
     """
-        Finds the values between 25th and 75th percentile form input dictionary data.
+        Finds the values grouped in percentile from input dictionary data.
         
         @parameter RCVdict - is RCV dictionary element.
         @parameter entropyDict - is Entropy dictionary element.
         @parameter gcDict - is GC content dictionary element.
         @parameter combined - is a 3D nexus data matrix
         
-        @return - the percentile of the values
         """
 
+    if which == 'ent':
+        supDict = entropyDict
+    else:
+        supDict = gcDict
 
     for key, val in supDict.items():
         supList.append(val)
@@ -482,8 +489,38 @@ def gcEntropyPer(RCVdict, entropyDict, gcDict, combined):
 
 
 
+def binPercent(RCVdict, entropyDict, gcDict, combined):
+    """
+        returns the list of dictionaries that has charset data grouped under percentile bins.
+        
+        @parameter RCVdict - is RCV dictionary element.
+        @parameter entropyDict - is Entropy dictionary element.
+        @parameter gcDict - is GC content dictionary element.
+        @parameter combined - is a 3D nexus data matrix
+        
+        """
 
+    rcvPdict = rcvPercetile(RCVdict,
+                            entropyDict,
+                            gcDict,
+                            combined
+                            )
+                            
+    entPdict = gcEntropyPer(RCVdict,
+                            entropyDict,
+                            gcDict,
+                            combined,
+                            which='ent'
+                            )
+                            
+    gcPdict = gcEntropyPer(RCVdict,
+                           entropyDict,
+                           gcDict,
+                           combined,
+                           which='gc'
+                           )
 
+    return [rcvPdict, entPdict, gcPdict]
 
 
 
