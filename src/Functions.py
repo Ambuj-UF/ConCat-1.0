@@ -252,48 +252,57 @@ def ConvertAll(inp_format):
 
     os.chdir('..')
 
-def fastEvol(combined, cutoff):
-    msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
-    charList = []
-    i = 1
-    while i <= len(msa[0]):
-        j = 1
-        tempList = []
-        while j <= len(msa):
-            tempList.append(msa[j-1][i-1])
-            j = j + 1
-        charList.append(tempList)
-        i = i + 1
+def fastEvol(combined, cutOff):
+    if cutOff == None:
+        listPos = []
+    else:
+        msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
+        charList = []
+        i = 1
+        while i <= len(msa[0]):
+            j = 1
+            tempList = []
+            while j <= len(msa):
+                tempList.append(msa[j-1][i-1])
+                j = j + 1
+            charList.append(tempList)
+            i = i + 1
 
-    OVdict = dict()
-    for i, val in enumerate(charList):
-        val = list(''.join(val).replace('-', '').replace('?', ''))
-        posVal = []
+        OVdict = dict()
+        for i, val in enumerate(charList):
+            val = list(''.join(val).replace('-', '').replace('?', ''))
+            posVal = []
 
-        if len(set(val)) == 1:
-            posVal.append(0)
+            if len(set(val)) == 1:
+                posVal.append(0)
 
-        else:
-            outCounter = 0
-            inCounter = 1
-            for inval in val:
-                inCounter = 1 + outCounter
-                while inCounter < len(val):
-                    if inval == val[inCounter]:
-                        posVal.append(0)
+            else:
+                outCounter = 0
+                inCounter = 1
+                for inval in val:
+                    inCounter = 1 + outCounter
+                    while inCounter < len(val):
+                        if inval == val[inCounter]:
+                            posVal.append(0)
+                        else:
+                            posVal.append(1)
+                        inCounter = inCounter + 1
+            
+                    outCounter = outCounter + 1
+
+
+            k = (math.pow(len(val), 2) - len(val))/2
+
+            OVdict['Position_%s' %i] = (sum(posVal)/k)
+            
+            listVal = sorted(OVdict.values())
+            for j, val in enumerate(listVal):
+                if j < len(listVal) - 1:
+                    if listVal[j+1] - listVal[j] > cutOff:
+                        cutVal = listVal[j+1]
+                        listPos = [[x, val] for x, val in OVdict.items() if val >= cutVal]
                     else:
-                        posVal.append(1)
-                    inCounter = inCounter + 1
-            
-                outCounter = outCounter + 1
-
-
-        k = (math.pow(len(val), 2) - len(val))/2
-
-        OVdict['Position_%s' %i] = (sum(posVal)/k)
-            
-
-    listPos = [x for x, val in OVdict.items() if val >= cutoff]
+                        listPos = []
 
     return listPos
 
