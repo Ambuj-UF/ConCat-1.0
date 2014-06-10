@@ -312,18 +312,23 @@ def binAll(rcvRange,
            entropyRange,
            combined,
            RCVdict,
-           entropyDict
+           entropyDict,
+           gcDict,
+           gcRange
            ):
-
     lineListRcv = []
     lineListEntropy = []
+    lineListGC = []
     if rcvRange != None:
         rStart = float(rcvRange.split('-')[0])
         rEnd = float(rcvRange.split('-')[1])
         
         for key, val in RNAdict.items():
             if val >= rStart and val <= rEnd:
-                lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key]))
+                try:
+                    lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key], gcDict[key]))
+                except KeyError:
+                    continue
 
     if entropyRange != None:
         rStart = float(entropyRange.split('-')[0])
@@ -332,16 +337,39 @@ def binAll(rcvRange,
         for key, val in entropyDict.items():
             if val >= rStart and val <= rEnd:
                 try:
-                    lineListEntropy.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], val))
+                    lineListEntropy.append("BIN_Entropy %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], val, gcDict[key]))
                 except KeyError:
                     continue
 
-    return [lineListRcv, lineListEntropy]
+    if gcRange != None:
+        rStart = float(gcRange.split('-')[0])
+        rEnd = float(gcRange.split('-')[1])
+        
+        for key, val in gcDict.items():
+            if val >= rStart and val <= rEnd:
+                try:
+                    lineListGC.append("BIN_GC %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], val))
+                except KeyError:
+                    continue
+
+    return [lineListRcv, lineListEntropy, lineListGC]
 
 
 
+def GCcontent(combined):
+    GCdict = dict()
+    msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
+    for key, val in combined.charsets.items():
+            gcCount = 0
+            try:
+                msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
+                for inval in msaGene:
+                    gcCount = gcCount + inval.seq.count('G') + inval.seq.count('C')
+                GCdict[key] = (float(gcCount)/(len(msaGene)*len(msaGene[1]))*100)
+            except KeyError:
+                continue
 
-
+    return GCdict
 
 
 

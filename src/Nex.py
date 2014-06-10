@@ -41,7 +41,9 @@ def richNexusCall(runRNA,
                   runBlock,
                   cutOff,
                   rbin,
-                  ebin
+                  ebin,
+                  GC,
+                  gcbin
                   ):
     
     start = timeit.default_timer()
@@ -346,6 +348,9 @@ def richNexusCall(runRNA,
         else:
             print "No fast Evolving site found"
 
+    if GC == True:
+        gcDict = GCcontent(combined)
+
     os.remove("Results1.nex")
 
     def two2one(list1):
@@ -355,8 +360,8 @@ def richNexusCall(runRNA,
                 listx.append(inval)
         return listx
 
-    if rbin != None or ebin != None:
-        binRetData = binAll(rbin, ebin, combined, rcvDict, entropyDict)
+    if rbin != None or ebin != None or gcbin != None:
+        binRetData = binAll(rbin, ebin, combined, rcvDict, entropyDict, gcDict, gcbin)
 
     with open("Combined.nex", 'w') as fp:
         file1 = open("Results.nex", 'r')
@@ -393,6 +398,14 @@ def richNexusCall(runRNA,
                 for i, lineVal in enumerate(newList):
                     if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
                         newstrng = "[ Entropy : %s ];" %val
+                        lineVal = " ".join((lineVal.rstrip(';'), newstrng))
+                    newList[i] = lineVal
+
+        if GC == True:
+            for key, val in gcDict.items():
+                for i, lineVal in enumerate(newList):
+                    if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
+                        newstrng = "[ GC content (in percentage) : %s ];" %val
                         lineVal = " ".join((lineVal.rstrip(';'), newstrng))
                     newList[i] = lineVal
 
@@ -485,13 +498,19 @@ def richNexusCall(runRNA,
         if flag == True:
             fp.write("end;")
 
-        if rbin != None or ebin != None:
-            fp.write("begin ConCat_Bin;\n")
+        if rbin != None or ebin != None or gcbin != None:
+            fp.write("\nbegin ConCat_Bin;\n")
             if rbin != None:
+                fp.write("\n\t[Bin RCV data]\n")
                 for val in binRetData[0]:
                     fp.write("\t%s;\n" %val)
             if ebin != None:
+                fp.write("\n\t[Bin Entropy data]\n")
                 for val in binRetData[1]:
+                    fp.write("\t%s;\n" %val)
+            if gcbin != None:
+                fp.write("\n\t[Bin GC data]\n")
+                for val in binRetData[2]:
                     fp.write("\t%s;\n" %val)
             fp.write("end;\n")
 

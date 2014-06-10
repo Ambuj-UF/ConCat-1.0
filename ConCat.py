@@ -103,6 +103,9 @@ parser.add_argument('-shannon', action='store_true', default=False,
 parser.add_argument('-rcv', action='store_true', default=False,
                     help='Include if you want to run RCV Calculation for the alignments')
 
+parser.add_argument('-GC', action='store_true', default=False,
+                    help='Include if you want to calculate GC content')
+
 parser.add_argument('-addT', type=str, default=None,
                     choices=['Class', 'Family', 'Order', 'Phylum', 'Kingdom'],
                     help='Enter the txaonomy classes to add in the final alignment taxa name. Sperate Multiple values using comma (-addT Class,Family,Order)')
@@ -122,12 +125,24 @@ parser.add_argument('-rbin', type=str, default=None,
 parser.add_argument('-ebin', type=str, default=None,
                     help='Enter the entropy range to bin data')
 
+parser.add_argument('-gcbin', type=str, default=None,
+                    help='Enter the GC range in percentage to bin data')
+
 
 args = parser.parse_args()
 
 
 if args.RNA == True and not args.block:
     parser.error('-block argument is required in "-RNA" mode.')
+
+if args.rbin == True and not args.rcv:
+    parser.error('-rcv argument is required in "-rbin" mode.')
+
+if args.ebin == True and not args.shannon:
+    parser.error('-shannon argument is required in "-ebin" mode.')
+
+if args.gcbin == True and not args.GC:
+    parser.error('-GC argument is required in "-gcbin" mode.')
 
 
 
@@ -151,7 +166,9 @@ def main():
                           args.block,
                           args.OV,
                           args.rbin,
-                          args.ebin
+                          args.ebin,
+                          args.GC,
+                          args.gcbin
                           )
     
         else:
@@ -171,7 +188,9 @@ def main():
                           args.block,
                           args.OV,
                           args.rbin,
-                          args.ebin
+                          args.ebin,
+                          args.GC,
+                          args.gcbin
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')
