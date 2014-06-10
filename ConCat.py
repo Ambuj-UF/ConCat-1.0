@@ -116,6 +116,12 @@ parser.add_argument('-RY', nargs='?', type=argparse.FileType('r'), default=sys.s
 parser.add_argument('-OV', type=float, default=None,
                     help='Enter the OV cutoff value for detecting fast evolving sites')
 
+parser.add_argument('-rbin', type=str, default=None,
+                    help='Enter the RCV range to bin data')
+
+parser.add_argument('-ebin', type=str, default=None,
+                    help='Enter the entropy range to bin data')
+
 
 args = parser.parse_args()
 
@@ -143,7 +149,9 @@ def main():
                           args.RY,
                           args.spell,
                           args.block,
-                          args.OV
+                          args.OV,
+                          args.rbin,
+                          args.ebin
                           )
     
         else:
@@ -161,7 +169,9 @@ def main():
                           args.RY,
                           args.spell,
                           args.block,
-                          args.OV
+                          args.OV,
+                          args.rbin,
+                          args.ebin
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')

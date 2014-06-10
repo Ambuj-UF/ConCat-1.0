@@ -39,7 +39,9 @@ def richNexusCall(runRNA,
                   RYcodingCall,
                   spellScan,
                   runBlock,
-                  cutOff
+                  cutOff,
+                  rbin,
+                  ebin
                   ):
     
     start = timeit.default_timer()
@@ -353,6 +355,8 @@ def richNexusCall(runRNA,
                 listx.append(inval)
         return listx
 
+    if rbin != None or ebin != None:
+        binRetData = binAll(rbin, ebin, combined, rcvDict, entropyDict)
 
     with open("Combined.nex", 'w') as fp:
         file1 = open("Results.nex", 'r')
@@ -472,6 +476,7 @@ def richNexusCall(runRNA,
 
         if cutOff != None and fast_evolv_site != [] and flag == True:
             fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
+
         elif cutOff != None and fast_evolv_site != [] and flag == False:
             fp.write("\nBegin ConCat Set;\n")
             fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
@@ -479,6 +484,16 @@ def richNexusCall(runRNA,
     
         if flag == True:
             fp.write("end;")
+
+        if rbin != None or ebin != None:
+            fp.write("begin ConCat_Bin;\n")
+            if rbin != None:
+                for val in binRetData[0]:
+                    fp.write("\t%s;\n" %val)
+            if ebin != None:
+                for val in binRetData[1]:
+                    fp.write("\t%s;\n" %val)
+            fp.write("end;\n")
 
         fp.close()
 

@@ -311,27 +311,30 @@ def fastEvol(combined, cutOff):
 def binAll(rcvRange,
            entropyRange,
            combined,
-           RNAdict,
+           RCVdict,
            entropyDict
            ):
-    
+
     lineListRcv = []
     lineListEntropy = []
     if rcvRange != None:
-        rStart = int(rcvRange.split('-')[0])
-        rEnd = int(rcvRange.split('-')[1])
+        rStart = float(rcvRange.split('-')[0])
+        rEnd = float(rcvRange.split('-')[1])
         
         for key, val in RNAdict.items():
-            if rStart >= val <= rEnd:
+            if val >= rStart and val <= rEnd:
                 lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key]))
 
-    if rcvRange != None:
-        rStart = int(entropyRange.split('-')[0])
-        rEnd = int(entropyRange.split('-')[1])
-    
+    if entropyRange != None:
+        rStart = float(entropyRange.split('-')[0])
+        rEnd = float(entropyRange.split('-')[1])
+
         for key, val in entropyDict.items():
-            if rStart >= val <= rEnd:
-                lineListEntropy.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key]))
+            if val >= rStart and val <= rEnd:
+                try:
+                    lineListEntropy.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], val))
+                except KeyError:
+                    continue
 
     return [lineListRcv, lineListEntropy]
 
