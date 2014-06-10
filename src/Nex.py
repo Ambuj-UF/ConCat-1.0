@@ -339,7 +339,7 @@ def richNexusCall(runRNA,
         if fast_evolv_site != []:
             with open('Fast_Evolving_Sites', 'w') as fp:
                 for val in fast_evolv_site:
-                    fp.write("%s" %val)
+                    fp.write("%s\n" %val)
         else:
             print "No fast Evolving site found"
 
@@ -460,9 +460,9 @@ def richNexusCall(runRNA,
                 if key not in combined.taxlabels:
                     fp.write("\t%s = %s;\n" % ("Database_IDs_" + key, val))
 
-        if fast_evolv_site != [] and flag == True:
+        if cutOff != None and fast_evolv_site != [] and flag == True:
             fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
-        elif fast_evolv_site != [] and flag == False:
+        elif cutOff != None and fast_evolv_site != [] and flag == False:
             fp.write("\nBegin ConCat Set;\n")
             fp.write("\t%s = %s;\n" % ("Fast_Evolving_Sites", fast_evolv_site))
             fp.write("end;\n")
