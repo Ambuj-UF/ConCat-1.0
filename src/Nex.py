@@ -560,7 +560,6 @@ def richNexusCall(runRNA,
     for f in inFiles:
         os.remove(f)
     
-    print "Your final concatenated result is saved in Combined.nex \n Have a nice day!!"
 
     os.chdir("../../RNAdata")
     files = glob.glob("*.*")
