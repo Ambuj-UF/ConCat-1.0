@@ -1022,10 +1022,10 @@ class NexusHandler:
                 remTaxList.append(delTaxa)
                 if delTaxa in combined.matrix: del combined.matrix[delTaxa]
                 if delTaxa in combined.taxlabels: combined.taxlabels.remove(delTaxa)
-                combined = self.missingScan(combined)
+            
             else:
                 print '%s not found in the alignment. Check for spelling mistakes in taxa editing input file' % delTaxa
-
+        combined = self.missingScan(combined)
         if usr_inpT == 1:
             os.chdir('Input')
             listIDs = BaseHandle(2).fileOpenID()

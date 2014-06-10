@@ -339,7 +339,7 @@ def richNexusCall(runRNA,
         if fast_evolv_site != []:
             with open('Fast_Evolving_Sites', 'w') as fp:
                 for val in fast_evolv_site:
-                    fp.write("%s\n" %val)
+                    fp.write("%s\n" %val[0].split('_')[1])
         else:
             print "No fast Evolving site found"
 
