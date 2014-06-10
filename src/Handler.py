@@ -733,7 +733,7 @@ class NexusHandler:
             "Checks if string is a DNA sequence"
             leftover = set(seq.upper()) - alphabet
             return not leftover
-
+        entropyValDict = dict()
         entropyDict = {}
         msaObject = MultipleSeqAlignment(self.combineToRecord(combined))
         for i, mkeys in enumerate(combined.charsets):
@@ -750,7 +750,10 @@ class NexusHandler:
                 entropyDict[mkeys] = (combined.charsets[mkeys])
             else:
                 pass
-        return entropyDict
+    
+            entropyValDict[mkeys] = (entropyValue)
+                
+        return [entropyDict, entropyValDict]
 
 
 
@@ -962,7 +965,10 @@ class NexusHandler:
         
         if runShanon == True:
             print "Checking alignment quality [Shannons Entropy] \n"
-            entropyGenes = self.entropyCal(combined)
+            entropyDetails = self.entropyCal(combined)
+            entropyGenes = entropyDetails[0]
+            entropyStore = entropyDetails[1]
+
         else:
             pass
         
@@ -1001,7 +1007,7 @@ class NexusHandler:
         else:
             pass
         
-        return combined
+        return [combined, entropyStore]
         
 
     def withTaxEdit(self,
@@ -1047,8 +1053,9 @@ class NexusHandler:
         positions = Nexus.Nexus.gaponly(combined, include_missing = True)
         if runShanon == True:
             print "Checking alignment quality [Shannons Entropy] \n"
-            entropyGenes = self.entropyCal(combined)
-
+            entropyDetails = self.entropyCal(combined)
+            entropyGenes = entropyDetails[0]
+            entropyStore = entropyDetails[1]
             entropyGenes = self.entropyDictUpdate(entropyGenes, positions)
         else:
             pass
@@ -1085,7 +1092,7 @@ class NexusHandler:
         except:
             pass
     
-        return [combined, remTaxDict]
+        return [combined, remTaxDict, entropyStore]
     
 
     def NexusHandle(self,
@@ -1134,13 +1141,13 @@ class NexusHandler:
 
             
         else:
-            combined = self.withoutTaxEdit(combined,
+            combinedRet = self.withoutTaxEdit(combined,
                                            usr_inpT,
                                            RNAstrucData,
                                            runRNA,
                                            runShanon
                                            )
             remTaxDict = dict()
-            return [combined, remTaxDict]
+            return [combinedRet[0], remTaxDict, combinedRet[1]]
 
 

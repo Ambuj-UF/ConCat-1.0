@@ -308,7 +308,32 @@ def fastEvol(combined, cutOff):
     return listPos
 
 
+def binAll(rcvRange,
+           entropyRange,
+           combined,
+           RNAdict,
+           entropyDict
+           ):
+    
+    lineListRcv = []
+    lineListEntropy = []
+    if rcvRange != None:
+        rStart = int(rcvRange.split('-')[0])
+        rEnd = int(rcvRange.split('-')[1])
+        
+        for key, val in RNAdict.items():
+            if rStart >= val <= rEnd:
+                lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key]))
 
+    if rcvRange != None:
+        rStart = int(entropyRange.split('-')[0])
+        rEnd = int(entropyRange.split('-')[1])
+    
+        for key, val in entropyDict.items():
+            if rStart >= val <= rEnd:
+                lineListEntropy.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key]))
+
+    return [lineListRcv, lineListEntropy]
 
 
 

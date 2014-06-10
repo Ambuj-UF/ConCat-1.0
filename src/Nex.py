@@ -155,6 +155,7 @@ def richNexusCall(runRNA,
                                                        )
     combined = combinedRet[0]
     remTaxDict = combinedRet[1]
+    entropyDict = combinedRet[2]
     for values, data in combined.charsets.items():
         if values.count('.') == 3 and values.split('.')[0] == values.split('.')[2]:
             try:
@@ -382,6 +383,15 @@ def richNexusCall(runRNA,
                         newstrng = "[ RCV Score :" + val + "];"
                         lineVal = " ".join((lineVal.rstrip(';'), newstrng))
                     newList[i] = lineVal
+
+        if runShannon == True:
+            for key, val in entropyDict.items():
+                for i, lineVal in enumerate(newList):
+                    if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
+                        newstrng = "[ Entropy : %s ];" %val
+                        lineVal = " ".join((lineVal.rstrip(';'), newstrng))
+                    newList[i] = lineVal
+
 
         for key, val in fileTypes.items():
             for i, lineVal in enumerate(newList):
