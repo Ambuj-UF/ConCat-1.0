@@ -536,12 +536,6 @@ class NexusHandler:
             
         return recordList
 
-    
-
-
-    ################################################################################
-    #                       Writes RNA data to Nexus                               #
-    ################################################################################
 
 
     def RNAtoNexus(self, combined, RNAstrucData):
@@ -676,10 +670,6 @@ class NexusHandler:
         return procRNAdict
 
 
-	###########################################################################
-	#			Updates RNA Structure Matrix								  #	
-	###########################################################################
-
 
     def rnaSetUpdate(self, positions, procRNAdict):
         
@@ -696,11 +686,14 @@ class NexusHandler:
         return procRNAdict
     
 
-    ############################################################################################
-    #    Calculates entropy of alignment. It helps in identifying the alignment quality        #
-    ############################################################################################
 
     def ProtEntropy(self, msa):
+        
+        """
+           Calculates entropy of protein alignment. It helps in identifying the alignment quality.
+            
+        """
+        
         totEntropy = []
         n = 1
         while n <= len(msa[0]):
@@ -754,6 +747,12 @@ class NexusHandler:
                                              
 
     def ShannonEntropy(self, msa):
+        
+        """
+            Calculates entropy of DNA alignment. It helps in identifying the alignment quality.
+            
+        """
+        
         totEntropy = []
         n = 1
         while n <= len(msa[0]):
@@ -790,12 +789,26 @@ class NexusHandler:
 
 
     def entropyCal(self, combined):
+        
+        """
+            Calls for entropy calculation is regulated by this function.
+            
+            @parameter combined - 3D matrix of nexus data
+            
+            Returns - List of two dictionary element.
+            1. entropyDict - Contains entropy data for alignments having entropy value > 0.7.
+            2. entropyValDict - Contains entropy data for all alignment files.
+            
+        """
                                              
         dna = set("ATGC-N?")
+        
         def checkDNA(seq, alphabet=dna):
-            "Checks if string is a DNA sequence"
+            """Checks if string is a DNA sequence"""
+            
             leftover = set(seq.upper()) - alphabet
             return not leftover
+        
         entropyValDict = dict()
         entropyDict = {}
         msaObject = MultipleSeqAlignment(self.combineToRecord(combined))
