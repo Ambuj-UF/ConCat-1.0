@@ -529,13 +529,15 @@ def allPerentile(RCVdict,
     supPlist0to25 = []
     supPlist25to75 = []
     supPlist75to100 = []
+    supList.sort()
 
-    sup25 = percentile(supList.sort(), 0.25)
-    sup75 = percentile(supList.sort(), 0.75)
+    sup25 = percentile(supList, 0.25)
+    sup75 = percentile(supList, 0.75)
 
     v0to25 = [x for x in supList if x >= 0 and x < sup25]
     v25to75 = [x for x in supList if x >= sup25 and x < sup75]
     v75to100 = [x for x in supList if x >= sup75]
+
 
     for key, val in supDict.items():
         try:
