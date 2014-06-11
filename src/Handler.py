@@ -834,6 +834,14 @@ class NexusHandler:
 
 
     def combineToRecord(self, combined):
+        
+        """
+           Magic function of this program. It changes 3D nexus data matrix to SeqRecord object.
+           Used when handling and editing multiple sequence alignemnt data stored in the nexus 
+           matrix.
+           
+        """
+        
         matrixNew = combined.matrix
         listID = combined.taxlabels
         records = []
@@ -847,11 +855,16 @@ class NexusHandler:
 
         return records
 
-    ####################################################################################################
-    #               This function edits the character sets after gap removal                           #
-    ####################################################################################################
+
 
     def charEdit(self, combined, positions):
+        
+        """
+           This function edits the character sets after gap removal.
+           This function is a life saver for ConCat.
+            
+        """
+        
         listGap=[]
         n = 0
         while n < len(combined.charsets):
@@ -878,18 +891,35 @@ class NexusHandler:
         return combined
 
     def msaToMatrix(self, msa, combined):
+        
+        """
+           Another magic function of ConCat. It is used for pushing edited multiple
+           sequence alignment matrix into 3D nexus matrix.
+           
+           @parameter msa - edited multiple sequence alignment object
+           @parameter combined - Nexus 3D matrix data
+           
+           Returns - Nexus matrix with updated sequence alignment data.
+        """
+        
         for i, values in enumerate(msa):
             combined.matrix[values.id] = msa[i].seq
         
         return combined
     
 
-    ##############################################################################
-    #                       Entropy dictionary Update                            #
-    ##############################################################################
-
 
     def entropyDictUpdate(self, entropyDict, positions):
+        
+        """
+           Updates entropy dictionary data after gap removal.
+           
+           @parameter entropyDict - Dictionary of entropy data.
+           @parameter positions - coloumns with gap + missing data at all taxa positions
+           
+           Returns - Dictionary with updated entropy value
+        """
+        
         listGap = []
         n = 0
         while n < len(entropyDict):
@@ -918,22 +948,17 @@ class NexusHandler:
         return entropyDict
 
 
-    ##############################################################################
-    #                       Checks if the sequence is missing data               #
-    ##############################################################################
-
-
     def validate(self, seq, alphabet = set("?")):
+        """ Checks if the sequence is missing data """
+        
         leftover = set(seq.upper()) - alphabet
         return not leftover
 
 
-    ##############################################################################
-    #                  Cretes a list of missing data for TaxaLabels              #
-    ##############################################################################
-
 
     def missingScan(self, combined):
+        """Cretes a list of missing taxon data to store in Taxsets"""
+        
         MSA = MultipleSeqAlignment(self.combineToRecord(combined))
 
         missingList = {}
