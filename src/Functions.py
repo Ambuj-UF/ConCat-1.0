@@ -386,7 +386,7 @@ def binAll(rcvRange,
         rStart = float(rcvRange.split('-')[0])
         rEnd = float(rcvRange.split('-')[1])
         
-        for key, val in RNAdict.items():
+        for key, val in RCVdict.items():
             try:
                 sink = entropyDict[key]
             except KeyError:
@@ -424,6 +424,8 @@ def binAll(rcvRange,
     if gcRange != None:
         rStart = float(gcRange.split('-')[0])
         rEnd = float(gcRange.split('-')[1])
+        
+        for key, val in gcDict.items():
             try:
                 sink = entropyDict[key]
             except KeyError:
@@ -432,8 +434,8 @@ def binAll(rcvRange,
                 sink = RCVdict[key]
             except KeyError:
                 RCVdict[key] = (['NA'])
+                    
 
-        for key, val in gcDict.items():
             if val >= rStart and val <= rEnd:
                 try:
                     lineListGC.append("BIN_GC %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], val))

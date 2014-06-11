@@ -361,6 +361,13 @@ def richNexusCall(runRNA,
         return listx
 
     if rbin != None or ebin != None or gcbin != None:
+        if calRCVvalue == False:
+            rcvDict = dict()
+        if runShannon == False:
+            entropyDict == dict()
+        if GC == False:
+            gcDict = dict()
+        
         binRetData = binAll(rbin, ebin, combined, rcvDict, entropyDict, gcDict, gcbin)
 
     with open("Combined.nex", 'w') as fp:
