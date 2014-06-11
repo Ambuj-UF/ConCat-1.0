@@ -120,6 +120,10 @@ parser.add_argument('-ebin', type=str, default=None,
 parser.add_argument('-gcbin', type=str, default=None,
                     help='Enter the GC range in percentage to bin data')
 
+parser.add_argument('-pbin', action='store_true', default=False,
+                    help='Use this function if you want to store RCV, GC and/or Entropy data in percentile bins')
+
+
 
 args = parser.parse_args()
 
@@ -136,6 +140,11 @@ if args.ebin == True and not args.shannon:
 if args.gcbin == True and not args.GC:
     parser.error('-GC argument is required in "-gcbin" mode.')
 
+if args.pbin == True:
+    if args.GC == True or args.shannon == True or args.rcv == True:
+        pass
+    else:
+        parser.error('-rcv,-shannon or -GC argument is required in "-pbin" mode.')
 
 
 
@@ -160,7 +169,8 @@ def main():
                           args.rbin,
                           args.ebin,
                           args.GC,
-                          args.gcbin
+                          args.gcbin,
+                          args.pbin
                           )
     
         else:
@@ -182,7 +192,8 @@ def main():
                           args.rbin,
                           args.ebin,
                           args.GC,
-                          args.gcbin
+                          args.gcbin,
+                          args.pbin
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')

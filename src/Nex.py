@@ -43,7 +43,8 @@ def richNexusCall(runRNA,
                   rbin,
                   ebin,
                   GC,
-                  gcbin
+                  gcbin,
+                  pbin
                   ):
     
     start = timeit.default_timer()
@@ -369,6 +370,16 @@ def richNexusCall(runRNA,
             gcDict = dict()
         
         binRetData = binAll(rbin, ebin, combined, rcvDict, entropyDict, gcDict, gcbin)
+
+    elif pbin == True:
+        if calRCVvalue == False:
+            rcvDict = dict()
+        if runShannon == False:
+            entropyDict == dict()
+        if GC == False:
+            gcDict = dict()
+
+        binData = binPercent(rcvDict, entropyDict, gcDict, combined, calRCVvalue, runShannon, entropyDict)
 
     with open("Combined.nex", 'w') as fp:
         file1 = open("Results.nex", 'r')

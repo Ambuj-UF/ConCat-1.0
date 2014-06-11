@@ -496,7 +496,7 @@ def percentile(N, percent, key=lambda x:x):
 
 
 
-def gcEntropyPer(RCVdict,
+def allPerentile(RCVdict,
                  entropyDict,
                  gcDict,
                  combined,
@@ -521,15 +521,20 @@ def gcEntropyPer(RCVdict,
 
     else:
         supDict = gcDict
-
+    
+    supList = []
     for key, val in supDict.items():
         supList.append(val)
+
+    supPlist0to25 = []
+    supPlist25to75 = []
+    supPlist75to100 = []
 
     sup25 = percentile(supList.sort(), 0.25)
     sup75 = percentile(supList.sort(), 0.75)
 
     v0to25 = [x for x in supList if x >= 0 and x < sup25]
-    v25to75 = [x for x in supList if x >= ent25 and x < sup75]
+    v25to75 = [x for x in supList if x >= sup25 and x < sup75]
     v75to100 = [x for x in supList if x >= sup75]
 
     for key, val in supDict.items():
@@ -546,25 +551,48 @@ def gcEntropyPer(RCVdict,
         except KeyError:
             gcDict[key] = (['NA'])
 
-        if val in v0to25:
-            entPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                 %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
-        elif val in v25to75:
-            entPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
-        else:
-            entPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
 
-    supPdict['0_to_25'] = (entPlist0to25)
-    supPdict['25_to_75'] = (entPlist25to75)
-    supPdict['75_to_100'] = (entPlist75to100)
+        if val in v0to25:
+            try:
+                supPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                 %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+            
+            except KeyError:
+                continue
+
+        elif val in v25to75:
+            try:
+                supPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+            except KeyError:
+                continue
+
+        else:
+            try:
+                supPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
+                    
+            except KeyError:
+                continue
+    
+    supPdict = dict()
+
+    supPdict['0_to_25'] = (supPlist0to25)
+    supPdict['25_to_75'] = (supPlist25to75)
+    supPdict['75_to_100'] = (supPlist75to100)
 
     return supPdict
 
 
 
-def binPercent(RCVdict, entropyDict, gcDict, combined):
+def binPercent(RCVdict,
+               entropyDict,
+               gcDict,
+               combined,
+               calRCVvalue,
+               runShannon,
+               runGC
+               ):
     """
         returns the list of dictionaries that has charset data grouped under percentile bins.
         
@@ -578,26 +606,37 @@ def binPercent(RCVdict, entropyDict, gcDict, combined):
     for key, val in RCVdict:
         RCVdict[key] = (val[0])
 
-    rcvPdict = gcEntropyPer(RCVdict,
-                            entropyDict,
-                            gcDict,
-                            combined,
-                            which='rcv'
-                            )
-    
-    entPdict = gcEntropyPer(RCVdict,
-                            entropyDict,
-                            gcDict,
-                            combined,
-                            which='ent'
-                            )
-                            
-    gcPdict = gcEntropyPer(RCVdict,
-                           entropyDict,
-                           gcDict,
-                           combined,
-                           which='gc'
-                           )
+
+    if calRCVvalue == True:
+        rcvPdict = allPerentile(RCVdict,
+                                entropyDict,
+                                gcDict,
+                                combined,
+                                which='rcv'
+                                )
+    else:
+        rcvPdict = dict()
+
+    if runShannon == True:
+        entPdict = allPerentile(RCVdict,
+                                entropyDict,
+                                gcDict,
+                                combined,
+                                which='ent'
+                                )
+    else:
+        entPdict = dict()
+
+    if runGC == True:
+        gcPdict = allPerentile(RCVdict,
+                               entropyDict,
+                               gcDict,
+                               combined,
+                               which='gc'
+                               )
+
+    else:
+        gcPdict = dict()
 
     return [rcvPdict, entPdict, gcPdict]
 
