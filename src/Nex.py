@@ -147,7 +147,6 @@ def richNexusCall(runRNA,
         combined = Nexus.combine(nexi)
         os.chdir("..")
 
-
     RNAstrucData = transferRNAret[1]
 
     combinedRet = NexusHandler('filename').NexusHandle(combined,
@@ -177,6 +176,7 @@ def richNexusCall(runRNA,
                 del combined.taxsets[values]
             except IndexError:
                 pass
+
 
 
     print "Concatenation completed! \n"
@@ -379,7 +379,7 @@ def richNexusCall(runRNA,
         if GC == False:
             gcDict = dict()
 
-        binData = binPercent(rcvDict, entropyDict, gcDict, combined, calRCVvalue, runShannon, entropyDict)
+        binData = binPercent(rcvDict, entropyDict, gcDict, combined, calRCVvalue, runShannon, GC)
 
     with open("Combined.nex", 'w') as fp:
         file1 = open("Results.nex", 'r')
@@ -407,7 +407,7 @@ def richNexusCall(runRNA,
             for key, val in rcvDict.items():
                 for i, lineVal in enumerate(newList):
                     if key == lineVal.split(' ')[1] or "'" + key + "'" == lineVal.split(' ')[1]:
-                        newstrng = "[ RCV Score :" + val + "];"
+                        newstrng = "[ RCV Score %s ];" %val
                         lineVal = " ".join((lineVal.rstrip(';'), newstrng))
                     newList[i] = lineVal
 
@@ -531,6 +531,60 @@ def richNexusCall(runRNA,
                 for val in binRetData[2]:
                     fp.write("\t%s;\n" %val)
             fp.write("end;\n")
+
+        elif pbin == True:
+            fp.write("\n\nbegin ConCat_Bin;\n")
+            if calRCVvalue == True:
+                fp.write("\n\t[RCV Bin]\n")
+                for key, val in binData[0].items():
+                    if key == '0_to_25':
+                        fp.write("\n\t[0 to 25th percentile RCV data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    elif key == '25_to_75':
+                        fp.write("\n\t[25th to 75th percentile RCV data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    else:
+                        fp.write("\n\t[75th to 100 percentile RCV data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+
+
+            if runShannon == True:
+                fp.write("\n\t[Entropy Bin]\n")
+                for key, val in binData[1].items():
+                    if key == '0_to_25':
+                        fp.write("\n\t[0 to 25th percentile Entropy data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    elif key == '25_to_75':
+                        fp.write("\n\t[25th to 75th percentile Entropy data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    else:
+                        fp.write("\n\t[75th to 100 percentile Entropy data] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                                            
+
+            if GC == True:
+                fp.write("\n\t[GC Bin]\n")
+                for key, val in binData[2].items():
+                    if key == '0_to_25':
+                        fp.write("\n\t[0 to 25th percentile GC content] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    elif key == '25_to_75':
+                        fp.write("\n\t[25th to 75th percentile GC Content] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+                    else:
+                        fp.write("\n\t[75th to 100 percentile GC content] \n")
+                        for inval in val:
+                            fp.write("\t%s;\n" %inval)
+
+                fp.write("end;\n")
 
         fp.close()
 

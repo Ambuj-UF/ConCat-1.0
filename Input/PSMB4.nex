@@ -1,4 +1,8 @@
 #NEXUS
+begin ConCat;
+	Ali_Type = Codon;
+end;
+
 begin data;
 	dimensions ntax=31 nchar=792;
 	format datatype=protein missing=? gap=-;

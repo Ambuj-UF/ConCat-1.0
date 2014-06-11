@@ -496,9 +496,9 @@ def percentile(N, percent, key=lambda x:x):
 
 
 
-def allPerentile(RCVdict,
-                 entropyDict,
-                 gcDict,
+def allPerentile(dictRCV,
+                 dictEntropy,
+                 dictGC,
                  combined,
                  which
                  ):
@@ -513,18 +513,23 @@ def allPerentile(RCVdict,
         
         """
 
+    RCVdict = dictRCV
+    entropyDict = dictEntropy
+    gcDict = dictGC
+
     if which == 'rcv':
         supDict = RCVdict
     
     elif which == 'ent':
         supDict = entropyDict
 
-    else:
+    elif which == 'gc':
         supDict = gcDict
     
     supList = []
     for key, val in supDict.items():
-        supList.append(val)
+        if isinstance(val, str) == False and hasattr(val, '__iter__') == False:
+            supList.append(val)
 
     supPlist0to25 = []
     supPlist25to75 = []
@@ -543,20 +548,20 @@ def allPerentile(RCVdict,
         try:
             sink = RCVdict[key]
         except KeyError:
-            RCVdict[key] = (['NA'])
+            RCVdict.update({key: ['NA']})
         try:
             sink = entropyDict[key]
         except KeyError:
-            entropyDict[key] = (['NA'])
+            entropyDict.update({key: ['NA']})
         try:
             sink = gcDict[key]
         except KeyError:
-            gcDict[key] = (['NA'])
+            gcDict.update({key: ['NA']})
 
 
         if val in v0to25:
             try:
-                supPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                supPlist0to25.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
             
             except KeyError:
@@ -564,14 +569,14 @@ def allPerentile(RCVdict,
 
         elif val in v25to75:
             try:
-                supPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                supPlist25to75.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
             except KeyError:
                 continue
 
         else:
             try:
-                supPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
+                supPlist75to100.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                    %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
                     
             except KeyError:
@@ -605,8 +610,8 @@ def binPercent(RCVdict,
         
         """
     
-    for key, val in RCVdict:
-        RCVdict[key] = (val[0])
+    for key, val in RCVdict.items():
+        RCVdict[key] = (float(val.lstrip('[ ').rstrip(' ]')))
 
 
     if calRCVvalue == True:
@@ -639,6 +644,7 @@ def binPercent(RCVdict,
 
     else:
         gcPdict = dict()
+
 
     return [rcvPdict, entPdict, gcPdict]
 
