@@ -318,6 +318,22 @@ def binAll(rcvRange,
            gcDict,
            gcRange
            ):
+    
+    """
+        Creat RCV, GC and Entropy dataset for user defines bin range.
+        
+        @parameter rcvRange - Range of RCV values passed by user to create RCV bin.
+        @parameter entropyRange - Range of Entropy values passed by user to create Entropy bin.
+        @parameter gcRange - Range of percetange GC content passed by user to create GC bin.
+        @parameter RCVdict - Dictionary element that conctains RCV values for all the input alignment files.
+        @parameter entropyDict - Dictionary element that conatins entropy values for all the input alignment files.
+        @parameter gcDict - Dictionary element that contains percentage GC content for all the input alignment files.
+        @parameter combined - is a 3D nexus data matrix.
+        
+        Returns - list of values with alignment IDs and their corresponding RCV, GC content and Entropy values in user defined bin range.
+        
+    """
+    
     lineListRcv = []
     lineListEntropy = []
     lineListGC = []
@@ -384,6 +400,14 @@ def binAll(rcvRange,
 
 
 def GCcontent(combined):
+    """
+        Calculates GC content in alignment
+        
+        @parameter combined - is a 3D nexus data matrix.
+        
+        Returns - Dictionary with GC values
+    """
+    
     GCdict = dict()
     msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
     for key, val in combined.charsets.items():
