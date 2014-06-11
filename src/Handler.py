@@ -263,51 +263,16 @@ class BaseHandle:
         return combine
 
 
-    def geneList(self, file_format):
-        initList = ['*.fasta', '*.nex', '*.phy', '*.phy', '*.phy']
-        print "The available files are \n"
-        print glob.glob(initList[file_format-1])
-    
-        list_files = glob.glob(initList[file_format-1])
-        fileCount = len(list_files)
-    
-        loopCount = 0
-    
-        print "Select from files listed below \n"
-    
-        while loopCount < fileCount:
-            print loopCount + 1, "->", list_files[loopCount], '\n'
-            loopCount = loopCount + 1
-    
-        usr_inp = input('\n')
-    
-        return list_files[usr_inp-1]
-
-
-    def taxonList(self, combine):
-        idlist = []
-        for data in combine:
-            idlist.append(data.id)
-    
-        loopCount = 0
-        print "Select from taxa listed below \n"
-    
-        while loopCount < len(idlist):
-            print loopCount + 1, "-->", idlist[loopCount], '\n'
-            loopCount = loopCount + 1
-    
-        usr_inp = input('\n')
-    
-        return idlist[usr_inp-1]
-
-
-
-    ################################################################################
-    #   Remove positions that has gap as well as missing data for all taxa         #
-    ################################################################################
 
 
     def autoGapRemove(self, combine):
+        
+        """
+           Remove positions that has gap as well as missing data for all taxa
+           
+           @parameter combine - final concatenated alignment matrix
+           
+        """
         
         similarityCount = {}
         n=0
@@ -350,12 +315,13 @@ class BaseHandle:
         return combine
 
 
-    ###################################################################################
-    #                                  NEXML Output                                   #
-    ###################################################################################
-
 
     def nexML(self, filename):
+        
+        """
+            Produces concatenated alignment file in NexML format.
+        """
+        
         fp = open('Results.xml', 'w')
         handleXML = open(filename, 'rU')
         recordsXML = list(SeqIO.parse(handleXML, "nexus"))
@@ -363,11 +329,20 @@ class BaseHandle:
         fp.close()
         handleXML.close()
 
-    ###################################################################################################
-    #   RY-coding program: It replaces A & G to R and C & T to Y at the third codon position          #
-    ###################################################################################################
 
     def RYcoding(self, file, position, msaObject):
+        
+        """
+           RY-coding program: It replaces A & G to R and C & T to Y either user defined positions
+           or at all the positions. It depends on user selection.
+           
+           @parameter file -
+           @parameter position - user defined position to perform RY coding in alignment matrix
+           @parameter msaObject - Input multiple sequence alignment matri data
+           
+           Return - Multiple sequence alignment object with RY coding
+        """
+        
         def ReplaceThird(self, string, position):
             for i in range(position, len(string), 3):
                 if string[i] == 'A' or string[i] == 'G':
@@ -419,7 +394,10 @@ class BaseHandle:
 
         counter = 0
         while counter < len(newSeqList):
-            data.append(SeqRecord(Seq(newSeqList[counter], generic_dna), id = records[counter].id, name = records[counter].name, description = records[counter].description))
+            data.append(SeqRecord(Seq(newSeqList[counter], generic_dna),\
+                                  id = records[counter].id, name = records[counter].name,\
+                                  description = records[counter].description))
+                                  
             counter = counter + 1
 
         newmsa = MultipleSeqAlignment(data)
