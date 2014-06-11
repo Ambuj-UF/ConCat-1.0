@@ -326,6 +326,14 @@ def binAll(rcvRange,
         rEnd = float(rcvRange.split('-')[1])
         
         for key, val in RNAdict.items():
+            try:
+                sink = entropyDict[key]
+            except KeyError:
+                entropyDict[key] = (['NA'])
+            try:
+                sink = gcDict[key]
+            except KeyError:
+                gcDict[key] = (['NA'])
             if val >= rStart and val <= rEnd:
                 try:
                     lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key], gcDict[key]))
@@ -337,6 +345,15 @@ def binAll(rcvRange,
         rEnd = float(entropyRange.split('-')[1])
 
         for key, val in entropyDict.items():
+            try:
+                sink = RCVdict[key]
+            except KeyError:
+                RCVdict[key] = (['NA'])
+            try:
+                sink = gcDict[key]
+            except KeyError:
+                gcDict[key] = (['NA'])
+
             if val >= rStart and val <= rEnd:
                 try:
                     lineListEntropy.append("BIN_Entropy %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], val, gcDict[key]))
@@ -346,7 +363,15 @@ def binAll(rcvRange,
     if gcRange != None:
         rStart = float(gcRange.split('-')[0])
         rEnd = float(gcRange.split('-')[1])
-        
+            try:
+                sink = entropyDict[key]
+            except KeyError:
+                entropyDict[key] = (['NA'])
+            try:
+                sink = RCVdict[key]
+            except KeyError:
+                RCVdict[key] = (['NA'])
+
         for key, val in gcDict.items():
             if val >= rStart and val <= rEnd:
                 try:
@@ -413,6 +438,7 @@ def gcEntropyPer(RCVdict,
         @parameter entropyDict - is Entropy dictionary element.
         @parameter gcDict - is GC content dictionary element.
         @parameter combined - is a 3D nexus data matrix
+        @parameter which - takes dictionary type as input (It could be GC, RCV or Entropy dictionary)
         
         """
 
@@ -436,6 +462,19 @@ def gcEntropyPer(RCVdict,
     v75to100 = [x for x in supList if x >= sup75]
 
     for key, val in supDict.items():
+        try:
+            sink = RCVdict[key]
+        except KeyError:
+            RCVdict[key] = (['NA'])
+        try:
+            sink = entropyDict[key]
+        except KeyError:
+            entropyDict[key] = (['NA'])
+        try:
+            sink = gcDict[key]
+        except KeyError:
+            gcDict[key] = (['NA'])
+
         if val in v0to25:
             entPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
