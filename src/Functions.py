@@ -400,45 +400,6 @@ def percentile(N, percent, key=lambda x:x):
 
 
 
-def rcvPercetile(RCVdict, entropyDict, gcDict, combined):
-    """
-        Finds the values grouped in percentile from input dictionary data.
-        
-        @parameter RCVdict - is RCV dictionary element.
-        @parameter entropyDict - is Entropy dictionary element.
-        @parameter gcDict - is GC content dictionary element.
-        @parameter combined - is a 3D nexus data matrix
-
-        """
-
-    for key, val in RCVdict.items():
-        rcvList.append(val[0])
-
-    rcv25 = percentile(rcvList.sort(), 0.25)
-    rcv75 = percentile(rcvList.sort(), 0.75)
-
-    v0to25 = [x for x in rcvList if x >= 0 and x < rcv25]
-    v25to75 = [x for x in rcvList if x >= rcv25 and x < rcv75]
-    v75to100 = [x for x in rcvList if x >= rcv75]
-
-    for key, val in RCVdict.items():
-        if val in v0to25:
-            rcvPlist0to25.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                 %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
-        elif val in v25to75:
-            rcvPlist25to75.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
-        else:
-            rcvPlist75to100.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
-                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, val, entropyDict[key], gcDict[key]))
-
-    rcvPdict['0_to_25'] = (rcvPlist0to25)
-    rcvPdict['25_to_75'] = (rcvPlist25to75)
-    rcvPdict['75_to_100'] = (rcvPlist75to100)
-
-    return rcvPdict
-
-
 def gcEntropyPer(RCVdict,
                  entropyDict,
                  gcDict,
@@ -455,8 +416,12 @@ def gcEntropyPer(RCVdict,
         
         """
 
-    if which == 'ent':
+    if which == 'rcv':
+        supDict = RCVdict
+    
+    elif which == 'ent':
         supDict = entropyDict
+
     else:
         supDict = gcDict
 
@@ -499,13 +464,17 @@ def binPercent(RCVdict, entropyDict, gcDict, combined):
         @parameter combined - is a 3D nexus data matrix
         
         """
+    
+    for key, val in RCVdict:
+        RCVdict[key] = (val[0])
 
-    rcvPdict = rcvPercetile(RCVdict,
+    rcvPdict = gcEntropyPer(RCVdict,
                             entropyDict,
                             gcDict,
-                            combined
+                            combined,
+                            which='rcv'
                             )
-                            
+    
     entPdict = gcEntropyPer(RCVdict,
                             entropyDict,
                             gcDict,
