@@ -460,10 +460,6 @@ class taxanomyClass:
         return combined
 
 
-#############################################################################################################################
-#                                       Nexus file handling operations                                                      #
-#############################################################################################################################
-
 
 class NexusHandler:
     
@@ -482,12 +478,16 @@ class NexusHandler:
         self.filename = filename
 
     
-    ################################################################################
-    #                       Creates Consensus RNA structure                        #
-    ################################################################################
 
 
     def RNAfoldConsensus(self):
+        
+        """
+           Creates RNA structure data from consensus alignment using RNAfold program.
+           Output is stored in RNAConsensus.txt file
+           
+        """
+        
         os.chdir("RNAdata")
         fileList = glob.glob('*.nex')
 
@@ -519,6 +519,14 @@ class NexusHandler:
 
 
     def fileOpenConcNex(self):
+        
+        """
+           This functions creates a list of alignment records from the files stored in RNAdata
+           directory.
+           
+           Returns - List of alignment records.
+        """
+        
         fileList = glob.glob("*.nex")
         recordList = []
         for filename in fileList:
@@ -537,6 +545,18 @@ class NexusHandler:
 
 
     def RNAtoNexus(self, combined, RNAstrucData):
+        
+        """
+           This functions creates a dictionary element of RNA structure coordinates for
+           the alignment files marked for RNA structure prediction.
+           
+           @parameter combined - 3D nexus data matrix
+           @parameter RNAstrucData - RNA data obtained from ConCat block (Supplied by user).
+           
+           Returns - Dictionary element with RNA structure coordinate and their corresponding
+           alignment file names.
+           
+        """
         
         rnaDict = {}
 
@@ -662,6 +682,11 @@ class NexusHandler:
 
 
     def rnaSetUpdate(self, positions, procRNAdict):
+        
+        """
+           Updates RNA structure coordinates after gap/missing site removal.
+        """
+        
         for key in procRNAdict:
             for i, val in enumerate(positions):
                 x1=[x-1 for x in procRNAdict[key] if x > val-i]
