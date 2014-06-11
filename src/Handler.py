@@ -413,11 +413,24 @@ class BaseHandle:
 
 
 class taxanomyClass:
+    
+    """
+       taxanomyClass is designed to add or remove taxanomic names from the sequence ID's
+       It takes taxonomy data from Taxonomy.csv file available in the ConCat package 
+       home directory.
+        
+    """
+    
     def __init__(self, taxDict, combined):
         self.taxDict = taxDict
         self.combined = combined
     
     def addTaxanomy(self):
+        
+        """
+           Add taxonomic data to the current sequence Ids
+        """
+        
         combined = self.combined
         taxDict = self.taxDict
         for key, data in combined.matrix.items():
@@ -430,6 +443,11 @@ class taxanomyClass:
         return combined
 
     def remTaxanomy(self):
+        
+        """
+            Removes taxonomic data from the current sequence Ids
+        """
+
         combined = self.combined
         taxDict = self.taxDict
         for key, data in combined.matrix.items():
@@ -448,6 +466,17 @@ class taxanomyClass:
 
 
 class NexusHandler:
+    
+    """
+        Nexus file handling operations.
+        
+        This Class handles overall architecture of the nexus alignment concatenation process.
+        It contains functions for creating, mapping and updating RNA structure data to the
+        alignment matrix. Furthermore, it handles all the sequence annotation and update,
+        character set handling and update, gap removal, alignment entropy calculation, 
+        and the programs for calculating missing data, storing and handling database Ids.
+        
+    """
     
     def __init__(self, filename):
         self.filename = filename
