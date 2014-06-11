@@ -29,7 +29,15 @@ import math
 import functools
 
 
-def RCVcal(combine): # combined is a multiple sequence alignment object
+def RCVcal(combine):
+    
+    """
+        Calculates RCV values for DNA alignment
+        @parameter combine - combine is a multiple sequence alignment object
+        
+        Returns - Dictionary element with RCV values and their corresponding alignment IDs
+        
+    """
     
     # This section removes all the conserved sites from multiple sequence alignment object
     similarityCount = {}
@@ -103,7 +111,15 @@ def RCVcal(combine): # combined is a multiple sequence alignment object
     return totalRCV
 
 
-def RCVprotCal(combine): # combined is a multiple sequence alignment object
+def RCVprotCal(combine):
+
+    """ 
+        Calculates RCV values for protein alignment
+        @parameter combine - combine is a multiple sequence alignment object
+        
+        Returns - Dictionary element with RCV values and their corresponding alignment IDs
+        
+    """
     
     # This section removes all the conserved sites from multiple sequence alignment object
     similarityCount = {}
@@ -198,6 +214,16 @@ def RCVprotCal(combine): # combined is a multiple sequence alignment object
 
 
 def Convert(input, output, filename):
+    
+    """
+       File format conversion program (fasta, strict-phylip, sequential-phylip, relaxed-phylip and nexus).
+        
+       @parameter input - Input file format.
+       @parameter output - Output file format.
+       @parameter filename - Input filename.
+       
+    """
+    
     formDict = {
         'fasta': '*.fas',
         'nexus': '*.nex',
@@ -226,6 +252,14 @@ def Convert(input, output, filename):
     print "Final output saved in %s" %filename.split('.')[0] + '.' + formDict[output].split('.')[1]
 
 def ConvertAll(inp_format):
+    
+    """
+        File format conversion program (fasta, strict-phylip, sequential-phylip and relaxed-phylip to nexus).
+        
+        @parameter inp_format - Input file format.
+        
+    """
+
     os.chdir('Input')
     files = glob.glob("*.*")
     
@@ -255,6 +289,17 @@ def ConvertAll(inp_format):
     os.chdir('..')
 
 def fastEvol(combined, cutOff):
+    
+    """
+       Detects fast evolving sites in final concatenated alignment
+       
+       @parameter combined - is a 3D nexus data matrix.
+       @cutOff - OV cutoff values supplied by user.
+       
+       Returns - Fast evolving sites and their corresponding OV values.
+       
+    """
+    
     if cutOff == None:
         listPos = []
     else:
