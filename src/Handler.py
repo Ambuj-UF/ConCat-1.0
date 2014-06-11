@@ -55,6 +55,13 @@ class myDict(dict):
 
 class BaseHandle:
     
+    """
+       BaseHandle class deals with handeling and storing alignment IDs and detecting 
+       spelling errors in the taxon name. Additionaly it contains functions for RY
+       coding and generating NexML file output.
+        
+    """
+    
     def __init__(self, file_format):
         self.file_format = file_format
 
@@ -64,6 +71,13 @@ class BaseHandle:
 
 
     def fileOpenConc(self):
+        
+        """
+            This function is used in opening input alignment files for concatenation.
+            It can handle file formats other than Nexus.
+            
+        """
+        
         file_format = self.file_format
         
         extList = ["*.fas", "*.phy", "*.phy", "*.phy"]
@@ -78,12 +92,16 @@ class BaseHandle:
     
         return recordList
 
-    ################################################################################
-    # Quick Record Import. This program creates a list of records for all files    #
-    ################################################################################
 
     
     def fileOpenID(self):
+        
+        """
+           Quick Record Import. This program creates a list of records for all files.
+           It can handle Nexus record objects.
+           
+        """
+        
         file_format = self.file_format
         
         extList = ["*.fas", "*.nex", "*.phy", "*.phy", "*.phy"]
@@ -105,12 +123,14 @@ class BaseHandle:
         return dict
 
 
-    #####################################################################################################
-    # This function imports all the accession IDs linked with the species name in alignment matrix.     #
-    #####################################################################################################
-
     
     def storeId(self):
+        
+        """
+           This function imports all the accession IDs linked with the species name in alignment matrix.
+           
+        """
+        
         idDict = self.fileOpenID()
         print idDict
         with open("AccessionID.txt", 'w') as fp:
@@ -135,12 +155,13 @@ class BaseHandle:
 
 
 
-    #############################################################################################################################
-    #           This function is meant to check the spelling errors in the species name in alignment files                      #
-    #############################################################################################################################
-
-
     def fuzyName(self):
+        
+        """
+           This function is meant to check spelling errors in the taxon name in alignment files
+           
+        """
+        
         idDict = self.fileOpenID()
         idList = []
         keyList = []
@@ -166,12 +187,16 @@ class BaseHandle:
             counter = counter + 1
 
 
-    ################################################################################
-    #                       Produces Output result file                            #
-    ################################################################################
-
 
     def alignOutput(self, combine):
+        
+        """
+           alignOutput creates an output file in user defined file format
+           
+           @parameter combine - concatenated alignment matrix
+           
+        """
+        
         output_format = self.file_format
         if output_format == 1:
             filecompname = "Result1.fasta"
@@ -211,12 +236,18 @@ class BaseHandle:
             sys.exit("You have enetered wrong value \n Program Terminated...")
 
 
-    ################################################################################
-    #                               Taxon Removal                                  #
-    ################################################################################
-
 
     def taxaRemove(self, combine):
+        
+        """
+           This function is used to remove taxa from the alignment matrix.
+           
+           @parameter combine - final concatenated alignment matrix.
+           
+           Returns - alignment matrix without specific taxa.
+           
+        """
+        
         rem_taxa = self.taxonList(combine)
     
         n=1
