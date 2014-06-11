@@ -1002,6 +1002,15 @@ class NexusHandler:
 
 
     def managePipes(self):
+        
+        """
+            This function extracts sequence Ids if available in the alignment file and
+            stores the edited alignment file in ProcInput directory
+            
+            Returns - Dictionary element with gene name, taxon name and sequence Ids.
+            
+        """
+        
         os.chdir("Input")
         file_list = glob.glob('*.nex')
 
@@ -1037,9 +1046,13 @@ class NexusHandler:
         
         return idDataDict
 
+
+
     ##############################################################################
     #                       Main Program                                         #
     ##############################################################################
+    
+    
 
     def runRNAOperation(self, procRNAdict, combined):
         Flag = True
