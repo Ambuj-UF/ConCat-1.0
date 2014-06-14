@@ -1082,7 +1082,9 @@ class NexusHandler:
             entropyDetails = self.entropyCal(combined)
             entropyGenes = entropyDetails[0]
             entropyStore = entropyDetails[1]
-
+        
+        elif runShanon == False:
+            entropyStore = dict()
         else:
             pass
         
