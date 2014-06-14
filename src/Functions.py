@@ -341,16 +341,8 @@ def fastEvol(combined, cutOff):
             k = (math.pow(len(val), 2) - len(val))/2
 
             OVdict['Position_%s' %i] = (sum(posVal)/k)
-
-        listVal = sorted(OVdict.values())
-        cutVal = listVal[-1]
-        for j, inval in enumerate(listVal):
-            if j < len(listVal) - 1:
-                if listVal[j+1] - listVal[j] > cutOff:
-                    cutVal = listVal[j]
-                    break
-                                         
-        listPos = [[x, val] for x, val in OVdict.items() if val > cutVal]
+        
+        listPos = [[x, val] for x, val in OVdict.items() if val > cutOff]
                                          
     return listPos
 
