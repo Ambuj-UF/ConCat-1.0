@@ -67,43 +67,43 @@ begin ConCat_Bin;
 
 	[RCV Bin]
 
-	[25th to 75th percentile RCV data] 
+	[25th to 75th percentile]
 	BIN PSMB4.nex = 4033-4824 [RCV Score = 0.0747866624526] [Entropy = 0.214550722271] [GC Content (in percentage) = 53.8282237674];
 	BIN C1orf43.nex = 1-912 [RCV Score = 0.0829545454545] [Entropy = 0.320391049541] [GC Content (in percentage) = 51.2074643249];
 
-	[75th to 100 percentile RCV data] 
+	[75th to 100 percentile]
 	BIN EMC7.nex = 913-1638 [RCV Score = 0.0929310344828] [Entropy = 0.236697554202] [GC Content (in percentage) = 45.9870689655];
 	BIN RAB7A.nex = 4825-5445 [RCV Score = 0.14158266129] [Entropy = 0.228119843194] [GC Content (in percentage) = 46.5372983871];
 
-	[0 to 25th percentile RCV data] 
+	[0 to 25th percentile]
 	BIN PSMB2.nex = 3430-4032 [RCV Score = 0.0726225083056] [Entropy = 0.155206121114] [GC Content (in percentage) = 47.6225083056];
 	BIN GPI.nex = 1639-3429 [RCV Score = 0.0672304208065] [Entropy = 0.364439662862] [GC Content (in percentage) = 49.3418296089];
 
 	[Entropy Bin]
 
-	[25th to 75th percentile Entropy data] 
+	[25th to 75th percentile]
 	BIN EMC7.nex = 913-1638 [RCV Score = 0.0929310344828] [Entropy = 0.236697554202] [GC Content (in percentage) = 45.9870689655];
 	BIN PSMB4.nex = 4033-4824 [RCV Score = 0.0747866624526] [Entropy = 0.214550722271] [GC Content (in percentage) = 53.8282237674];
 	BIN RAB7A.nex = 4825-5445 [RCV Score = 0.14158266129] [Entropy = 0.228119843194] [GC Content (in percentage) = 46.5372983871];
 
-	[75th to 100 percentile Entropy data] 
+	[75th to 100 percentile]
 	BIN C1orf43.nex = 1-912 [RCV Score = 0.0829545454545] [Entropy = 0.320391049541] [GC Content (in percentage) = 51.2074643249];
 	BIN GPI.nex = 1639-3429 [RCV Score = 0.0672304208065] [Entropy = 0.364439662862] [GC Content (in percentage) = 49.3418296089];
 
-	[0 to 25th percentile Entropy data] 
+	[0 to 25th percentile]
 	BIN PSMB2.nex = 3430-4032 [RCV Score = 0.0726225083056] [Entropy = 0.155206121114] [GC Content (in percentage) = 47.6225083056];
 
 	[GC Bin]
 
-	[25th to 75th percentile GC Content] 
+	[25th to 75th percentile]
 	BIN PSMB2.nex = 3430-4032 [RCV Score = 0.0726225083056] [Entropy = 0.155206121114] [GC Content (in percentage) = 47.6225083056];
 	BIN GPI.nex = 1639-3429 [RCV Score = 0.0672304208065] [Entropy = 0.364439662862] [GC Content (in percentage) = 49.3418296089];
 
-	[75th to 100 percentile GC content] 
+	[75th to 100 percentile]
 	BIN PSMB4.nex = 4033-4824 [RCV Score = 0.0747866624526] [Entropy = 0.214550722271] [GC Content (in percentage) = 53.8282237674];
 	BIN C1orf43.nex = 1-912 [RCV Score = 0.0829545454545] [Entropy = 0.320391049541] [GC Content (in percentage) = 51.2074643249];
 
-	[0 to 25th percentile GC content] 
+	[0 to 25th percentile]
 	BIN EMC7.nex = 913-1638 [RCV Score = 0.0929310344828] [Entropy = 0.236697554202] [GC Content (in percentage) = 45.9870689655];
 	BIN RAB7A.nex = 4825-5445 [RCV Score = 0.14158266129] [Entropy = 0.228119843194] [GC Content (in percentage) = 46.5372983871];
 end;

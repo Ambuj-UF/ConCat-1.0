@@ -51,9 +51,6 @@ parser = argparse.ArgumentParser(prog='FastEvol',
 parser.add_argument('-fevol', action='store_true', default=False,
                     help='remove fast evolving sites')
 
-parser.add_argument('-rembin', action='store_true', default=False,
-                    help='remove sections from alignment through bin selection')
-
 parser.add_argument('-i', type=str, required=True,
                     help='Enter input alignnmnet file')
 
@@ -71,6 +68,20 @@ parser.add_argument('-auto', action='store_true', default=False,
 
 parser.add_argument('-OV', type=float, default=None,
                     help='Enter the OV cutoff value for detecting fast evolving sites')
+
+parser.add_argument('-rembin', action='store_true', default=False,
+                    help='remove sections from alignment through bin selection')
+
+parser.add_argument('--RCVrem', type=str, default = None,
+                    help='Enter output alignnmnet file')
+
+parser.add_argument('--ENTrem', type=str, default = None,
+                    help='Enter output alignnmnet file')
+
+parser.add_argument('--GCrem', type=str, default = None,
+                    help='Enter output alignnmnet file')
+
+
 
 
 args = parser.parse_args()
@@ -135,11 +146,76 @@ def main():
                 SeqIO.write(msaObject, fp, args.fout)
 
     elif args.rembin == True:
+        
+        """
+           Removes gene alignment regions from the user selected percentile bins
+        """
+        
         file = [args.i]
         nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
 
         binDict = removePerBin(file)
+        
+        removeGene = []
+        if args.RCVrem != None:
+            try:
+                removeGene.append(binDict['RCV'][args.RCVrem])
+            except KeyError:
+                print("Bin region %s not found in RCV bin" %args.RCVrem)
+                pass
+    
+        if args.ENTrem != None:
+            try:
+                removeGene.append(binDict['ENT'][args.ENTrem])
+            except KeyError:
+                print("Bin region %s not found in Entropy bin" %args.ENTrem)
+                pass
+
+        if args.GCrem != None:
+            try:
+                removeGene.append(binDict['GC'][args.GCrem])
+            except KeyError:
+                print("Bin region %s not found in GC bin" %args.GCrem)
+                pass
+
+        remPos = []
+        for val in removeGene():
+            for inval in val:
+                remPos.append(nexi[1].charsets[inval])
+
+        remPos = list(set(remPos))
+        remPos.sort()
+
+        msanewObject = msaObject[:, :remPos[0]]
+        for i, val in enumerate(remPos):
+            if i > 0:
+                if remPos[i] == remPos[-1]:
+                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
+                    break
+                else:
+                    msanewObject = msanewObject + msaObject[:, val:remPos[i+1]]
+
+        if args.fout == 'nexus':
+            combined = nexi[0][1]
+            combined = NexusHandler(1).msaToMatrix(msaObject, combined)
+
+            def setUpdate(sets, positions):
+                for key in sets:
+                    for i, val in enumerate(positions):
+                        x1=[x-1 for x in sets[key] if x > val-i]
+                        x2=[x for x in sets[key] if x < val-i]
+                        sets[key] = (x2+x1)
+    
+                return sets
+
+            combined.charsets = setUpdate(combined.charsets, posMatrix)
+            combined.write_nexus_data(filename=open(args.o, 'w'))
+
+        else:
+            with open(args.o, 'w') as fp:
+            SeqIO.write(msaObject, fp, args.fout)
+
 
 
 
