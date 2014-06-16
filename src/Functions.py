@@ -641,7 +641,95 @@ def binPercent(RCVdict,
     return [rcvPdict, entPdict, gcPdict]
 
 
+def removePerBin(filename):
+    """
+       Creates a dictionary element that contains gene name and their corresponding percentile bins.
+       
+    """
+    
+    RCVbinList = []
+    ENTbinList = []
+    GCbinList = []
+    fr = open(filename[0], 'r')
+    data = fr.readlines()
+    Flag = False
+    
+    for lines in data:
+        if '[Entropy Bin]' in lines:
+            Flag = False
+        if Flag == True:
+            RCVbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+        if '[RCV Bin]' in lines:
+            Flag = True
+    
+    for lines in data:
+        if '[GC Bin]' in lines:
+            Flag = False
+        if Flag == True:
+            ENTbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+        if '[Entropy Bin]' in lines:
+            Flag = True
+    
+    
+    for lines in data:
+        if 'end;' in lines:
+            Flag = False
+        if Flag == True:
+            GCbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+        if '[GC Bin]' in lines:
+            Flag = True
+    
+    
+    binList = [RCVbinList, ENTbinList, GCbinList]
+    
+    for listval in binList:
+        listval.remove('[25th to 75th percentile] ')
+        listval.remove('[75th to 100 percentile] ')
+        listval.remove('[0 to 25th percentile] ')
+    
+    for i, listval in binList:
+        for j, inval in enumerate(listval):
+            if inval != '':
+                listval[j] = inval.split(' ')[0]
+        binList[i] = listval
+    
+    binDict = [{}, {}, {}]
+    binKey = ['RCV', 'ENT', 'GC']
+    
+    for j, outVal in enumerate(binList):
+        nameList = [[], [], []]
+        pos = [i for i, val in enumerate(outVal) if val == '']
+        counter = -1
+        for i, val in enumerate(outVal):
+            if i in pos:
+                counter = counter + 1
+                continue
+            else:
+                nameList[counter].append(val)
+        
+        binDict[j][binKey[j]] = (nameList)
+    
+    newBinDict = dict()
+    
+    for i, outVal in enumerate(binDict):
+        for key, val in outVal.items():
+            for j, inval in enumerate(val):
+                if j == 0:
+                    val[j] = {'25-75': inval}
+                elif j == 1:
+                    val[j] = {'75-100': inval}
+                elif j == 2:
+                    val[j] = {'0-25': inval}
+            
+            outVal[key] = (val)
+            
+            for inkey, item in outVal.items():
+                newBinDict[inkey] = {}
+                for i, dictVal in enumerate(item):
+                    newBinDict[inkey].update(dictVal)
 
+
+    return newBinDict
 
 
 
