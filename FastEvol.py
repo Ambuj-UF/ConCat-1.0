@@ -48,6 +48,12 @@ parser = argparse.ArgumentParser(prog='FastEvol',
     
     '''))
 
+parser.add_argument('-fevol', action='store_true', default=False,
+                    help='remove fast evolving sites')
+
+parser.add_argument('-rembin', action='store_true', default=False,
+                    help='remove sections from alignment through bin selection')
+
 parser.add_argument('-i', type=str, required=True,
                     help='Enter input alignnmnet file')
 
@@ -70,61 +76,134 @@ parser.add_argument('-OV', type=float, default=None,
 args = parser.parse_args()
 
 def main():
-    file = [args.i]
-    nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
-    msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
-    posMatrix = []
-
-    if args.auto == True:
-        with open('Fast_Evolving_Sites', 'r') as fr:
-            data = fr.readlines()
-            for lines in data:
-                posMatrix.append(int(lines.rstrip('\n')))
-
-    else:
-        data = fastEvol(nexi[0][1], args.OV)
-        if data != []:
-            for val in data:
-                posMatrix.append(int(val[0].split('_')[1]))
-        else:
-            sys.exit('Zero fast evolvong site found. Program Terminated \n')
-
-    cycles = 0
-    posMatrix.sort()
-    msanewObject = msaObject[:, :posMatrix[0]]
-    for i, val in enumerate(posMatrix):
-        if i > 0:
-            if posMatrix[i] == posMatrix[-1]:
-                msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
-                break
-            else:
-                msanewObject = msanewObject + msaObject[:, val:posMatrix[i+1]]
     
-    msaObject = msanewObject
-    if args.fout == 'nexus':
-        combined = nexi[0][1]
-        combined = NexusHandler(1).msaToMatrix(msaObject, combined)
+    if args.fevol == True:
+        
+        """
+            Removes fast evolving sites from the concatenated alignment and updates all the charset data.
+            """
+        
+        file = [args.i]
+        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
+        posMatrix = []
 
-        def setUpdate(sets, positions):
-            for key in sets:
-                for i, val in enumerate(positions):
-                    x1=[x-1 for x in sets[key] if x > val-i]
-                    x2=[x for x in sets[key] if x < val-i]
-                    sets[key] = (x2+x1)
+        if args.auto == True:
+            with open('Fast_Evolving_Sites', 'r') as fr:
+                data = fr.readlines()
+                for lines in data:
+                    posMatrix.append(int(lines.rstrip('\n')))
+
+        else:
+            data = fastEvol(nexi[0][1], args.OV)
+            if data != []:
+                for val in data:
+                    posMatrix.append(int(val[0].split('_')[1]))
+            else:
+                sys.exit('Zero fast evolvong site found. Program Terminated \n')
+
+        cycles = 0
+        posMatrix.sort()
+        msanewObject = msaObject[:, :posMatrix[0]]
+        for i, val in enumerate(posMatrix):
+            if i > 0:
+                if posMatrix[i] == posMatrix[-1]:
+                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
+                    break
+                else:
+                    msanewObject = msanewObject + msaObject[:, val:posMatrix[i+1]]
+    
+        msaObject = msanewObject
+        if args.fout == 'nexus':
+            combined = nexi[0][1]
+            combined = NexusHandler(1).msaToMatrix(msaObject, combined)
+
+            def setUpdate(sets, positions):
+                for key in sets:
+                    for i, val in enumerate(positions):
+                        x1=[x-1 for x in sets[key] if x > val-i]
+                        x2=[x for x in sets[key] if x < val-i]
+                        sets[key] = (x2+x1)
                     
-            return sets
+                return sets
 
-        combined.charsets = setUpdate(combined.charsets, posMatrix)
-        combined.write_nexus_data(filename=open(args.o, 'w'))
+            combined.charsets = setUpdate(combined.charsets, posMatrix)
+            combined.write_nexus_data(filename=open(args.o, 'w'))
                                  
-    else:
-        with open(args.o, 'w') as fp:
-            SeqIO.write(msaObject, fp, args.fout)
+        else:
+            with open(args.o, 'w') as fp:
+                SeqIO.write(msaObject, fp, args.fout)
+
+    elif args.rembin == True:
+        file = [args.i]
+        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
+
+        RCVbinList = []
+        ENTbinList = []
+        GCbinList = []
+        fr = open(file[0], 'r')
+        data = fr.readlines()
+        Flag = False
+
+        for lines in data:
+            if '[Entropy Bin]' in lines:
+                Flag = False
+            if Flag == True:
+                RCVbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+            if '[RCV Bin]' in lines:
+                Flag = True
+
+        for lines in data:
+            if '[GC Bin]' in lines:
+                Flag = False
+            if Flag == True:
+                ENTbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+            if '[Entropy Bin]' in lines:
+                Flag = True
 
 
-                                 
-                                 
-                                 
+        for lines in data:
+            if 'end;' in lines:
+                Flag = False
+            if Flag == True:
+                GCbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
+            if '[GC Bin]' in lines:
+                Flag = True
+
+
+        binList = [RCVbinList, ENTbinList, GCbinList]
+        
+        for listval in binList:
+            listval.remove('[25th to 75th percentile] ')
+            listval.remove('[75th to 100 percentile] ')
+            listval.remove('[0 to 25th percentile] ')
+                
+        for i, listval in binList:
+            for j, inval in enumerate(listval):
+                if inval != '':
+                    listval[j] = inval.split(' ')[0]
+            binList[i] = listval
+            
+        binDict = [{}, {}, {}]
+        binKey = ['RCV', 'ENT', 'GC']
+            
+        for j, outVal in enumerate(binList):
+            nameList = [[], [], []]
+            pos = [i for i, val in enumerate(outVal) if val == '']
+            counter = -1
+            for i, val in enumerate(outVal):
+                if i in pos:
+                    counter = counter + 1
+                    continue
+                else:
+                    nameList[counter].append(val)
+
+            binDict[j][binKey[j]] = (nameList)
+
+
+
+
 if __name__ == "__main__":
     main()
 
