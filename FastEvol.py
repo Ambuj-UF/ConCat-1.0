@@ -27,7 +27,7 @@ import textwrap
 from Bio.Nexus import Nexus
 from Bio import SeqIO
 import sys
-from src.Functions import fastEvol, Convert
+from src.Functions import fastEvol, Convert, removePerBin
 from Bio.AlignIO import MultipleSeqAlignment
 from src.Handler import NexusHandler
 
@@ -138,6 +138,8 @@ def main():
         file = [args.i]
         nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
+
+        binDict = removePerBin(file)
 
 
 
