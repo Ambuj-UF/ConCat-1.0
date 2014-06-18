@@ -743,7 +743,7 @@ def gcUserBin(combined, part, gcDict):
     npart = 100/part
     counter = 1
     while counter <= npart:
-        myDict['x%s' %counter] = ([val for val in percentile(supList, float(part*counter)) if val not in percentile(supList, float(part*(counter-1))/100)])
+        myDict['x%s' %counter] = ([val for val in percentile(supList, float(part*counter)/100) if val not in percentile(supList, float(part*(counter-1))/100)])
         if counter == npart and counter*part != 100:
             myDict['x%s' %(counter + 1)] = ([val for val in gcList if val not in percentile(supList, float(part*counter)/100)])
 
