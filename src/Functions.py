@@ -27,6 +27,8 @@ from Handler import *
 import operator
 import math
 import functools
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
 
 
 def RCVcal(combine):
@@ -740,6 +742,8 @@ def gcUserBin(combined, part, gcDict):
     for key, val in gcDict.items():
         gcList.append(val)
     
+    gcHist(gcList)
+    
     npart = 100/part
     counter = 1
     while counter <= npart:
@@ -771,10 +775,20 @@ def stDev(variance): return math.sqrt(average(variance))
 
 def gcHist(gcList):
     gcArray = array(gcList)
+    
     avg = average(gcList)
     var = variance(avg, gcList)
-    std = stDev(var)
+    sigma = stDev(var)
 
+    num_bins = 20
+    n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
+    y = mlab.normpdf(bins, float(sum(gcList))/len(gcList), sigma)
+    plt.plot(bins, y, 'r--')
+    plt.xlabel('GC Values')
+    plt.ylabel('Percentage Gene Count')
+    plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s' %(float(sum(gcList))/len(gcList), sigma))
+    plt.subplots_adjust(left=0.15)
+    plt.show()
 
 
 
