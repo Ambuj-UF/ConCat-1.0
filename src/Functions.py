@@ -740,6 +740,8 @@ def removePerBin(filename):
 
     return newBinDict
 
+
+
 def gcUserBin(combined, part, gcDict):
     gcList = []
     for key, val in gcDict.items():
@@ -761,6 +763,8 @@ def gcUserBin(combined, part, gcDict):
         myDict[key] = (val)
 
     return myDict
+
+
 
 ######################################################################################################
 
