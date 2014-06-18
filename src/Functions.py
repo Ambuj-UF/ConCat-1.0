@@ -97,7 +97,6 @@ def RCVcal(combine):
         rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + abs(val[1] - (numC/nTaxa)) + abs(val[2] - (numG/nTaxa)) + abs(val[3] - (numT/nTaxa))
 
     totalRCV = float(rcvCalc)/float(len(combine)*len(combine[0]))
-
     return totalRCV
 
 
@@ -173,9 +172,8 @@ def RCVprotCal(combine):
     for key, val in countDict.items():
         rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + abs(val[1] - (numB/nTaxa)) + abs(val[2] - (numI/nTaxa)) + abs(val[3] - (numL/nTaxa)) + \
                             abs(val[4] - (numF/nTaxa)) + abs(val[5] - (numN/nTaxa)) + abs(val[6] - (numS/nTaxa))
-    
+
     totalRCV = float(rcvCalc)/float(len(combine)*len(combine[0]))
-    
     return totalRCV
 
 
@@ -279,7 +277,6 @@ def fastEvol(combined, cutOff):
             OVdict['Position_%s' %i] = (sum(posVal)/k)
         
         listPos = [[x, val] for x, val in OVdict.items() if val > cutOff]
-                                         
     return listPos
 
 
@@ -297,7 +294,6 @@ def binAll(rcvRange, entropyRange, combined, RCVdict, entropyDict, gcDict, gcRan
         
         Returns - list of values with alignment IDs and their corresponding RCV, GC content and Entropy values in user defined bin range.
         """
-    
     lineListRcv = []; lineListEntropy = []; lineListGC = []
     if rcvRange != None:
         rStart = float(rcvRange.split('-')[0]); rEnd = float(rcvRange.split('-')[1])
@@ -359,7 +355,6 @@ def GCcontent(combined):
         @parameter combined - is a 3D nexus data matrix.
         Returns - Dictionary with GC values
         """
-    
     GCdict = dict()
     msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
     for key, val in combined.charsets.items():
@@ -374,7 +369,6 @@ def GCcontent(combined):
                 continue
 
     gcHist(GCdict)
-
     return GCdict
 
 def percentile(N, percent, key=lambda x:x):
@@ -405,7 +399,6 @@ def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
         """
     RCVdict = dictRCV; entropyDict = dictEntropy; gcDict = dictGC
     supDict = RCVdict if which == 'rcv' else entropyDict if which == 'ent' else gcDict
-
     supList = []
     for key, val in supDict.items():
         supList.append(val) if isinstance(val, str) == False and hasattr(val, '__iter__') == False else None
@@ -446,7 +439,6 @@ def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
     
     supPdict = dict()
     supPdict['0_to_25'] = (supPlist0to25); supPdict['25_to_75'] = (supPlist25to75); supPdict['75_to_100'] = (supPlist75to100)
-
     return supPdict
 
 
@@ -464,13 +456,12 @@ def binPercent(RCVdict, entropyDict, gcDict, combined, calRCVvalue, runShannon, 
     rcvPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='rcv') if calRCVvalue == True else dict()
     entPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='ent') if runShannon == True else dict()
     gcPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='gc') if runGC == True else dict()
-
     return [rcvPdict, entPdict, gcPdict]
 
 
 def removePerBin(filename):
     """
-       Creates a dictionary element that contains gene name and their corresponding percentile bins.
+        Creates a dictionary element that contains gene name and their corresponding percentile bins.
         """
     RCVbinList = []; ENTbinList = []; GCbinList = []
     fr = open(filename[0], 'r'); data = fr.readlines()
@@ -504,9 +495,7 @@ def removePerBin(filename):
     
     binDict = [{}, {}, {}]; binKey = ['RCV', 'ENT', 'GC']
     for j, outVal in enumerate(binList):
-        nameList = [[], [], []]
-        pos = [i for i, val in enumerate(outVal) if val == '']
-        counter = -1
+        nameList = [[], [], []]; pos = [i for i, val in enumerate(outVal) if val == '']; counter = -1
         for i, val in enumerate(outVal):
             if i in pos:
                 counter = counter + 1
@@ -533,7 +522,6 @@ def removePerBin(filename):
                 newBinDict[inkey] = {}
                 for i, dictVal in enumerate(item):
                     newBinDict[inkey].update(dictVal)
-
     return newBinDict
 
 
@@ -564,7 +552,6 @@ def gcUserBin(combined, part, gcDict):
             for inkey, gcVal in gcDict.items():
                 val[i] = inkey if inval == gcVal else None
         myDict[key] = (val)
-
     return myDict
 
 
