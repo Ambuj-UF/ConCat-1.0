@@ -33,19 +33,13 @@ from array import array
 
 
 def RCVcal(combine):
-    
     """
         Calculates RCV values for DNA alignment
         @parameter combine - combine is a multiple sequence alignment object
-        
         Returns - Dictionary element with RCV values and their corresponding alignment IDs
-        
-    """
-    
+        """
     # This section removes all the conserved sites from multiple sequence alignment object
-    similarityCount = {}
-    posMatrix = []
-    n=0
+    similarityCount = {}; posMatrix = []; n=0
     while n < len(combine[0]):
         similarityCount[n] = 0
         n = n + 1
@@ -62,8 +56,6 @@ def RCVcal(combine):
         i = i + 1
 
     cycles = 0
-    
-
     while cycles < len(posMatrix)-1:
         if cycles == 0:
             Position = posMatrix[0]
@@ -100,10 +92,7 @@ def RCVcal(combine):
             number = - number
         return number
 
-    rcvCalc = 0
-
-    nTaxa = len(combine)
-
+    rcvCalc = 0; nTaxa = len(combine)
     for key, val in countDict.items():
         rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + abs(val[1] - (numC/nTaxa)) + abs(val[2] - (numG/nTaxa)) + abs(val[3] - (numT/nTaxa))
 
@@ -113,15 +102,11 @@ def RCVcal(combine):
 
 
 def RCVprotCal(combine):
-
     """ 
         Calculates RCV values for protein alignment
         @parameter combine - combine is a multiple sequence alignment object
-        
         Returns - Dictionary element with RCV values and their corresponding alignment IDs
-        
-    """
-    
+        """
     # This section removes all the conserved sites from multiple sequence alignment object
     similarityCount = {}; posMatrix = []; n=0
     while n < len(combine[0]):
@@ -186,13 +171,8 @@ def RCVprotCal(combine):
     
     rcvCalc = 0; nTaxa = len(combine)
     for key, val in countDict.items():
-        rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + \
-                            abs(val[1] - (numB/nTaxa)) + \
-                            abs(val[2] - (numI/nTaxa)) + \
-                            abs(val[3] - (numL/nTaxa)) + \
-                            abs(val[4] - (numF/nTaxa)) + \
-                            abs(val[5] - (numN/nTaxa)) + \
-                            abs(val[6] - (numS/nTaxa))
+        rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + abs(val[1] - (numB/nTaxa)) + abs(val[2] - (numI/nTaxa)) + abs(val[3] - (numL/nTaxa)) + \
+                            abs(val[4] - (numF/nTaxa)) + abs(val[5] - (numN/nTaxa)) + abs(val[6] - (numS/nTaxa))
     
     totalRCV = float(rcvCalc)/float(len(combine)*len(combine[0]))
     
@@ -200,16 +180,12 @@ def RCVprotCal(combine):
 
 
 def Convert(input, output, filename):
-    
     """
-       File format conversion program (fasta, strict-phylip, sequential-phylip, relaxed-phylip and nexus).
-        
-       @parameter input - Input file format.
-       @parameter output - Output file format.
-       @parameter filename - Input filename.
-       
-    """
-    
+        File format conversion program (fasta, strict-phylip, sequential-phylip, relaxed-phylip and nexus).
+        @parameter input - Input file format.
+        @parameter output - Output file format.
+        @parameter filename - Input filename.
+        """
     formDict = {
         'fasta': '*.fas',
         'nexus': '*.nex',
@@ -221,45 +197,33 @@ def Convert(input, output, filename):
     if input == 'fasta' and output == 'nexus':
         alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
         g = open(filename.split(".")[0] + '.nex', 'w')
-        g.write (alignment.format("nexus"))
-        g.close()
+        g.write(alignment.format("nexus")); g.close()
     
     else:
         try:
-            handle = open(filename, 'rU')
-            record = list(SeqIO.parse(handle, input))
+            handle = open(filename, 'rU'); record = list(SeqIO.parse(handle, input))
             fp = open(filename.split('.')[0] + '.' + formDict[output].split('.')[1], 'w')
-            SeqIO.write(record, fp, output)
-            fp.close()
-            handle.close()
+            SeqIO.write(record, fp, output); fp.close(); handle.close()
         except:
             print "Bad Alignment\n"
 
     print "Final output saved in %s" %filename.split('.')[0] + '.' + formDict[output].split('.')[1]
 
 def ConvertAll(inp_format):
-    
     """
         File format conversion program (fasta, strict-phylip, sequential-phylip and relaxed-phylip to nexus).
-        
         @parameter inp_format - Input file format.
-        
-    """
-
-    os.chdir('Input')
-    files = glob.glob("*.*")
-    
+        """
+    os.chdir('Input'); files = glob.glob("*.*")
     if inp_format == 'fasta':
         for filename in files:
             try:
                 alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
                 g = open(filename.split(".")[0] + '.nex', 'w')
-                g.write(alignment.format("nexus"))
-                g.close()
-            
+                g.write(alignment.format("nexus")); g.close()
             except ValueError:
                 continue
-    
+
     else:
         for filename in files:
             try:
@@ -270,26 +234,19 @@ def ConvertAll(inp_format):
                     print("Error in readin %s file. Skipping file %s." %(filename, filename))
                     pass
                 fp = open(filename.split('.')[0] + '.nex', 'w')
-                SeqIO.write(record, fp, "nexus")
-                fp.close()
-                handle.close()
+                SeqIO.write(record, fp, "nexus"); fp.close(); handle.close()
             except:
                 print "Bad alignment file %s\n" %filename
 
     os.chdir('..')
 
 def fastEvol(combined, cutOff):
-    
     """
-       Detects fast evolving sites in final concatenated alignment
-       
-       @parameter combined - is a 3D nexus data matrix.
-       @cutOff - OV cutoff values supplied by user.
-       
-       Returns - Fast evolving sites and their corresponding OV values.
-       
-    """
-    
+        Detects fast evolving sites in final concatenated alignment
+        @parameter combined - is a 3D nexus data matrix.
+        @cutOff - OV cutoff values supplied by user.
+        Returns - Fast evolving sites and their corresponding OV values.
+        """
     if cutOff == None:
         listPos = []
     else:
@@ -305,8 +262,7 @@ def fastEvol(combined, cutOff):
 
         OVdict = dict()
         for i, val in enumerate(charList):
-            val = list(''.join(val).replace('?', ''))
-            posVal = []
+            val = list(''.join(val).replace('?', '')); posVal = []
             if len(set(val)) == 1:
                 posVal.append(0)
             else:
@@ -314,10 +270,7 @@ def fastEvol(combined, cutOff):
                 for inval in val:
                     inCounter = 1 + outCounter
                     while inCounter < len(val):
-                        if inval == val[inCounter]:
-                            posVal.append(0)
-                        else:
-                            posVal.append(1)
+                        posVal.append(0) if inval == val[inCounter] else posVal.append(1)
                         inCounter = inCounter + 1
             
                     outCounter = outCounter + 1
@@ -451,17 +404,11 @@ def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
         @parameter which - takes dictionary type as input (It could be GC, RCV or Entropy dictionary)
         """
     RCVdict = dictRCV; entropyDict = dictEntropy; gcDict = dictGC
-    if which == 'rcv':
-        supDict = RCVdict
-    elif which == 'ent':
-        supDict = entropyDict
-    elif which == 'gc':
-        supDict = gcDict
-    
+    supDict = RCVdict if which == 'rcv' else entropyDict if which == 'ent' else gcDict
+
     supList = []
     for key, val in supDict.items():
-        if isinstance(val, str) == False and hasattr(val, '__iter__') == False:
-            supList.append(val)
+        supList.append(val) if isinstance(val, str) == False and hasattr(val, '__iter__') == False else None
 
     supPlist0to25 = []; supPlist25to75 = []; supPlist75to100 = []
     supList.sort()
@@ -471,40 +418,29 @@ def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
     v75to100 = [x for x in supList if x >= sup75]
 
     for key, val in supDict.items():
-        try:
-            sink = RCVdict[key]
-        except KeyError:
-            RCVdict.update({key: ['NA']})
-        try:
-            sink = entropyDict[key]
-        except KeyError:
-            entropyDict.update({key: ['NA']})
-        try:
-            sink = gcDict[key]
-        except KeyError:
-            gcDict.update({key: ['NA']})
-
+        try: sink = RCVdict[key]
+        except KeyError: RCVdict.update({key: ['NA']})
+        try: sink = entropyDict[key]
+        except KeyError: entropyDict.update({key: ['NA']})
+        try: sink = gcDict[key]
+        except KeyError: gcDict.update({key: ['NA']})
 
         if val in v0to25:
             try:
                 supPlist0to25.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                  %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
-            
             except KeyError:
                 continue
-
         elif val in v25to75:
             try:
                 supPlist25to75.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                   %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
             except KeyError:
                 continue
-
         else:
             try:
                 supPlist75to100.append("BIN %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]"\
                                    %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], gcDict[key]))
-                    
             except KeyError:
                 continue
     
@@ -512,7 +448,6 @@ def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
     supPdict['0_to_25'] = (supPlist0to25); supPdict['25_to_75'] = (supPlist25to75); supPdict['75_to_100'] = (supPlist75to100)
 
     return supPdict
-
 
 
 def binPercent(RCVdict, entropyDict, gcDict, combined, calRCVvalue, runShannon, runGC):
@@ -536,9 +471,7 @@ def binPercent(RCVdict, entropyDict, gcDict, combined, calRCVvalue, runShannon, 
 def removePerBin(filename):
     """
        Creates a dictionary element that contains gene name and their corresponding percentile bins.
-       
-    """
-    
+        """
     RCVbinList = []; ENTbinList = []; GCbinList = []
     fr = open(filename[0], 'r'); data = fr.readlines()
     
