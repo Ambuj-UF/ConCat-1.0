@@ -681,7 +681,9 @@ def removePerBin(filename):
     
     
     for lines in data:
-        if 'end;' in lines:
+        if '[User percentile GC Bin]' in lines:
+            Flag = False
+        elif 'end;' in lines:
             Flag = False
         if Flag == True:
             GCbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
