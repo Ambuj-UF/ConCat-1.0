@@ -793,7 +793,7 @@ def gcHist(gcDict):
     y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
     plt.plot(bins, y, 'r--')
     plt.xlabel('GC Values')
-    plt.ylabel('Percentage Gene Count')
+    plt.ylabel('(Percentage Gene Count)/100')
     plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
     plt.subplots_adjust(left=0.15)
     plt.savefig('GCplot.png')
