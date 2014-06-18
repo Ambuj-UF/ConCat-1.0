@@ -199,8 +199,6 @@ def RCVprotCal(combine):
     return totalRCV
 
 
-
-
 def Convert(input, output, filename):
     
     """
@@ -402,7 +400,6 @@ def binAll(rcvRange, entropyRange, combined, RCVdict, entropyDict, gcDict, gcRan
     return [lineListRcv, lineListEntropy, lineListGC]
 
 
-
 def GCcontent(combined):
     """
         Calculates GC content in alignment
@@ -427,10 +424,6 @@ def GCcontent(combined):
 
     return GCdict
 
-
-
-
-
 def percentile(N, percent, key=lambda x:x):
     """
         Find the percentile of a list of values.
@@ -446,7 +439,6 @@ def percentile(N, percent, key=lambda x:x):
         return key(N[int(k)])
     d0 = key(N[int(f)]) * (c-k); d1 = key(N[int(c)]) * (k-f)
     return d0+d1
-
 
 
 def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
@@ -534,20 +526,9 @@ def binPercent(RCVdict, entropyDict, gcDict, combined, calRCVvalue, runShannon, 
     for key, val in RCVdict.items():
         RCVdict[key] = (float(val.lstrip('[ ').rstrip(' ]')))
 
-    if calRCVvalue == True:
-        rcvPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='rcv')
-    else:
-        rcvPdict = dict()
-
-    if runShannon == True:
-        entPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='ent')
-    else:
-        entPdict = dict()
-
-    if runGC == True:
-        gcPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='gc')
-    else:
-        gcPdict = dict()
+    rcvPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='rcv') if calRCVvalue == True else dict()
+    entPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='ent') if runShannon == True else dict()
+    gcPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='gc') if runGC == True else dict()
 
     return [rcvPdict, entPdict, gcPdict]
 
@@ -563,39 +544,24 @@ def removePerBin(filename):
     
     Flag = False
     for lines in data:
-        if '[Entropy Bin]' in lines:
-            Flag = False
-        if Flag == True:
-            RCVbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
-        if '[RCV Bin]' in lines:
-            Flag = True
+        Flag = False if '[Entropy Bin]' in lines else Flag
+        RCVbinList.append(lines.rstrip('\n').lstrip('\tBIN ')) if Flag == True else None
+        Flag = True if '[RCV Bin]' in lines else Flag
     
     for lines in data:
-        if '[GC Bin]' in lines:
-            Flag = False
-        if Flag == True:
-            ENTbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
-        if '[Entropy Bin]' in lines:
-            Flag = True
-    
-    
+        Flag = False if '[GC Bin]' in lines else Flag
+        ENTbinList.append(lines.rstrip('\n').lstrip('\tBIN ')) if Flag == True else None
+        Flag = True if '[Entropy Bin]' in lines else Flag
+
     for lines in data:
-        if '[User percentile GC Bin]' in lines:
-            Flag = False
-        elif 'end;' in lines:
-            Flag = False
-        if Flag == True:
-            GCbinList.append(lines.rstrip('\n').lstrip('\tBIN '))
-        if '[GC Bin]' in lines:
-            Flag = True
-    
-    
+        Flag = False if '[User percentile GC Bin]' or 'end' in lines else Flag
+        GCbinList.append(lines.rstrip('\n').lstrip('\tBIN ')) if Flag == True else None
+        Flag = True if '[GC Bin]' in lines else Flag
+
     binList = [RCVbinList, ENTbinList, GCbinList]
     
     for listval in binList:
-        listval.remove('[25th to 75th percentile] ')
-        listval.remove('[75th to 100 percentile] ')
-        listval.remove('[0 to 25th percentile] ')
+        listval.remove('[25th to 75th percentile] '); listval.remove('[75th to 100 percentile] '); listval.remove('[0 to 25th percentile] ')
     
     for i, listval in binList:
         for j, inval in enumerate(listval):
@@ -603,9 +569,7 @@ def removePerBin(filename):
                 listval[j] = inval.split(' ')[0]
         binList[i] = listval
     
-    binDict = [{}, {}, {}]
-    binKey = ['RCV', 'ENT', 'GC']
-    
+    binDict = [{}, {}, {}]; binKey = ['RCV', 'ENT', 'GC']
     for j, outVal in enumerate(binList):
         nameList = [[], [], []]
         pos = [i for i, val in enumerate(outVal) if val == '']
@@ -665,8 +629,7 @@ def gcUserBin(combined, part, gcDict):
     for key, val in myDict.items():
         for i, inval in enumerate(val):
             for inkey, gcVal in gcDict.items():
-                if inval == gcVal:
-                    val[i] = inkey
+                val[i] = inkey if inval == gcVal else None
         myDict[key] = (val)
 
     return myDict
@@ -694,12 +657,7 @@ def gcHist(gcDict):
     for key, val in gcDict.items():
         l.append(int(val))
     gcArray = array('l', l)
-    
-    avg = average(l)
-    var = variance(avg, l)
-    sigma = stDev(var)
-
-    num_bins = 20
+    avg = average(l); var = variance(avg, l); sigma = stDev(var); num_bins = 20
     n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
     y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
     plt.plot(bins, y, 'r--')
