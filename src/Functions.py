@@ -457,6 +457,7 @@ def GCcontent(combined):
     GCdict = dict()
     msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
     for key, val in combined.charsets.items():
+        if key != 'RNA_Stem' and key != 'RNA_Loop' and key != "'RNA_Stem'" and key != "'RNA_Loop'":
             gcCount = 0
             try:
                 msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
