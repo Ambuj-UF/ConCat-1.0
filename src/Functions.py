@@ -743,6 +743,9 @@ def removePerBin(filename):
 
 
 def gcUserBin(combined, part, gcDict):
+    """
+        Create Bin data for user defined GC partition range.
+        """
     gcList = []
     for key, val in gcDict.items():
         gcList.append(val)
@@ -779,6 +782,10 @@ def stDev(variance): return math.sqrt(average(variance))
 ######################################################################################################
 
 def gcHist(gcDict):
+    """
+        Histogram plot of GC values
+        @parameter gcDict -  Dictionary of GC values
+        """
     l = []
     for key, val in gcDict.items():
         l.append(int(val))
