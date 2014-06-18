@@ -788,7 +788,7 @@ def gcHist(gcList):
     plt.ylabel('Percentage Gene Count')
     plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s' %(float(sum(gcList))/len(gcList), sigma))
     plt.subplots_adjust(left=0.15)
-    plt.show()
+    plt.savefig('GCplot.png')
 
 
 
