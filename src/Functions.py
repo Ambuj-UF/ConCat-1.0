@@ -756,13 +756,13 @@ def gcUserBin(combined, part, gcDict):
     myDict = dict()
     while counter <= npart:
         if counter == 1:
-            myDict['x%s-%s' %((counter - 1)*part, counter*part)] = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
+            myDict['Percentile[%s-%s]' %((counter - 1)*part, counter*part)] = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
         elif counter == npart and counter*part != 100:
-            myDict['x%s-%s' %((counter)*part, 100)] = ([val for val in gcList if val not in [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]])
+            myDict['Percentile[%s-%s]' %((counter)*part, 100)] = ([val for val in gcList if val not in [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]])
         else:
             dataCurr = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
             dataPast = [x for x in gcList if x <= percentile(gcList, float(part*(counter-1))/100)]
-            myDict['x%s-%s' %((counter-1)*part, (counter)*part)] = ([x for x in dataCurr if x not in dataPast])
+            myDict['Percentile[%s-%s]' %((counter-1)*part, (counter)*part)] = ([x for x in dataCurr if x not in dataPast])
         counter = counter + 1
 
     retDict = dict()
