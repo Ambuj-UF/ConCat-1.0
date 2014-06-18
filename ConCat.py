@@ -123,6 +123,8 @@ parser.add_argument('-gcbin', type=str, default=None,
 parser.add_argument('-pbin', action='store_true', default=False,
                     help='Use this function if you want to store RCV, GC and/or Entropy data in percentile bins')
 
+parser.add_argument('-ugcbin', action='store_true', default=False,
+                    help='Use this function if you want to create GC bin by supplied GC percentile partition.')
 
 
 args = parser.parse_args()
@@ -170,7 +172,8 @@ def main():
                           args.ebin,
                           args.GC,
                           args.gcbin,
-                          args.pbin
+                          args.pbin,
+                          args.ugcbin
                           )
     
         else:
@@ -193,7 +196,8 @@ def main():
                           args.ebin,
                           args.GC,
                           args.gcbin,
-                          args.pbin
+                          args.pbin,
+                          args.ugcbin
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')

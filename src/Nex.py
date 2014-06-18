@@ -44,7 +44,8 @@ def richNexusCall(runRNA,
                   ebin,
                   GC,
                   gcbin,
-                  pbin
+                  pbin,
+                  usrGCbin
                   ):
     
     start = timeit.default_timer()
@@ -352,6 +353,9 @@ def richNexusCall(runRNA,
     if GC == True:
         gcDict = GCcontent(combined)
 
+    if usrGCbin == True:
+        usrGCdict = gcUserBin(gcDict)
+
     os.remove("Results1.nex")
 
     def two2one(list1):
@@ -538,15 +542,15 @@ def richNexusCall(runRNA,
                 fp.write("\n\t[RCV Bin]\n")
                 for key, val in binData[0].items():
                     if key == '0_to_25':
-                        fp.write("\n\t[0 to 25th percentile RCV data] \n")
+                        fp.write("\n\t[0 to 25th percentile RCV data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     elif key == '25_to_75':
-                        fp.write("\n\t[25th to 75th percentile RCV data] \n")
+                        fp.write("\n\t[25th to 75th percentile RCV data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     else:
-                        fp.write("\n\t[75th to 100 percentile RCV data] \n")
+                        fp.write("\n\t[75th to 100 percentile RCV data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
 
@@ -555,15 +559,15 @@ def richNexusCall(runRNA,
                 fp.write("\n\t[Entropy Bin]\n")
                 for key, val in binData[1].items():
                     if key == '0_to_25':
-                        fp.write("\n\t[0 to 25th percentile Entropy data] \n")
+                        fp.write("\n\t[0 to 25th percentile Entropy data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     elif key == '25_to_75':
-                        fp.write("\n\t[25th to 75th percentile Entropy data] \n")
+                        fp.write("\n\t[25th to 75th percentile Entropy data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     else:
-                        fp.write("\n\t[75th to 100 percentile Entropy data] \n")
+                        fp.write("\n\t[75th to 100 percentile Entropy data]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                                             
@@ -572,19 +576,25 @@ def richNexusCall(runRNA,
                 fp.write("\n\t[GC Bin]\n")
                 for key, val in binData[2].items():
                     if key == '0_to_25':
-                        fp.write("\n\t[0 to 25th percentile GC content] \n")
+                        fp.write("\n\t[0 to 25th percentile GC content]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     elif key == '25_to_75':
-                        fp.write("\n\t[25th to 75th percentile GC Content] \n")
+                        fp.write("\n\t[25th to 75th percentile GC Content]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
                     else:
-                        fp.write("\n\t[75th to 100 percentile GC content] \n")
+                        fp.write("\n\t[75th to 100 percentile GC content]\n")
                         for inval in val:
                             fp.write("\t%s;\n" %inval)
 
-                fp.write("end;\n")
+
+            if usrGCbin == True:
+                fp.write("\n\t[User percentile GC Bin]\n")
+                for key, val in usrGCdict.items():
+                    fp.write("\t%s = %s" %(key, val))
+
+            fp.write("end;\n")
 
         fp.close()
 
