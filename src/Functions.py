@@ -454,7 +454,7 @@ def GCcontent(combined):
             try:
                 msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
                 for inval in msaGene:
-                    gcCount = gcCount + inval.seq.count('G') + inval.seq.count('C')
+                    gcCount = gcCount + inval.seq.count('G') + inval.seq.count('g') + inval.seq.count('C') + inval.seq.count('c')
                 GCdict[key] = (float(gcCount)/(len(msaGene)*len(msaGene[1]))*100)
             except KeyError:
                 continue
