@@ -278,13 +278,17 @@ def ConvertAll(inp_format):
         for filename in files:
             try:
                 handle = open(filename, 'rU')
-                record = list(SeqIO.parse(handle, inp_format))
+                try:
+                    record = list(SeqIO.parse(handle, inp_format))
+                except:
+                    print("Error in readin %s file. Skipping file %s." %(filename, filename))
+                    pass
                 fp = open(filename.split('.')[0] + '.nex', 'w')
                 SeqIO.write(record, fp, "nexus")
                 fp.close()
                 handle.close()
             except:
-                print "Bad Alignment %s\n" %filename
+                print "Bad alignment file %s\n" %filename
 
     os.chdir('..')
 

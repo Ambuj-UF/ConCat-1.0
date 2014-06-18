@@ -115,7 +115,7 @@ def richNexusCall(runRNA,
             for f in inFiles:
                 os.remove(f)
 
-            sys.exit("Either duplicate alignment files are present in Input folder or Unmatched 'end' in Nexus Blocks.\nProgram Terminated\n")
+            sys.exit("Problem in input files. Could be due to folowing reasons. \n 1. Duplicate alignment files are present in Input folder\n 2. Unmatched 'end' in Nexus Blocks\n 3. Mesquite Block present in input files\nProgram Terminated\n")
 
         combined = Nexus.combine(nexi)
         os.chdir("../..")
@@ -142,7 +142,7 @@ def richNexusCall(runRNA,
         try:
             nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
         except:
-            sys.exit("Either duplicate alignment files are present in Input folder or Unmatched 'end' in Nexus Blocks. \nProgram Terminated\n")
+            sys.exit("Problem in input files. Could be due to folowing reasons. \n 1. Duplicate alignment files are present in Input folder\n 2. Unmatched 'end' in Nexus Blocks\n 3. Mesquite Block present in input files\nProgram Terminated\n")
 
         combined = Nexus.combine(nexi)
         os.chdir("..")
