@@ -750,12 +750,20 @@ def gcUserBin(combined, part, gcDict):
     for key, val in gcDict.items():
         gcList.append(val)
     
+    gcList.sort()
     npart = 100/part
     counter = 1
+    myDict = dict()
     while counter <= npart:
-        myDict['x%s' %counter] = ([val for val in percentile(supList, float(part*counter)/100) if val not in percentile(supList, float(part*(counter-1))/100)])
+        if counter == 1:
+            myDict['x%s-%s' %((counter - 1)*part, counter*part)] = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
+        else:
+            dataCurr = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
+            dataPast = [x for x in gcList if x <= percentile(gcList, float(part*(counter-1))/100)]
+            myDict['x%s-%s' %((counter-1)*part, (counter)*part)] = ([x for x in dataCurr if x not in dataPast])
         if counter == npart and counter*part != 100:
-            myDict['x%s' %(counter + 1)] = ([val for val in gcList if val not in percentile(supList, float(part*counter)/100)])
+            myDict['x%s-%s' %((counter)*part, 100)] = ([val for val in gcList if val not in [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]])
+        counter = counter + 1
 
     retDict = dict()
     for key, val in myDict.items():
