@@ -80,10 +80,7 @@ def RCVcal(combine):
     ########################################################################################
     # RCV calculation begins here
 
-    numA = 0
-    numC = 0
-    numG = 0
-    numT = 0
+    numA = 0; numC = 0; numG = 0; numT = 0
 
     for i, val in enumerate(combine):
         numA = numA + val.seq.count('A') + val.seq.count('a')
@@ -93,7 +90,8 @@ def RCVcal(combine):
 
     countDict = dict()
     for i, val in enumerate(combine):
-        countDict[combine[i].id] = ([val.seq.count('A') + val.seq.count('a'), val.seq.count('C') + val.seq.count('c'), val.seq.count('G') + val.seq.count('g'), val.seq.count('T') + val.seq.count('t')])
+        countDict[combine[i].id] = ([val.seq.count('A') + val.seq.count('a'), val.seq.count('C') + val.seq.count('c'),\
+                                     val.seq.count('G') + val.seq.count('g'), val.seq.count('T') + val.seq.count('t')])
 
     def abs(number):
         if number > 0 or number == 0:
@@ -125,9 +123,7 @@ def RCVprotCal(combine):
     """
     
     # This section removes all the conserved sites from multiple sequence alignment object
-    similarityCount = {}
-    posMatrix = []
-    n=0
+    similarityCount = {}; posMatrix = []; n=0
     while n < len(combine[0]):
         similarityCount[n] = 0
         n = n + 1
@@ -145,7 +141,6 @@ def RCVprotCal(combine):
     
     cycles = 0
     
-    
     while cycles < len(posMatrix)-1:
         if cycles == 0:
             Position = posMatrix[1]
@@ -162,14 +157,7 @@ def RCVprotCal(combine):
     ########################################################################################
     # RCV calculation begins here
     
-    numA = 0
-    numB = 0
-    numI = 0
-    numL = 0
-    numF = 0
-    numN = 0
-    numS = 0
-    
+    numA = 0; numB = 0; numI = 0; numL = 0; numF = 0; numN = 0; numS = 0
     for i, val in enumerate(combine):
         numA = numA + val.seq.count('D') + val.seq.count('d') + val.seq.count('E') + val.seq.count('e')
         numB = numB + val.seq.count('R') + val.seq.count('r') + val.seq.count('K') + val.seq.count('k')
@@ -196,10 +184,7 @@ def RCVprotCal(combine):
             number = - number
         return number
     
-    rcvCalc = 0
-    
-    nTaxa = len(combine)
-    
+    rcvCalc = 0; nTaxa = len(combine)
     for key, val in countDict.items():
         rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + \
                             abs(val[1] - (numB/nTaxa)) + \
@@ -311,11 +296,9 @@ def fastEvol(combined, cutOff):
         listPos = []
     else:
         msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
-        charList = []
-        i = 1
+        charList = []; i = 1
         while i <= len(msa[0]):
-            j = 1
-            tempList = []
+            j = 1; tempList = []
             while j <= len(msa):
                 tempList.append(msa[j-1][i-1])
                 j = j + 1
@@ -326,13 +309,10 @@ def fastEvol(combined, cutOff):
         for i, val in enumerate(charList):
             val = list(''.join(val).replace('?', ''))
             posVal = []
-
             if len(set(val)) == 1:
                 posVal.append(0)
-
             else:
-                outCounter = 0
-                inCounter = 1
+                outCounter = 0; inCounter = 1
                 for inval in val:
                     inCounter = 1 + outCounter
                     while inCounter < len(val):
@@ -344,9 +324,7 @@ def fastEvol(combined, cutOff):
             
                     outCounter = outCounter + 1
 
-
             k = (math.pow(len(val), 2) - len(val))/2
-
             OVdict['Position_%s' %i] = (sum(posVal)/k)
         
         listPos = [[x, val] for x, val in OVdict.items() if val > cutOff]
@@ -354,15 +332,7 @@ def fastEvol(combined, cutOff):
     return listPos
 
 
-def binAll(rcvRange,
-           entropyRange,
-           combined,
-           RCVdict,
-           entropyDict,
-           gcDict,
-           gcRange
-           ):
-    
+def binAll(rcvRange, entropyRange, combined, RCVdict, entropyDict, gcDict, gcRange):
     """
         Creat RCV, GC and Entropy dataset for user defines bin range.
         
@@ -375,16 +345,11 @@ def binAll(rcvRange,
         @parameter combined - is a 3D nexus data matrix.
         
         Returns - list of values with alignment IDs and their corresponding RCV, GC content and Entropy values in user defined bin range.
-        
-    """
+        """
     
-    lineListRcv = []
-    lineListEntropy = []
-    lineListGC = []
+    lineListRcv = []; lineListEntropy = []; lineListGC = []
     if rcvRange != None:
-        rStart = float(rcvRange.split('-')[0])
-        rEnd = float(rcvRange.split('-')[1])
-        
+        rStart = float(rcvRange.split('-')[0]); rEnd = float(rcvRange.split('-')[1])
         for key, val in RCVdict.items():
             try:
                 sink = entropyDict[key]
@@ -401,9 +366,7 @@ def binAll(rcvRange,
                     continue
 
     if entropyRange != None:
-        rStart = float(entropyRange.split('-')[0])
-        rEnd = float(entropyRange.split('-')[1])
-
+        rStart = float(entropyRange.split('-')[0]); rEnd = float(entropyRange.split('-')[1])
         for key, val in entropyDict.items():
             try:
                 sink = RCVdict[key]
@@ -413,7 +376,6 @@ def binAll(rcvRange,
                 sink = gcDict[key]
             except KeyError:
                 gcDict[key] = (['NA'])
-
             if val >= rStart and val <= rEnd:
                 try:
                     lineListEntropy.append("BIN_Entropy %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], val, gcDict[key]))
@@ -421,9 +383,7 @@ def binAll(rcvRange,
                     continue
 
     if gcRange != None:
-        rStart = float(gcRange.split('-')[0])
-        rEnd = float(gcRange.split('-')[1])
-        
+        rStart = float(gcRange.split('-')[0]); rEnd = float(gcRange.split('-')[1])
         for key, val in gcDict.items():
             try:
                 sink = entropyDict[key]
@@ -433,8 +393,6 @@ def binAll(rcvRange,
                 sink = RCVdict[key]
             except KeyError:
                 RCVdict[key] = (['NA'])
-                    
-
             if val >= rStart and val <= rEnd:
                 try:
                     lineListGC.append("BIN_GC %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0]+1, combined.charsets[key][-1]+1, RCVdict[key], entropyDict[key], val))
@@ -448,11 +406,9 @@ def binAll(rcvRange,
 def GCcontent(combined):
     """
         Calculates GC content in alignment
-        
         @parameter combined - is a 3D nexus data matrix.
-        
         Returns - Dictionary with GC values
-    """
+        """
     
     GCdict = dict()
     msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
@@ -478,53 +434,35 @@ def GCcontent(combined):
 def percentile(N, percent, key=lambda x:x):
     """
         Find the percentile of a list of values.
-        
         @parameter N - is a list of values. Note N MUST BE already sorted.
         @parameter percent - a float value from 0.0 to 1.0.
         @parameter key - optional key function to compute value from each element of N.
-        
         @return - the percentile of the values
         """
     if not N:
         return None
-    k = (len(N)-1) * percent
-    f = math.floor(k)
-    c = math.ceil(k)
+    k = (len(N)-1) * percent; f = math.floor(k); c = math.ceil(k)
     if f == c:
         return key(N[int(k)])
-    d0 = key(N[int(f)]) * (c-k)
-    d1 = key(N[int(c)]) * (k-f)
+    d0 = key(N[int(f)]) * (c-k); d1 = key(N[int(c)]) * (k-f)
     return d0+d1
 
 
 
-def allPerentile(dictRCV,
-                 dictEntropy,
-                 dictGC,
-                 combined,
-                 which
-                 ):
+def allPerentile(dictRCV, dictEntropy, dictGC, combined, which):
     """
         Finds the values grouped in percentile from input dictionary data.
-        
         @parameter RCVdict - is RCV dictionary element.
         @parameter entropyDict - is Entropy dictionary element.
         @parameter gcDict - is GC content dictionary element.
         @parameter combined - is a 3D nexus data matrix
         @parameter which - takes dictionary type as input (It could be GC, RCV or Entropy dictionary)
-        
         """
-
-    RCVdict = dictRCV
-    entropyDict = dictEntropy
-    gcDict = dictGC
-
+    RCVdict = dictRCV; entropyDict = dictEntropy; gcDict = dictGC
     if which == 'rcv':
         supDict = RCVdict
-    
     elif which == 'ent':
         supDict = entropyDict
-
     elif which == 'gc':
         supDict = gcDict
     
@@ -533,18 +471,12 @@ def allPerentile(dictRCV,
         if isinstance(val, str) == False and hasattr(val, '__iter__') == False:
             supList.append(val)
 
-    supPlist0to25 = []
-    supPlist25to75 = []
-    supPlist75to100 = []
+    supPlist0to25 = []; supPlist25to75 = []; supPlist75to100 = []
     supList.sort()
-
-    sup25 = percentile(supList, 0.25)
-    sup75 = percentile(supList, 0.75)
-
+    sup25 = percentile(supList, 0.25); sup75 = percentile(supList, 0.75)
     v0to25 = [x for x in supList if x >= 0 and x < sup25]
     v25to75 = [x for x in supList if x >= sup25 and x < sup75]
     v75to100 = [x for x in supList if x >= sup75]
-
 
     for key, val in supDict.items():
         try:
@@ -585,68 +517,37 @@ def allPerentile(dictRCV,
                 continue
     
     supPdict = dict()
-
-    supPdict['0_to_25'] = (supPlist0to25)
-    supPdict['25_to_75'] = (supPlist25to75)
-    supPdict['75_to_100'] = (supPlist75to100)
+    supPdict['0_to_25'] = (supPlist0to25); supPdict['25_to_75'] = (supPlist25to75); supPdict['75_to_100'] = (supPlist75to100)
 
     return supPdict
 
 
 
-def binPercent(RCVdict,
-               entropyDict,
-               gcDict,
-               combined,
-               calRCVvalue,
-               runShannon,
-               runGC
-               ):
+def binPercent(RCVdict, entropyDict, gcDict, combined, calRCVvalue, runShannon, runGC):
     """
         returns the list of dictionaries that has charset data grouped under percentile bins.
-        
         @parameter RCVdict - is RCV dictionary element.
         @parameter entropyDict - is Entropy dictionary element.
         @parameter gcDict - is GC content dictionary element.
         @parameter combined - is a 3D nexus data matrix
-        
         """
-    
     for key, val in RCVdict.items():
         RCVdict[key] = (float(val.lstrip('[ ').rstrip(' ]')))
 
-
     if calRCVvalue == True:
-        rcvPdict = allPerentile(RCVdict,
-                                entropyDict,
-                                gcDict,
-                                combined,
-                                which='rcv'
-                                )
+        rcvPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='rcv')
     else:
         rcvPdict = dict()
 
     if runShannon == True:
-        entPdict = allPerentile(RCVdict,
-                                entropyDict,
-                                gcDict,
-                                combined,
-                                which='ent'
-                                )
+        entPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='ent')
     else:
         entPdict = dict()
 
     if runGC == True:
-        gcPdict = allPerentile(RCVdict,
-                               entropyDict,
-                               gcDict,
-                               combined,
-                               which='gc'
-                               )
-
+        gcPdict = allPerentile(RCVdict, entropyDict, gcDict, combined, which='gc')
     else:
         gcPdict = dict()
-
 
     return [rcvPdict, entPdict, gcPdict]
 
@@ -657,13 +558,10 @@ def removePerBin(filename):
        
     """
     
-    RCVbinList = []
-    ENTbinList = []
-    GCbinList = []
-    fr = open(filename[0], 'r')
-    data = fr.readlines()
-    Flag = False
+    RCVbinList = []; ENTbinList = []; GCbinList = []
+    fr = open(filename[0], 'r'); data = fr.readlines()
     
+    Flag = False
     for lines in data:
         if '[Entropy Bin]' in lines:
             Flag = False
@@ -734,12 +632,10 @@ def removePerBin(filename):
                     val[j] = {'0-25': inval}
             
             outVal[key] = (val)
-            
             for inkey, item in outVal.items():
                 newBinDict[inkey] = {}
                 for i, dictVal in enumerate(item):
                     newBinDict[inkey].update(dictVal)
-
 
     return newBinDict
 
@@ -753,10 +649,7 @@ def gcUserBin(combined, part, gcDict):
     for key, val in gcDict.items():
         gcList.append(val)
     
-    gcList.sort()
-    npart = 100/part
-    counter = 1
-    myDict = dict()
+    gcList.sort(); npart = 100/part; counter = 1; myDict = dict()
     while counter <= npart:
         if counter == 1:
             myDict['Percentile[%s-%s]' %((counter - 1)*part, counter*part)] = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
@@ -810,8 +703,7 @@ def gcHist(gcDict):
     n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
     y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
     plt.plot(bins, y, 'r--')
-    plt.xlabel('GC Values')
-    plt.ylabel('(Percentage Gene Count)/100')
+    plt.xlabel('GC Values'); plt.ylabel('(Percentage Gene Count)/100')
     plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
     plt.subplots_adjust(left=0.15)
     plt.savefig('GCplot.png')
