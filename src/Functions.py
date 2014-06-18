@@ -757,7 +757,23 @@ def gcUserBin(combined, part, gcDict):
 
     return myDict
 
+######################################################################################################
 
+"""Sets of functions required for calculating average, variance and standard deviation from list of data."""
+
+def average(s): return sum(s) * 1.0 / len(s)
+
+def variance(avg, s): return map(lambda x: (x - avg)**2, s)
+
+def stDev(variance): return math.sqrt(average(variance))
+
+######################################################################################################
+
+def gcHist(gcList):
+    gcArray = array(gcList)
+    avg = average(gcList)
+    var = variance(avg, gcList)
+    std = stDev(var)
 
 
 
