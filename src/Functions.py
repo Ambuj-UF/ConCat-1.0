@@ -483,7 +483,6 @@ def removePerBin(filename):
         Flag = True if '[GC Bin]' in lines else Flag
 
     binList = [RCVbinList, ENTbinList, GCbinList]
-    
     for listval in binList:
         listval.remove('[25th to 75th percentile] '); listval.remove('[75th to 100 percentile] '); listval.remove('[0 to 25th percentile] ')
     
@@ -506,17 +505,10 @@ def removePerBin(filename):
         binDict[j][binKey[j]] = (nameList)
     
     newBinDict = dict()
-    
     for i, outVal in enumerate(binDict):
         for key, val in outVal.items():
             for j, inval in enumerate(val):
-                if j == 0:
-                    val[j] = {'25-75': inval}
-                elif j == 1:
-                    val[j] = {'75-100': inval}
-                elif j == 2:
-                    val[j] = {'0-25': inval}
-            
+                val[j] = {'25-75': inval} if j == 0 else {'75-100': inval} if j == 1 else {'0-25': inval} if j == 2 else None
             outVal[key] = (val)
             for inkey, item in outVal.items():
                 newBinDict[inkey] = {}
