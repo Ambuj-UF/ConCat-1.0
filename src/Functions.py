@@ -547,6 +547,13 @@ def gcUserBin(combined, part, gcDict):
     return myDict
 
 
+def remUsrBin(combined, part):
+    """Creates a list of gene keys for which the GC value lies in the user defined range"""
+    gcDict = GCcontent(combined); remList = []
+    for key, val in gcDict.items():
+        remList.append(key) if val >= int(part.split('-')[0]) and val <= int(part.split('-')[1]) else None
+    return remList
+
 
 ######################################################################################################
 
