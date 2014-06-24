@@ -216,6 +216,23 @@ def main():
             with open(args.o, 'w') as fp:
             SeqIO.write(msaObject, fp, args.fout)
 
+    elif args.remGC != None:
+        file = [args.i]
+        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]; combined = nexi[0][1]
+        msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
+        
+        try:
+            remKeys = remUsrBin(nexi[0][1], args.UGCrem)
+        except KeyError:
+            print("Bin region %s not found in GC bin" %args.GCrem)
+            pass
+    
+        remPos = []
+        for val in remKeys:
+            remPos.append([x for x in combined.charsets[val]])
+            combined.charsets.pop(val, None)
+    
+        remPos.sort()
 
 
 
