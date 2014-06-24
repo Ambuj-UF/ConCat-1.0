@@ -128,19 +128,8 @@ def main():
         if args.fout == 'nexus':
             combined = nexi[0][1]
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-
-            def setUpdate(sets, positions):
-                for key in sets:
-                    for i, val in enumerate(positions):
-                        x1=[x-1 for x in sets[key] if x > val-i]
-                        x2=[x for x in sets[key] if x < val-i]
-                        sets[key] = (x2+x1)
-                    
-                return sets
-
             combined.charsets = setUpdate(combined.charsets, posMatrix)
             combined.write_nexus_data(filename=open(args.o, 'w'))
-                                 
         else:
             with open(args.o, 'w') as fp:
                 SeqIO.write(msaObject, fp, args.fout)
@@ -199,22 +188,11 @@ def main():
         if args.fout == 'nexus':
             combined = nexi[0][1]
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-
-            def setUpdate(sets, positions):
-                for key in sets:
-                    for i, val in enumerate(positions):
-                        x1=[x-1 for x in sets[key] if x > val-i]
-                        x2=[x for x in sets[key] if x < val-i]
-                        sets[key] = (x2+x1)
-    
-                return sets
-
-            combined.charsets = setUpdate(combined.charsets, posMatrix)
+            combined.charsets = setUpdate(combined.charsets, remPos)
             combined.write_nexus_data(filename=open(args.o, 'w'))
-
         else:
             with open(args.o, 'w') as fp:
-            SeqIO.write(msaObject, fp, args.fout)
+                SeqIO.write(msaObject, fp, args.fout)
 
     elif args.remGC != None:
         file = [args.i]
@@ -233,6 +211,24 @@ def main():
             combined.charsets.pop(val, None)
     
         remPos.sort()
+        msanewObject = msaObject[:, :remPos[0]]
+        for i, val in enumerate(remPos):
+            if i > 0:
+                if remPos[i] == remPos[-1]:
+                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
+                    break
+                else:
+                    msanewObject = msanewObject + msaObject[:, val:remPos[i+1]]
+            
+        if args.fout == 'nexus':
+            combined = NexusHandler(1).msaToMatrix(msaObject, combined)
+            combined.charsets = setUpdate(combined.charsets, remPos)
+            combined.write_nexus_data(filename=open(args.o, 'w'))
+            
+        else:
+            with open(args.o, 'w') as fp:
+                SeqIO.write(msaObject, fp, args.fout)
+
 
 
 

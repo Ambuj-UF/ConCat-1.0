@@ -586,6 +586,15 @@ def gcHist(gcDict):
     plt.savefig('GCplot.png')
 
 
+def setUpdate(sets, positions):
+    for key in sets:
+        for i, val in enumerate(positions):
+            x1=[x-1 for x in sets[key] if x > val-i]
+            x2=[x for x in sets[key] if x < val-i]
+            sets[key] = (x2+x1)
+    
+    return sets
+
 
 
 
