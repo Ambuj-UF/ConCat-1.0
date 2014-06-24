@@ -18,18 +18,21 @@
 #                                                                                                              #
 ################################################################################################################
 
-from Bio.Alphabet import IUPAC, Gapped
-from Bio import SeqIO
+
 import glob
 import os
-from Bio import AlignIO
-from Handler import *
 import operator
 import math
 import functools
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
+
 from array import array
+from Bio import AlignIO
+from Handler import *
+from Bio.Alphabet import IUPAC, Gapped
+from Bio import SeqIO
+
 
 
 def RCVcal(combine):
