@@ -18,14 +18,18 @@
 #                                                                                                              #
 ################################################################################################################
 
-
+import sys
 import glob
 import os
 import operator
 import math
 import functools
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
+
+try:
+    import matplotlib.mlab as mlab
+    import matplotlib.pyplot as plt
+except:
+    sys.exit("ConCat requires 1.8 or higher version of Numpy")
 
 from array import array
 from Bio import AlignIO
