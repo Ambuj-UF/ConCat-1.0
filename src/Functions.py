@@ -198,17 +198,20 @@ def Convert(input, output, filename):
         'phylip-sequential': '*.phy',
         'phylip-relaxed': '*.phy'
     }
+
+    os.chdir('..')
     
     if input == 'fasta' and output == 'nexus':
         alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
         g = open(filename.split(".")[0] + '.nex', 'w')
         g.write(alignment.format("nexus")); g.close()
-    
+
     else:
         try:
             handle = open(filename, 'rU'); record = list(SeqIO.parse(handle, input))
             fp = open(filename.split('.')[0] + '.' + formDict[output].split('.')[1], 'w')
             SeqIO.write(record, fp, output); fp.close(); handle.close()
+        
         except:
             print "Bad Alignment\n"
 
@@ -219,31 +222,20 @@ def ConvertAll(inp_format):
         File format conversion program (fasta, strict-phylip, sequential-phylip and relaxed-phylip to nexus).
         @parameter inp_format - Input file format.
         """
+    
     os.chdir('Input'); files = glob.glob("*.*")
-    if inp_format == 'fasta':
-        for filename in files:
+    for filename in files:
+        if '.nex' not in filename:
             try:
-                alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
+                alignment = AlignIO.read(open(filename), inp_format, alphabet=Gapped(IUPAC.protein))
                 g = open(filename.split(".")[0] + '.nex', 'w')
                 g.write(alignment.format("nexus")); g.close()
             except ValueError:
+                print("Error raised in importing %s file" %filename)
                 continue
 
-    else:
-        for filename in files:
-            try:
-                handle = open(filename, 'rU')
-                try:
-                    record = list(SeqIO.parse(handle, inp_format))
-                except:
-                    print("Error in readin %s file. Skipping file %s." %(filename, filename))
-                    pass
-                fp = open(filename.split('.')[0] + '.nex', 'w')
-                SeqIO.write(record, fp, "nexus"); fp.close(); handle.close()
-            except:
-                print "Bad alignment file %s\n" %filename
-
     os.chdir('..')
+
 
 def fastEvol(combined, cutOff):
     """

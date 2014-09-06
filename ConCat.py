@@ -178,7 +178,7 @@ def main():
     
         else:
             if args.CA == True:
-                ConvertAll(args.ftype, sep)
+                ConvertAll(args.ftype)
             
             richNexusCall(args.RNA,
                           args.inc,

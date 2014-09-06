@@ -112,12 +112,20 @@ def richNexusCall(runRNA,
         try:
             nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
         except:
-            inFiles = glob.glob("*.nex")
-            for f in inFiles:
-                os.remove(f)
-
-            sys.exit("Problem in input files. Could be due to folowing reasons. \n 1. Duplicate alignment files are present in Input folder\n 2. Unmatched 'end' in Nexus Blocks\n 3. Mesquite Block present in input files\nProgram Terminated\n")
-
+            for filename in file_list:
+                dataF = open(filename, 'r').readlines()
+                os.remove(filename)
+                fp = open(filename, 'w')
+                flagF = False
+                for lines in dataF:
+                    if 'BEGIN MacClade;' in lines:
+                        flagF = True
+                    if flagF == False:
+                        fp.write('%s', lines)
+                fp.close()
+            
+            nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
+    
         combined = Nexus.combine(nexi)
         os.chdir("../..")
 
@@ -143,7 +151,20 @@ def richNexusCall(runRNA,
         try:
             nexi =  [(fname, Nexus.Nexus(fname)) for fname in file_list]
         except:
-            sys.exit("Problem in input files. Could be due to folowing reasons. \n 1. Duplicate alignment files are present in Input folder\n 2. Unmatched 'end' in Nexus Blocks\n 3. Mesquite Block present in input files\nProgram Terminated\n")
+            for filename in file_list:
+                dataF = open(filename, 'r').readlines()
+                os.remove(filename)
+                with open(filename, 'w') as fp:
+                    flagF = False
+                    for lines in dataF:
+                        if 'BEGIN MacClade;' in lines:
+                            flagF = True
+                        if flagF == False:
+                            fp.write('%s' %lines)
+            
+
+            nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
+
 
         combined = Nexus.combine(nexi)
         os.chdir("..")
