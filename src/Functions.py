@@ -148,7 +148,7 @@ def RCVprotCal(combine):
     ########################################################################################
     # RCV calculation begins here
     
-    numA = 0; numB = 0; numI = 0; numL = 0; numF = 0; numN = 0; numS = 0
+    numA = 0; numB = 0; numI = 0; numL = 0; numF = 0; numN = 0; numS = 0; numC = 0; numH = 0; numU = 0; numG = 0; numP = 0
     for i, val in enumerate(combine):
         numA = numA + val.seq.count('D') + val.seq.count('d') + val.seq.count('E') + val.seq.count('e')
         numB = numB + val.seq.count('R') + val.seq.count('r') + val.seq.count('K') + val.seq.count('k')
@@ -157,6 +157,11 @@ def RCVprotCal(combine):
         numF = numF + val.seq.count('F') + val.seq.count('f') + val.seq.count('W') + val.seq.count('w') + val.seq.count('Y') + val.seq.count('y')
         numN = numN + val.seq.count('N') + val.seq.count('n') + val.seq.count('Q') + val.seq.count('q')
         numS = numS + val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t')
+        numC = numC + val.seq.count('C') + val.seq.count('c')
+        numC = numH + val.seq.count('H') + val.seq.count('h')
+        numU = numU + val.seq.count('U') + val.seq.count('u')
+        numG = numG + val.seq.count('G') + val.seq.count('g')
+        numP = numP + val.seq.count('P') + val.seq.count('p')
     
     countDict = dict()
     for i, val in enumerate(combine):
@@ -166,7 +171,12 @@ def RCVprotCal(combine):
                                      val.seq.count('L') + val.seq.count('l') + val.seq.count('M') + val.seq.count('m'), \
                                      val.seq.count('F') + val.seq.count('f') + val.seq.count('W') + val.seq.count('w') + val.seq.count('Y') + val.seq.count('y'), \
                                      val.seq.count('N') + val.seq.count('n') + val.seq.count('Q') + val.seq.count('q'), \
-                                     val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t')])
+                                     val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t'),\
+                                     val.seq.count('C') + val.seq.count('c'),\
+                                     val.seq.count('H') + val.seq.count('h'),\
+                                     val.seq.count('U') + val.seq.count('u'),\
+                                     val.seq.count('G') + val.seq.count('g'),\
+                                     val.seq.count('P') + val.seq.count('p')])
     
     def abs(number):
         if number > 0 or number == 0:
@@ -178,7 +188,9 @@ def RCVprotCal(combine):
     rcvCalc = 0; nTaxa = len(combine)
     for key, val in countDict.items():
         rcvCalc = rcvCalc + abs(val[0] - (numA/nTaxa)) + abs(val[1] - (numB/nTaxa)) + abs(val[2] - (numI/nTaxa)) + abs(val[3] - (numL/nTaxa)) + \
-                            abs(val[4] - (numF/nTaxa)) + abs(val[5] - (numN/nTaxa)) + abs(val[6] - (numS/nTaxa))
+                            abs(val[4] - (numF/nTaxa)) + abs(val[5] - (numN/nTaxa)) + abs(val[6] - (numS/nTaxa)) + abs(val[7] - (numC/nTaxa)) + \
+                            abs(val[8] - (numH/nTaxa)) + abs(val[9] - (numU/nTaxa)) + abs(val[10] - (numG/nTaxa)) + abs(val[11]) - (numG/nTaxa) + \
+                            abs(val[12] - (numP/nTaxa))
 
     totalRCV = float(rcvCalc)/float(len(combine)*len(combine[0]))
     return totalRCV
