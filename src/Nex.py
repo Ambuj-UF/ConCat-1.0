@@ -69,10 +69,9 @@ def richNexusCall(runRNA,
                             RNAfileList.append(files)
                     elif "RNA_Struc = " in line:
                         RNAstruc[files] = (line.split("=")[1].rstrip(';\n').replace(" ", ""))
-                if line.rstrip('\n') == "begin ConCat;":
+                if "begin ConCat;" in line:
                     parsing = True
 
-        
         try:
             for files in RNAfileList:
                 shutil.copy2(os.path.abspath('') + "/" + files, os.path.abspath('..') + "/" + 'RNAdata')

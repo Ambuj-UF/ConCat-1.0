@@ -169,7 +169,7 @@ def main():
                 pass
 
         remPos = []
-        for val in removeGene():
+        for val in removeGene:
             for inval in val:
                 remPos.append(nexi[1].charsets[inval])
 

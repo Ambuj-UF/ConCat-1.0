@@ -551,7 +551,7 @@ class NexusHandler:
            alignment file names.
            
         """
-        
+
         rnaDict = {}
 
         f = open("RNAConsensus.txt", 'r')
@@ -633,7 +633,6 @@ class NexusHandler:
                 rnaList.append([x + startPos for x in posStem])
             
                 rnaDict[key] = (rnaList)
-
         
         setsDict = combined.charsets
         
