@@ -97,7 +97,7 @@ begin ConCat;
 
   RNA_Type = True; 
 
-  RNA_Struc = (((((((...((...,6;
+  RNA_Struc = Species_Name,(((((((...((...,6;
 
 end;
 
@@ -117,6 +117,12 @@ Ali_Type: This variable is used for defining the alignment type. It can either b
 RNA_Type = True/None. If True then the ConCat program uses the alignment file for RNA structure prediction.
 
 RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA structure then avoid using RNA_Type function. Input contains RNA structure followed by comma and RNA structure starting position. By default the starting position is set to 0 (which is the starting position of alignment).
+
+NOTE: '.' character is not allowed in the filenames...
+
+file.name.nex - Not Allowed
+file_name.nex - Allowed
+file-name.nes - Allowed
 
 
 Some commonly used operation:
