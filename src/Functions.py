@@ -24,7 +24,6 @@ import os
 import operator
 import math
 import functools
-import numpy as np
 
 try:
     import matplotlib.mlab as mlab
@@ -226,9 +225,9 @@ def Convert(input, output, filename):
             SeqIO.write(record, fp, output); fp.close(); handle.close()
         
         except:
-            print("Bad Alignment\n")
+            print "Bad Alignment\n"
 
-    print("Final output saved in %s" %filename.split('.')[0] + '.' + formDict[output].split('.')[1])
+    print "Final output saved in %s" %filename.split('.')[0] + '.' + formDict[output].split('.')[1]
 
 def ConvertAll(inp_format):
     """
@@ -318,7 +317,7 @@ def binAll(rcvRange, entropyRange, combined, RCVdict, entropyDict, gcDict, gcRan
                 sink = gcDict[key]
             except KeyError:
                 gcDict[key] = (['NA'])
-            if float(val.lstrip('[ ').rstrip(' ]')) >= rStart and float(val.lstrip('[ ').rstrip(' ]')) <= rEnd:
+            if val >= rStart and val <= rEnd:
                 try:
                     lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key], gcDict[key]))
                 except KeyError:
@@ -579,6 +578,7 @@ def stDev(variance): return math.sqrt(average(variance))
 
 ######################################################################################################
 
+
 def gcHist(gcDict):
     """
         Histogram plot of GC values
@@ -586,14 +586,14 @@ def gcHist(gcDict):
         """
     l = []
     for key, val in gcDict.items():
-        l.append(val)
-    gcArray = array('l', [])
-    for val in l:
-        gcArray = np.insert(gcArray,0, val)
-    avg = average(l); var = variance(avg, l); sigma = stDev(var); num_bins = 1.0
-    plt.hist(gcArray, bins = [x*5 for x in range(0,20)], facecolor='green')
-    plt.xlabel('GC Values'); plt.ylabel('Number of alignments')
-    plt.title(r'#mean=%s,  #sigma=%s' %(float(sum(l))/len(l), sigma))
+        l.append(int(val))
+    gcArray = array('l', l)
+    avg = average(l); var = variance(avg, l); sigma = stDev(var); num_bins = 20
+    n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
+    y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
+    plt.plot(bins, y, 'r--')
+    plt.xlabel('GC Values'); plt.ylabel('(Percentage Gene Count)/100')
+    plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
     plt.subplots_adjust(left=0.15)
     plt.savefig('GCplot.png')
 
@@ -606,11 +606,6 @@ def setUpdate(sets, positions):
             sets[key] = (x2+x1)
     
     return sets
-
-
-
-
-
 
 
 
