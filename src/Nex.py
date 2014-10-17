@@ -98,13 +98,14 @@ def richNexusCall(runRNA,
             transferRNAret = [{},'']
         
         fileTypes = transferRNAret[0]
+        
         os.chdir("ProcInput")
         
         if spellScan == True:
-            print "Please wait! Searchng for spelling mistakes \n"
-            print "---------------------------------------------------------------------------"
+            print("Please wait! Searchng for spelling mistakes \n")
+            print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
-            print "---------------------------------------------------------------------------"
+            print("---------------------------------------------------------------------------")
         else:
             pass
 
@@ -140,10 +141,10 @@ def richNexusCall(runRNA,
         fileTypes = transferRNAret[0]
         
         if spellScan == True:
-            print "Please wait! Checking spelling mistakes \n"
-            print "---------------------------------------------------------------------------"
+            print("Please wait! Checking spelling mistakes \n")
+            print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
-            print "---------------------------------------------------------------------------"
+            print("---------------------------------------------------------------------------")
         else:
             pass
 
@@ -200,36 +201,47 @@ def richNexusCall(runRNA,
 
 
 
-    print "Concatenation completed! \n"
+    print("Concatenation completed! \n")
 
     if calRCVvalue == True:
-        print "Calculating RCV values for following genes \n"
+        print("Calculating RCV values for following genes \n")
         newMSA = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
         rcvDict = dict()
 
         try:
             for key, val in combined.charsets.items():
                 try:
-                    if key != 'RNA_Stem' or key != 'RNA_Loop' or key != "'RNA_Stem'" or key != "'RNA_Loop'":
+                    if key != 'RNA_Stem' and key != 'RNA_Loop' and key != "'RNA_Stem'" and key != "'RNA_Loop'":
                         if any(fileTypes) == True:
-                            if fileTypes[key] == 'Protein':
-                                print key
-                                try:
-                                    rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
-                                except ZeroDivisionError:
-                                    pass
-                                except IndexError:
-                                    print "Alignment files not found \n"
+                            try:
+                                if fileTypes[key] == 'Protein':
+                                    print key
+                                    try:
+                                        rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
+                                    except ZeroDivisionError:
+                                        pass
+                                    except IndexError:
+                                        print("Alignment files not found \n")
                                 
 
-                            else:
-                                print key
+                                else:
+                                    print key
+                                    try:
+                                        rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
+                                    except ZeroDivisionError:
+                                        pass
+                                    except IndexError:
+                                        print("Alignment files not found \n")
+                    
+                            except KeyError:
+                                print("Setting %s alignment type to default alignment type 'DNA'" %key)
                                 try:
                                     rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                 except ZeroDivisionError:
                                     pass
                                 except IndexError:
-                                    print "Alignment files not found \n"
+                                    print("Alignment files not found \n")
+
 
                         else:
                             print key
@@ -238,14 +250,15 @@ def richNexusCall(runRNA,
                             except ZeroDivisionError:
                                 pass
                             except IndexError:
-                                print "Alignment files not found \n"
+                                print("Alignment files not found \n")
+            
                 except KeyError:
                     continue
         except TypeError:
-            print "Type error in RCV Calculation. Skipping this step \n"
+            print("Type error in RCV Calculation. Skipping this step \n")
             pass
 
-        print "RCV Calculation Completed \n"
+        print("RCV Calculation Completed \n")
         
     else:
         pass
@@ -289,7 +302,8 @@ def richNexusCall(runRNA,
 
     if RYcodingCall.isatty() == False:
         RYfiles = dict()
-        for lines in RYcodingCall:
+        RYfilesImport = open(RYcodingCall, 'rU').readlines()
+        for lines in RYfilesImport:
             RYfiles[lines.rstrip('\n').split(',')[0]] = (lines.rstrip('\n').split(',')[1])
 
         fullMSAdata = MultipleSeqAlignment(NexusHandler(2).combineToRecord(combined))
@@ -308,11 +322,11 @@ def richNexusCall(runRNA,
         with open('RYoutput.phy', 'w') as fp:
             SeqIO.write(msaDataRY, fp, 'phylip-relaxed')
     
-        print "Your output is saved in RYoutput.phy file \n"
+        print("Your output is saved in RYoutput.phy file \n")
 
     try:
         BaseHandle(2).nexML("Results.nex")
-        print "Your NEXML file is stored in Results.xml \n"
+        print("Your NEXML file is stored in Results.xml \n")
     except:
         pass
 
@@ -361,14 +375,14 @@ def richNexusCall(runRNA,
         fopen.close()
 
     if cutOff != None:
-        print "Searching fast evolving sites"
+        print("Searching fast evolving sites")
         fast_evolv_site = fastEvol(combined, cutOff)
         if fast_evolv_site != []:
             with open('Fast_Evolving_Sites', 'w') as fp:
                 for val in fast_evolv_site:
                     fp.write("%s\n" %val[0].split('_')[1])
         else:
-            print "No fast Evolving site found"
+            print("No fast Evolving site found")
 
     if GC == True:
         gcDict = GCcontent(combined)
@@ -677,7 +691,7 @@ def richNexusCall(runRNA,
     except:
         pass
     stop = timeit.default_timer()
-    print "Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!"
+    print("Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!")
     print stop - start
 
 

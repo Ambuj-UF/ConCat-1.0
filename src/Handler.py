@@ -181,7 +181,7 @@ class BaseHandle:
             while n < len(idList):
                 for i, j in zip(value, idList[n]):
                     if 1.0 > float([x == y for (x, y) in zip(i, j)].count(True))/len(j) > 0.8:
-                        print "Found " + i + " in gene " + keyList[counter-1] + " but gene " + keyList[n] + " (has " + j+")\n"
+                        print("Found " + i + " in gene " + keyList[counter-1] + " but gene " + keyList[n] + " (has " + j+")\n")
             
                 n = n + 1
             counter = counter + 1
@@ -553,6 +553,7 @@ class NexusHandler:
         """
 
         rnaDict = {}
+        rnaList = list()
 
         f = open("RNAConsensus.txt", 'r')
         fdata = f.readlines()
@@ -584,6 +585,7 @@ class NexusHandler:
             return string[:index] + '.' + string[index:]
         
         if (RNAstrucData and True) or False == True:
+            
             for key, val in RNAstrucData.items():
                 if ',' in val:
                     taxName = val.split(',')[0]
@@ -602,7 +604,7 @@ class NexusHandler:
                         rnaData = rnaDataRaw
                     
                     else:
-                        print "Error in %s ConCat Block Taxon name defined in RNA_Struc variable. Taxa not found in alignment. Please check the spelling \n" % key
+                        print("Error in %s ConCat Block Taxon name defined in RNA_Struc variable. Taxa not found in alignment. Please check the spelling \n" % key)
             
                 else:
                     taxName = val.split(',')[0]
@@ -623,7 +625,7 @@ class NexusHandler:
 
             
                     else:
-                        print "Error in %s ConCat Block Taxon name defined in RNA_Struc variable. Taxa not found in alignment. Please check the spelling \n" % key
+                        print("Error in %s ConCat Block Taxon name defined in RNA_Struc variable. Taxa not found in alignment. Please check the spelling \n" % key)
 
 
                 posLoop = [x.start() for x in re.finditer('\.', rnaData)]
@@ -980,7 +982,7 @@ class NexusHandler:
                 pass
 
         if missingList == {}:
-            print "No missing taxa found"
+            print("No missing taxa found")
         
         else:
 
@@ -1057,7 +1059,7 @@ class NexusHandler:
         Flag = True
         for key, val in procRNAdict.items():
             if val[-1] -1 > len(combined.matrix[combined.matrix.keys()[0]]):
-                print "Please check the RNA structure manual entry in alignment files \n Looks like the length of RNA structure is greater than the length of alignment. It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment \nSkipping RNA structure matrix construction\n"
+                print("Please check the RNA structure manual entry in alignment files \n Looks like the length of RNA structure is greater than the length of alignment. It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment \nSkipping RNA structure matrix construction\n")
                 Flag = False
             if Flag:
                 combined.charsets.update(procRNAdict)
@@ -1073,11 +1075,11 @@ class NexusHandler:
                        ):
         
         
-        print "Checking for missing taxa in alignment files \n"
+        print("Checking for missing taxa in alignment files \n")
         combined = self.missingScan(combined)
         
         if runShanon == True:
-            print "Checking alignment quality [Shannons Entropy] \n"
+            print("Checking alignment quality [Shannons Entropy] \n")
             entropyDetails = self.entropyCal(combined)
             entropyGenes = entropyDetails[0]
             entropyStore = entropyDetails[1]
@@ -1088,16 +1090,16 @@ class NexusHandler:
             pass
         
         if runRNA == True:
-            print "Constructing RNA structure matrix \n"
+            print("Constructing RNA structure matrix \n")
             try:
                 self.RNAfoldConsensus()
                 procRNAdict = self.RNAtoNexus(combined, RNAstrucData)
                 try:
                     combined = self.runRNAOperation(procRNAdict, combined)
                 except:
-                    print "Cant find RNA data \n"
+                    print("Cant find RNA data \n")
             except OSError:
-                print "RNAfold not found \n Skipping this step"
+                print("RNAfold not found \n Skipping this step")
     
     
         if runShanon == True:
@@ -1145,7 +1147,7 @@ class NexusHandler:
                 if delTaxa in combined.taxlabels: combined.taxlabels.remove(delTaxa)
             
             else:
-                print '%s not found in the alignment. Check for spelling mistakes in taxa editing input file' % delTaxa
+                print("%s not found in the alignment. Check for spelling mistakes in taxa editing input file" % delTaxa)
         combined = self.missingScan(combined)
         if usr_inpT == 1:
             os.chdir('Input')
@@ -1167,7 +1169,7 @@ class NexusHandler:
     
         positions = Nexus.Nexus.gaponly(combined, include_missing = True)
         if runShanon == True:
-            print "Checking alignment quality [Shannons Entropy] \n"
+            print("Checking alignment quality [Shannons Entropy] \n")
             entropyDetails = self.entropyCal(combined)
             entropyGenes = entropyDetails[0]
             entropyStore = entropyDetails[1]
@@ -1183,7 +1185,7 @@ class NexusHandler:
         combined = self.msaToMatrix(align, combined)
 
         if runRNA == True:
-            print "Constructing RNA structure matrix \n"
+            print("Constructing RNA structure matrix \n")
             try:
                 self.RNAfoldConsensus()
                 procRNAdict = self.RNAtoNexus(combined, RNAstrucData)
@@ -1191,9 +1193,9 @@ class NexusHandler:
                 try:
                     combined = self.runRNAOperation(procRNAdict, combined)
                 except:
-                    print "Cant find RNA data \n"
+                    print("Cant find RNA data \n")
             except OSError:
-                print "RNAfold not found \n Skipping this step"
+                print("RNAfold not found \n Skipping this step")
         else:
             pass
 
@@ -1221,7 +1223,7 @@ class NexusHandler:
                     ):
 
         if includeTax.isatty() == False:
-            print "Removing taxon absent in include taxon file supplied by user \n"
+            print("Removing taxon absent in include taxon file supplied by user \n")
             
             listInclude = []
             for lines in includeTax:
@@ -1240,7 +1242,7 @@ class NexusHandler:
             return outWithTaxa
 
         elif excludeTax.isatty() == False:
-            print "Removing taxon \n"
+            print("Removing taxon \n")
             listExclude = []
             for lines in excludeTax:
                 listExclude.append(lines.rstrip('\n'))

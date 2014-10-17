@@ -53,7 +53,7 @@ parser.add_argument('-pkg', type=str, default='muscle',
                     help='User defined program selection')
 
 parser.add_argument('-args', type=str,
-                    help='Arguments to run MAFFT. EXAMPLE: "--retree 2 --maxiterate 10')
+                    help='Arguments to run MAFFT. EXAMPLE: "--retree 2 --maxiterate 10")
 
 parser.add_argument('-sep', action='store_true', default=False,
                     help='Include if you want to run different models for different alignment files')
