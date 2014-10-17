@@ -578,7 +578,6 @@ def stDev(variance): return math.sqrt(average(variance))
 
 ######################################################################################################
 
-
 def gcHist(gcDict):
     """
         Histogram plot of GC values
