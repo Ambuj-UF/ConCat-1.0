@@ -1,7 +1,9 @@
 #ConCat-1.0
 ==========
 
+Working on doccumentation
 
+Expected Project completion date: 12th November 2014
 =======
   -h, --help    ->                 show this help message and exit
   
