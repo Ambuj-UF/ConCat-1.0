@@ -87,20 +87,23 @@ python ConCat.py -h
 1. Put all your alignment files in "Input directory"
 2. run "python ConCat.py" on command line
 
+`
 Input-Output format supported : [fasta, phylip, relaxed-phylip, interlieved-phylip]
+`
 
-file formats can be supplied through arguments -itype and -otype
+File formats can be supplied through arguments -itype and -otype
 
 Use -RY argument to perform RY coding 
 
 -RY argument requires and input file that contains filename and RY coding position separated by comma. For RY coding at 3rd position it typically looks like
 
+`
 File1.nex, 3
 
 File2.nex, 3
 
 File3.nex, 3
-
+`
 
 #File format conversion:
 
