@@ -9,6 +9,8 @@ Until then, the following instructions might be useful.
 
 ###Few basic arguments
 
+```
+
   -h, --help    ->                 show this help message and exit
   
   -v, --version    ->              show program's version number and exit
@@ -59,7 +61,7 @@ Until then, the following instructions might be useful.
   -convert            ->              Converts fasta and phylip alignment files to nexus
                                 alignment
 
-
+```
 
 ##Requirements:
 
