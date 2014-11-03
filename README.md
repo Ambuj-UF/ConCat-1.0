@@ -163,46 +163,53 @@ RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA
 
 NOTE: '.' character is not allowed in the filenames...
 
+```
 file.name.nex - Not Allowed
 file_name.nex - Allowed
 file-name.nes - Allowed
+```
 
-
-Some commonly used operation:
+####Few commonly used operation:
 
 Run simultaneous fasta to nexus input file format conversion and analysis with RCV calculation, Alignment Entropy calculation and spellin check function set as True for a set of alignment files that has sequence IDs stored in taxon name:
-
+```
 python ConCat.py -CA -rcv -shannon -spell -pipe -ftype fasta
-
-
+```
 
 #ConCat-Align
 ConCat-Align module conducts batch sequence alignment of raw input sequence file. Direct implementation of Muscle and Mafft sequence alignment programs can be performed through ConCat-1.0.
 Steps:
+```
 1. Place all your raw sequence data in Align directory. 
 2. Run python ConCat-Align script in terminal
 3. Choose between Muscle[muscle] and Mafft[mafft] program through -pkg. 
+```
 
-Special Note for using Mafft program:  
-We provide two options for passing arguments to run Mafft.
+####Special Note for using Mafft program:  
+*We provide two options for passing arguments to run Mafft.*
 
 You can directly pass the argument through -args for conducting batch alignment with same argument.
 
+```
 python ConCat-Align.py -pkg mafft -args "--maxiterate 1000 --localpair"
+```
 
 Enter arguments within " ".
 
 
-We also provide an option to pass separate arguments for each alignment files. Add alignment file name and the corresponding arguments in text file and run.
-
+ConCat also provide an option to pass separate arguments for each alignment files. Add alignment file name and the corresponding arguments in text file and run.
+```
 python ConCat-Align.py -pkg mafft -sep -argf argumrntFileName.txt
+```
 
 Architecture of argument file is shown below:
 
+```
 test.afa = --maxiterate 1000 --localpair
 
 test1.afa = --globalpair --maxiterate 1000
+```
 
-
+There are many more argument for alignment pre and post processing modules in ConCat. I am still working on the documentation section. 
 
 
