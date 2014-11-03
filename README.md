@@ -1,6 +1,10 @@
 #ConCat-1.0
 ==========
 
+
+Well...I am still working on the final documentation and writing an organized manual. 
+Until then the following instructions might be useful. 
+
 Working on doccumentation
 
 Expected Project completion date: 12th November 2014
@@ -72,7 +76,25 @@ BioPython and python 2.7 and above
 
 Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotation data in nexus output file. It allows user to define several features of alignemnt file through ConCat block. Thus, it is important for ConCat to use nexus files as input for extended functionality. To make this easier, ConCat -convert function scans for the files with user defined file format in 'Input' Directory and converts it into nexus file format. 
 
-Type:
+#Quick start
+
+1. Put all your alignment files in "Input directory"
+2. run "python ConCat.py" on command line
+
+Input-Output format supported : [fasta, phylip, relaxed-phylip, interlieved-phylip]
+
+file formats can be supplied through arguments -itype and -otype
+
+Use -RY argument to perform RY coding 
+
+-RY argument requires and input file that contains filename and RY coding position separated by comma. For RY coding at 3rd position it typically looks like
+
+File1.nex, 3
+File2.nex, 3
+File3.nex, 3
+
+
+File format conversion:
 
 python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
 
