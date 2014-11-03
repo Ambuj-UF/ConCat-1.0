@@ -93,7 +93,11 @@ python ConCat.py -h
 Input-Output format supported : [fasta, phylip, relaxed-phylip, interlieved-phylip]
 `
 
-File formats can be supplied through arguments -itype and -otype
+File formats can be supplied through arguments -ftype and -otype
+
+```
+python ConCat.py -ftype fasta -otype phylip-relaxed
+```
 
 Use -RY argument to perform RY coding 
 
