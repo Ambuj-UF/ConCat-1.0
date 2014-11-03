@@ -90,7 +90,9 @@ Use -RY argument to perform RY coding
 -RY argument requires and input file that contains filename and RY coding position separated by comma. For RY coding at 3rd position it typically looks like
 
 File1.nex, 3
+
 File2.nex, 3
+
 File3.nex, 3
 
 
