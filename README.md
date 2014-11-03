@@ -82,7 +82,7 @@ python ConCat.py -h
 ```
 
 
-#Quick start
+###Quick start
 
 1. Put all your alignment files in "Input directory"
 2. run "python ConCat.py" on command line
@@ -97,39 +97,43 @@ Use -RY argument to perform RY coding
 
 -RY argument requires and input file that contains filename and RY coding position separated by comma. For RY coding at 3rd position it typically looks like
 
-`
 File1.nex, 3
-`
-`
+
 File2.nex, 3
-`
-`
+
 File3.nex, 3
+
+
+###File format conversion:
+
+```
+python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
+```
+
+
+use -pipe argument to run analysis on datasets that contains database Id in taxon name:
+`
+example: Homo_sapiens|gi|571026644|ref|NM_014453.3| 
 `
 
-#File format conversion:
+```
+python ConCat.py -pipe
+```
 
-python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
+###RNA structure mapping
 
-Now proceed to analysis. Don't bother removing old input files from Input directory. Run -convert and you are good to go.
+use -RNA option if RNAfold is installed on the system. -RNA option can be initiated with -block argument.
+
+-block argument allows ConCat to read ConCat block present in input nexus alignment files.
 
 
-#RNA structure mapping
-
-use -RNA option if RNAfold is installed on the system. -RNA option can be initiated with -block argument
-
-Prepare your own Taxonomy.csv file before using -remT and addT functions
-
-use -pipe option to run analysis on datasets that contains database Id in taxon name:
-
-example: Homo_sapiens|gi|571026644|ref|NM_014453.3| 
-
-ConCat Block:
+####ConCat Block Architecture:
 
 ConCat allows users to define the alignment file type, define files to run RNA structure mapping and supply user defined RNA structure through ConCat block option.
 
 ConCat block architecture:
 
+```
 begin ConCat;
 
   Ali_Type = DNA; 
@@ -149,7 +153,7 @@ format datatype=protein missing=? gap=-;
 matrix
 
 Homo_sapiens CCGAACAATTCTGCGCGAGGTAGGGAGGCCATGGCG....................
-
+```
 
 Ali_Type: This variable is used for defining the alignment type. It can either be DNA, Codons, Introns, Proteins or any other alignment type. Program creates a partition file for RaxML using information supplied in Ali_Type variable.
 
