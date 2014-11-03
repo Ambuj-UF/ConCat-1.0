@@ -96,12 +96,14 @@ File2.nex, 3
 File3.nex, 3
 
 
-File format conversion:
+#File format conversion:
 
 python ConCat.py -convert -ftype filetype [fasta, phylip, relaxed-phylip, interlieved-phylip]
 
-Now proceed to analysis. Don't bother removing old input files from Input directory. Run -convert and your good to go.
+Now proceed to analysis. Don't bother removing old input files from Input directory. Run -convert and you are good to go.
 
+
+#RNA structure mapping
 
 use -RNA option if RNAfold is installed on the system. -RNA option can be initiated with -block argument
 
