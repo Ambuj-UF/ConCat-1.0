@@ -1,14 +1,14 @@
 #ConCat-1.0
-==========
+###Expected Project completion date: 12th November 2014
 
 
-Well...I am still working on the final documentation and writing an organized manual. 
-Until then the following instructions might be useful. 
+Well...I am still working on the documentation and manual. 
+Until then, the following instructions might be useful. 
 
-Working on doccumentation
 
-Expected Project completion date: 12th November 2014
-=======
+
+###Few basic arguments
+
   -h, --help    ->                 show this help message and exit
   
   -v, --version    ->              show program's version number and exit
@@ -59,22 +59,28 @@ Expected Project completion date: 12th November 2014
   -convert            ->              Converts fasta and phylip alignment files to nexus
                                 alignment
 
-=======
 
 
-DEFAULT OPERATION
-
-python ConCat.py
-
-Help:
-
-python ConCat.py -h
-
-Requirements:
+##Requirements:
 
 BioPython and python 2.7 and above
 
 Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotation data in nexus output file. It allows user to define several features of alignemnt file through ConCat block. Thus, it is important for ConCat to use nexus files as input for extended functionality. To make this easier, ConCat -convert function scans for the files with user defined file format in 'Input' Directory and converts it into nexus file format. 
+
+
+##Instructions
+####Running ConCat with default setup.
+
+In default setup ConCat assumes that the alignment files are placed in "Input" directory and assumes nexus as input and output alignment format.
+```
+python ConCat.py
+```
+
+####Help command
+```
+python ConCat.py -h
+```
+
 
 #Quick start
 
