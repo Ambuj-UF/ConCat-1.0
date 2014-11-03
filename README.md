@@ -132,6 +132,10 @@ use -RNA option if RNAfold is installed on the system. -RNA option can be initia
 
 -block argument allows ConCat to read ConCat block present in input nexus alignment files.
 
+```
+python ConCat.py -ftype fasta -otype nexus -block -RNA
+```
+
 
 ####ConCat Block Architecture:
 
