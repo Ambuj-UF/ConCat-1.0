@@ -135,7 +135,7 @@ use -RNA option if RNAfold is installed on the system. -RNA option can be initia
 ```
 python ConCat.py -ftype fasta -otype nexus -block -RNA
 ```
-**This function will run RNA mapping for the alignment files that has ConCat block RNA_Type = True assigned in it.** 
+**This function will perform RNA mapping for the alignment files that has RNA_Type = True assigned in its ConCat block.** 
 
 ####ConCat Block Architecture:
 
