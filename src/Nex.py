@@ -302,7 +302,7 @@ def richNexusCall(runRNA,
 
     if RYcodingCall.isatty() == False:
         RYfiles = dict()
-        RYfilesImport = open(RYcodingCall, 'rU').readlines()
+        RYfilesImport = RYcodingCall
         for lines in RYfilesImport:
             RYfiles[lines.rstrip('\n').split(',')[0]] = (lines.rstrip('\n').split(',')[1])
 

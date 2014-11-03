@@ -388,7 +388,7 @@ class BaseHandle:
                 newSeqList.append(newSeqData)
         else:
             for seqData in seqlist:
-                newSeqData = ReplaceThird(self, seqData, position)
+                newSeqData = ReplaceThird(self, seqData, int(position))
                 newSeqList.append(newSeqData)
 
 
