@@ -33,8 +33,8 @@ except ImportError, e:
 
 
 import textwrap
-from src.Nex import richNexusCall
-from src.Functions import Convert, ConvertAll
+from src.nex import richNexusCall
+from src.functions import Convert, ConvertAll
 
 
 

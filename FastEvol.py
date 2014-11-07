@@ -27,9 +27,9 @@ import textwrap
 from Bio.Nexus import Nexus
 from Bio import SeqIO
 import sys
-from src.Functions import fastEvol, Convert, removePerBin
+from src.functions import fastEvol, Convert, removePerBin
 from Bio.AlignIO import MultipleSeqAlignment
-from src.Handler import NexusHandler
+from src.handler import NexusHandler
 
 
 parser = argparse.ArgumentParser(prog='FastEvol',

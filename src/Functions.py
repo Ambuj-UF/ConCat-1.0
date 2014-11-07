@@ -33,7 +33,7 @@ except:
 
 from array import array
 from Bio import AlignIO
-from Handler import *
+from handler import *
 from Bio.Alphabet import IUPAC, Gapped
 from Bio import SeqIO
 

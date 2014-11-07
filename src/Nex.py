@@ -22,8 +22,8 @@
 import glob
 import sys
 import csv
-from Handler import *
-from Functions import *
+from handler import *
+from functions import *
 import timeit
 
 
