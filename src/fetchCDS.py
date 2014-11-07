@@ -78,12 +78,12 @@ def cdsExt(ID, geneName):
 
     return record
 
-def fetchCDS(geneName, group):
+def importCDS(geneName, group):
 
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
 
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, silent=True)
     records = Entrez.read(handle)
     idList = records["IdList"]
 
