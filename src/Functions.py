@@ -159,7 +159,7 @@ def RCVprotCal(combine):
         numS = numS + val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t')
         numC = numC + val.seq.count('C') + val.seq.count('c')
         numC = numH + val.seq.count('H') + val.seq.count('h')
-        numU = numU + val.seq.count('U') + val.seq.count('u')
+        numU = numU + val.seq.count('A') + val.seq.count('A')
         numG = numG + val.seq.count('G') + val.seq.count('g')
         numP = numP + val.seq.count('P') + val.seq.count('p')
     
@@ -174,7 +174,7 @@ def RCVprotCal(combine):
                                      val.seq.count('S') + val.seq.count('s') + val.seq.count('T') + val.seq.count('t'),\
                                      val.seq.count('C') + val.seq.count('c'),\
                                      val.seq.count('H') + val.seq.count('h'),\
-                                     val.seq.count('U') + val.seq.count('u'),\
+                                     val.seq.count('A') + val.seq.count('A'),\
                                      val.seq.count('G') + val.seq.count('g'),\
                                      val.seq.count('P') + val.seq.count('p')])
     
@@ -317,7 +317,7 @@ def binAll(rcvRange, entropyRange, combined, RCVdict, entropyDict, gcDict, gcRan
                 sink = gcDict[key]
             except KeyError:
                 gcDict[key] = (['NA'])
-            if val >= rStart and val <= rEnd:
+            if float(val.lstrip('[ ').rstrip(' ]')) >= rStart and float(val.lstrip('[ ').rstrip(' ]')) <= rEnd:
                 try:
                     lineListRcv.append("BIN_RCV %s = %s-%s [RCV Score = %s] [Entropy = %s] [GC Content (in percentage) = %s]" %(key, combined.charsets[key][0], combined.charsets[key][-1], val, entropyDict[key], gcDict[key]))
                 except KeyError:
@@ -529,7 +529,7 @@ def removePerBin(filename):
 
 
 
-def gcUserBin(combined, part, gcDict):
+def gcUserBin(part, gcDict):
     """
         Create Bin data for user defined GC partition range.
         """
@@ -538,22 +538,34 @@ def gcUserBin(combined, part, gcDict):
         gcList.append(val)
     
     gcList.sort(); npart = 100/part; counter = 1; myDict = dict()
-    while counter <= npart:
-        if counter == 1:
-            myDict['Percentile[%s-%s]' %((counter - 1)*part, counter*part)] = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
-        elif counter == npart and counter*part != 100:
-            myDict['Percentile[%s-%s]' %((counter)*part, 100)] = ([val for val in gcList if val not in [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]])
-        else:
-            dataCurr = [x for x in gcList if x <= percentile(gcList, float(part*counter)/100)]
-            dataPast = [x for x in gcList if x <= percentile(gcList, float(part*(counter-1))/100)]
-            myDict['Percentile[%s-%s]' %((counter-1)*part, (counter)*part)] = ([x for x in dataCurr if x not in dataPast])
-        counter = counter + 1
+    
+    rangeList = range(0, 100, part)
+    rangeList.append(100)
+    
+    for i, ranges in enumerate(rangeList):
+        try:
+            rangeList[i] = str(ranges) + '-' + str(rangeList[i+1])
+        except IndexError:
+            rangeList[i] = str(ranges) + '-' + '100'
+
+    if rangeList[-1] == '100-100':
+        rangeList = rangeList[:-1]
+
+    for ranges in rangeList:
+        myDict["Percentile[" + ranges + "]"] = list()
+        for val in gcList:
+            if val >= percentile(gcList, float(ranges.split('-')[0])/100) and val < percentile(gcList, float(ranges.split('-')[1])/100):
+                myDict["Percentile[" + ranges + "]"].append(val)
+    myDict["Percentile[" + rangeList[-1] + "]"].append(max(gcList))
+
 
     retDict = dict()
+
     for key, val in myDict.items():
         for i, inval in enumerate(val):
             for inkey, gcVal in gcDict.items():
-                val[i] = inkey if inval == gcVal else None
+                if inval == gcVal:
+                    val[i] = inkey
         myDict[key] = (val)
     return myDict
 

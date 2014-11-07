@@ -387,8 +387,8 @@ def richNexusCall(runRNA,
     if GC == True:
         gcDict = GCcontent(combined)
 
-    if usrGCbin == True:
-        usrGCdict = gcUserBin(gcDict)
+    if usrGCbin != None:
+        usrGCdict = gcUserBin(int(usrGCbin), gcDict)
 
     os.remove("Results1.nex")
 
@@ -623,10 +623,10 @@ def richNexusCall(runRNA,
                             fp.write("\t%s;\n" %inval)
 
 
-            if usrGCbin == True:
+            if usrGCbin != None:
                 fp.write("\n\t[User percentile GC Bin]\n")
                 for key, val in usrGCdict.items():
-                    fp.write("\t%s = %s" %(key, val))
+                    fp.write("\t%s = %s\n" %(key, val))
 
             fp.write("end;\n")
 

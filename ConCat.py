@@ -123,7 +123,7 @@ parser.add_argument('-gcbin', type=str, default=None,
 parser.add_argument('-pbin', action='store_true', default=False,
                     help='Use this function if you want to store RCV, GC and/or Entropy data in percentile bins')
 
-parser.add_argument('-ugcbin', action='store_true', default=False,
+parser.add_argument('-ugcbin', type=str, default=None,
                     help='Use this function if you want to create GC bin by supplied GC percentile partition.')
 
 
@@ -141,6 +141,9 @@ if args.ebin == True and not args.shannon:
 
 if args.gcbin == True and not args.GC:
     parser.error('-GC argument is required in "-gcbin" mode.')
+
+if args.ugcbin != None and args.pbin == False:
+    parser.error('-pbin argument is required with -ugcbin.')
 
 if args.pbin == True:
     if args.GC == True or args.shannon == True or args.rcv == True:
