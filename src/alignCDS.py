@@ -65,15 +65,12 @@ def translator(recordData, ign, omit, table):
         if ign == False:
             if "*" in seqT:
                 counter['one'] = seqT.count('*')
-                print("Found stop codon while using 1st frame\n")
                 seqT = _translate_str(str(rec.seq[1:len(rec.seq)] + Seq("N", generic_dna)), table)
                 if "*" in seqT:
                     counter['two'] = seqT.count('*')
-                    print("Found stop codon while using 2nd frame\n")
                     seqT = _translate_str(str(rec.seq[2:len(rec.seq)] + Seq("NN", generic_dna)), table)
                     if "*" in seqT:
                         counter['three'] = seqT.count('*')
-                        print("Found stop codon while using 3rd frame\n")
                         if omit == False:
                             if min(counter, key=counter.get) == 'one':
                                 seqT = _translate_str(str(rec.seq), table)
@@ -143,33 +140,36 @@ def cleanAli(recordNuc, omit, fileName):
         
         records[i].seq = Seq(str(sequence), generic_dna)
     
-    if args.omit == False:
-        with open("../Input/" + fileName.split('.')[0] + "_omited.nex", 'w') as fp:
+    if omit == False:
+        with open("../Input/" + fileName.split('.')[0] + ".nex", 'w') as fp:
             SeqIO.write(records, fp, "nexus")
     else:
         with open("../Input/" + fileName.split('.')[0] + "_omited.nex", 'w') as fp:
             SeqIO.write(records, fp, "nexus")
 
+    os.remove('translated.fas')
+    os.remove('tAligned.fas')
 
-def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CodonTable=None):
+
+def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
     
     codonTables = ['Ascidian Mitochondrial', 'SGC9', 'Coelenterate Mitochondrial', 'Protozoan Mitochondrial', 'Vertebrate Mitochondrial', 'Plant Plastid', 'Thraustochytrium Mitochondrial', 'Blepharisma Macronuclear', 'Mold Mitochondrial', 'Invertebrate Mitochondrial', 'Standard', 'Trematode Mitochondrial', 'Scenedesmus obliquus Mitochondrial', 'Euplotid Nuclear', 'Yeast Mitochondrial', 'Spiroplasma', 'Alternative Flatworm Mitochondrial', 'Ciliate Nuclear', 'SGC8', 'Alternative Yeast Nuclear', 'Hexamita Nuclear', 'SGC5', 'SGC4', 'SGC3', 'SGC2', 'SGC1', 'SGC0', 'Flatworm Mitochondrial', 'Dasycladacean Nuclear', 'Chlorophycean Mitochondrial', 'Mycoplasma', 'Bacterial', 'Echinoderm Mitochondrial']
     
-    if CodonTable == None:
+    if CT == None:
         table = CodonTable.ambiguous_dna_by_id[1]
-    elif CodonTable != None and CodonTable in codonTables:
+    elif CT != None and CT in codonTables:
         table = CodonTable.ambiguous_generic_by_name[CodonTable]
     else:
         table = CodonTable.ambiguous_generic_by_name['Standard']
 
     
-    handle = open(inputFile, 'rU')
+    handle = open("../Align/" + inputFile, 'rU')
     records = list(SeqIO.parse(handle, 'fasta'))
     for j, rec in enumerate(records):
         if 'TAA' in rec.seq[-3:] or 'TGA' in rec.seq[-3:] or 'TAG' in rec.seq[-3:]:
             records[j].seq = rec.seq[0:-3]
 
-    if args.omit == True:
+    if omit == True:
         badQuality = list()
         fdata = open("../Align/" + inputFile.split('.')[0] + '.log', 'r').readlines()
         for lines in fdata:
@@ -184,7 +184,7 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CodonTable=None):
 
     records = translator(records, ign, omit, table)
     alignP(pkg)
-    cleanAli(records, omit, fileName)
+    cleanAli(records, omit, inputFile)
 
 
 if __name__ == "__main__":
