@@ -25,6 +25,9 @@ import subprocess
 import platform
 import argparse
 import textwrap
+import warnings
+from src.fetchSeq import cdsImport, mrnaImport
+from src.aligner import cdsAlign, mrnaAlign
 from Bio import AlignIO
 from StringIO import StringIO
 from Bio.Alphabet import IUPAC, Gapped
@@ -47,6 +50,14 @@ parser = argparse.ArgumentParser(prog='ConCat-Align',
     '''))
 
 
+parser.add_argument('-impcds', type=str, default=None,
+                    help='Takes gene name via file for CDS import')
+
+parser.add_argument('-impmrna', type=str, default=None,
+                    help='Takes gene name via file for mRNA import')
+
+parser.add_argument('-group', type=str, default=None,
+                    help='Takes group name to extract sequence data')
 
 parser.add_argument('-pkg', type=str, default='muscle',
                     choices=['muscle', 'mafft'], required=True,
@@ -71,60 +82,92 @@ if argmnts.pkg == 'mafft' and argmnts.sep == False and not argmnts.args:
 if argmnts.sep == True and not argmnts.argf:
     parser.error('-sep argument is required in "-argf" mode.')
 
+if argmnts.impcds == True and argmnts.impmrna == True:
+    parser.error('-impcds argument and -impcds cannot be used together')
+
+if argmnts.impcds == True and not argmnts.group:
+    parser.error('-group argument is required in "-impcds" mode.')
+
+if argmnts.impmrna == True and not argmnts.group:
+    parser.error('-group argument is required in "-impmrna" mode.')
+
+
+def warnfxn():
+    warnings.warn("deprecated", DeprecationWarning)
+
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    warnfxn()
+
 
 
 def main():
-    
-    files = glob.glob("Align/*.*")
-    files.remove('Align/README.txt')
+    if argmnts.impcds != None:
+        genes = open(argmnts.impcds, 'r').readlines()
+        for geneName in genes:
+            warnings.filterwarnings("ignore")
+            cdsImport(geneName.rstrip('\n'), argmnts.group)
+            cdsAlign(geneName.rstrip('\n') + ".fas")
 
-    if argmnts.pkg == 'muscle':
-        for filename in files:
-            fname = filename.replace('Align/', '').split('.')[0] + '.fas'
-            if 'Darwin' in platform.system():
-                subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
-            else:
-                subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+    elif argmnts.impmrna != None:
+        genes = open(argmnts.impmrna, 'r').readlines()
+        for geneName in genes:
+            warnings.filterwarnings("ignore")
+            mrnaImport(geneName.rstrip('\n'), argmnts.group)
+            mrnaAlign(geneName.rstrip('\n') + ".fas")
+
+    else:
+        files = glob.glob("Align/*.*")
+        files.remove('Align/README.txt')
+
+        if argmnts.pkg == 'muscle':
+            for filename in files:
+                fname = filename.replace('Align/', '').split('.')[0] + '.fas'
+                if 'Darwin' in platform.system():
+                    subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                else:
+                    subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
 
 
-    elif argmnts.pkg == 'mafft':
-        if argmnts.sep == True:
-            with open(argmnts.argf) as f:
-                data = f.readlines()
-                dataDict = dict()
-                for lines in data:
-                    dataDict[lines.split(' = ')[0]] = (lines.split(' = ')[1])
+        elif argmnts.pkg == 'mafft':
+            if argmnts.sep == True:
+                with open(argmnts.argf) as f:
+                    data = f.readlines()
+                    dataDict = dict()
+                    for lines in data:
+                        dataDict[lines.split(' = ')[0]] = (lines.split(' = ')[1])
                             
-            for filename in files:
-                fname = filename.replace('Align/', '').split('.')[0] + '.fas'
-                try:
-                    subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
-                except:
-                    print "Error in argument passed for %s in %s file" %(filename.replace('Align/', ''), argmnts.argf)
-                    continue
+                for filename in files:
+                    fname = filename.replace('Align/', '').split('.')[0] + '.fas'
+                    try:
+                        subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
+                    except:
+                        print "Error in argument passed for %s in %s file" %(filename.replace('Align/', ''), argmnts.argf)
+                        continue
 
 
-        else:
-            for filename in files:
-                fname = filename.replace('Align/', '').split('.')[0] + '.fas'
-                arguments = argmnts.args.replace('[', '').replace(']', '')
-                subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
+            else:
+                for filename in files:
+                    fname = filename.replace('Align/', '').split('.')[0] + '.fas'
+                    arguments = argmnts.args.replace('[', '').replace(']', '')
+                    subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
 
-    os.chdir('Output')
-    files = glob.glob('*.fas')
+        os.chdir('Output')
+        files = glob.glob('*.fas')
 
-    for filename in files:
-        try:
-            alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
-            g = open('../Input/' + filename.split(".")[0] + '.nex', 'w')
-            g.write(alignment.format("nexus"))
-            g.close()
+        for filename in files:
+            try:
+                alignment = AlignIO.read(open(filename), "fasta", alphabet=Gapped(IUPAC.protein))
+                g = open('../Input/' + filename.split(".")[0] + '.nex', 'w')
+                g.write(alignment.format("nexus"))
+                g.close()
         
-        except ValueError:
-            continue
+            except ValueError:
+                continue
     
 
-    os.chdir('..')
+        os.chdir('..')
 
 
 

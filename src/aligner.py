@@ -22,6 +22,7 @@
 
 
 import sys
+import os
 import platform
 import subprocess
 
@@ -110,13 +111,13 @@ def translator(recordData, ign, omit, table):
 def alignP(pkg, arguments=None):
     if pkg == 'muscle':
         if 'Darwin' in platform.system():
-            subprocess.call("./muscle/muscle -in translated.fas -out tAligned.fas", shell=True)
+            subprocess.call("./src/muscle/muscle -in translated.fas -out tAligned.fas", shell=True)
         else:
-            subprocess.call("./muscle/muscleLinux -in translated.fas -out tAligned.fas", shell=True)
+            subprocess.call("./src/muscle/muscleLinux -in translated.fas -out tAligned.fas", shell=True)
     
     else:
         arguments = arguments.replace('[', '').replace(']', '')
-        subprocess.call("./mafft/mafft.bat %s translated.fas > tAligned.fas" %arguments, shell=True)
+        subprocess.call("./src/mafft/mafft.bat %s translated.fas > tAligned.fas" %arguments, shell=True)
 
 
 def cleanAli(recordNuc, omit, fileName):
@@ -141,10 +142,10 @@ def cleanAli(recordNuc, omit, fileName):
         records[i].seq = Seq(str(sequence), generic_dna)
     
     if omit == False:
-        with open("../Input/" + fileName.split('.')[0] + ".nex", 'w') as fp:
+        with open("Input/" + fileName.split('.')[0] + ".nex", 'w') as fp:
             SeqIO.write(records, fp, "nexus")
     else:
-        with open("../Input/" + fileName.split('.')[0] + "_omited.nex", 'w') as fp:
+        with open("Input/" + fileName.split('.')[0] + "_omited.nex", 'w') as fp:
             SeqIO.write(records, fp, "nexus")
 
     os.remove('translated.fas')
@@ -163,7 +164,7 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
         table = CodonTable.ambiguous_generic_by_name['Standard']
 
     
-    handle = open("../Align/" + inputFile, 'rU')
+    handle = open("Align/" + inputFile, 'rU')
     records = list(SeqIO.parse(handle, 'fasta'))
     for j, rec in enumerate(records):
         if 'TAA' in rec.seq[-3:] or 'TGA' in rec.seq[-3:] or 'TAG' in rec.seq[-3:]:
@@ -171,7 +172,7 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
 
     if omit == True:
         badQuality = list()
-        fdata = open("../Align/" + inputFile.split('.')[0] + '.log', 'r').readlines()
+        fdata = open("Align/" + inputFile.split('.')[0] + '.log', 'r').readlines()
         for lines in fdata:
             badQuality.append(lines.split(' ')[0])
         
@@ -187,6 +188,43 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
     cleanAli(records, omit, inputFile)
 
 
-if __name__ == "__main__":
-    main()
+def mrnaAlign(inputFile, pkg, arguments=None):
+    if pkg != 'muscle' and arguments == None:
+        pkg = 'muscle'
+    
+    if pkg == 'muscle':
+        if 'Darwin' in platform.system():
+            subprocess.call("./src/muscle/muscle -in %s -out %s" %("Align/"+inputFile, "Input/"+inputFile), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            handle = open("Input/"+inputFile, 'rU')
+            record = list(SeqIO.parse(handle, 'fasta'))
+            with open("Input/" + inputFile.split('.')[0] + ".nex", 'w') as fp:
+                SeqIO.write(record, fp, 'nexus')
+            os.remove("Input/"+inputFile)
+        else:
+            subprocess.call("./src/muscle/muscleLinux -in %s -out %s" %("Align/"+inputFile, "Input/"+inputFile), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            handle = open("Input/"+inputFile, 'rU')
+            record = list(SeqIO.parse(handle, 'fasta'))
+            with open("Input/" + inputFile.split('.')[0] + ".nex", 'w') as fp:
+                SeqIO.write(record, fp, 'nexus')
+            os.remove("Input/"+inputFile)
+    else:
+        arguments = arguments.replace('[', '').replace(']', '')
+        subprocess.call("./src/mafft/mafft.bat %s %s > %s" %(arguments,"Align/"+inputFile, "Input/"+inputFile), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        handle = open("Input/"+inputFile, 'rU')
+        record = list(SeqIO.parse(handle, 'fasta'))
+        with open("Input/" + inputFile.split('.')[0] + ".nex", 'w') as fp:
+            SeqIO.write(record, fp, 'nexus')
+        os.remove("Input/"+inputFile)
+
+
+
+
+
+
+
+
+
+
+
+
 

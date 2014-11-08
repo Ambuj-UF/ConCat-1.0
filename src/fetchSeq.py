@@ -32,7 +32,6 @@ except ImportError, e:
     sys.exit("Biopython not found")
 
 
-
 def xmlcreate(ID):
     url = "http://www.ncbi.nlm.nih.gov/gene/" + ID
     xmlData = urllib2.urlopen(url)
@@ -53,7 +52,7 @@ def xmlparser():
 
 def cdsExt(ID, geneName):
     retdata = Entrez.efetch(db="nucleotide", id=ID, rettype='gb', retmode='text').read()
-    with open("../Align/" + geneName + ".log", "a") as fp:
+    with open("Align/" + geneName.split('.')[0] + ".log", "a") as fp:
         if 'LOW QUALITY PROTEIN' in retdata:
             fp.write('%s CDS is of low quality\n' %ID)
     
@@ -72,22 +71,31 @@ def cdsExt(ID, geneName):
                         print("Problem found while extracting cds from %s. Please report this issue to ambuj (at) ufl (dot) edu" %obj)
                         continue
 
-    recData = Entrez.efetch(db="nucleotide", id=ID, rettype="gb")
-    record = rec = SeqIO.read(recData, 'genbank')
+    recData = Entrez.efetch(db="nucleotide", id=ID, rettype="gb", warning=False)
+    record = SeqIO.read(recData, 'genbank')
     record.seq = record.seq[cdsRange[0]-1:cdsRange[1]]
 
     return record
 
-def importCDS(geneName, group):
 
+def mrnaExt(ID):
+    recData = Entrez.efetch(db="nucleotide", id=ID, rettype="gb", warning=False)
+    record = SeqIO.read(recData, 'genbank')
+    return record
+
+
+def cdsImport(geneName, group):
+    
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
-
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, silent=True)
+    
+    print("Importing CDS sequences for %s gene" %geneName)
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
     idList = records["IdList"]
-
+    
     outRecord = list()
+    
     for ids in idList:
         xmlcreate(ids)
         refIds = xmlparser()
@@ -102,26 +110,66 @@ def importCDS(geneName, group):
             continue
         for rec in recordList:
             longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
-        print longestRec.description
+        print(longestRec.description)
         outRecord.append(longestRec)
 
-    with open("../Align/" + geneName + '.fas', 'w') as fp:
+    with open("Align/" + geneName + '.fas', 'w') as fp:
         SeqIO.write(outRecord, fp, 'fasta')
 
-    fdata = open("../Align/" + geneName + '.fas', 'r').readlines()
-    with open("../Align/" + geneName + '.fas', 'w') as fp:
+    fdata = open("Align/" + geneName + '.fas', 'r').readlines()
+    with open("Align/" + geneName + '.fas', 'w') as fp:
         for lines in fdata:
             if '>' in lines and 'PREDICTED' in lines:
-                newLine = '>' + lines.split(' ')[3] + '_' + lines.split(' ')[2] + '|' + lines.split(' ')[0].lstrip('>')
+                newLine = '>' + lines.split(' ')[2] + '_' + lines.split(' ')[3] + '|' + lines.split(' ')[0].lstrip('>')
                 fp.write('%s\n'%newLine)
             elif '>' in lines and 'PREDICTED' not in lines:
-                newLine = '>' + lines.split(' ')[2] + '_' + lines.split(' ')[1] + '|' + lines.split(' ')[0].lstrip('>')
+                newLine = '>' + lines.split(' ')[1] + '_' + lines.split(' ')[2] + '|' + lines.split(' ')[0].lstrip('>')
                 fp.write('%s\n'%newLine)
             else:
                 fp.write('%s'%lines)
 
 
 
+def mrnaImport(geneName, group):
+    inpTerm = geneName + "[sym] AND " + group + "[orgn]"
+    Entrez.email = 'sendambuj@gmail.com'
+    
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, silent=True)
+    records = Entrez.read(handle)
+    idList = records["IdList"]
+    
+    outRecord = list()
+    for ids in idList:
+        xmlcreate(ids)
+        refIds = xmlparser()
+        os.remove('export.xml')
+        recordList = list()
+        for inIDs in refIds:
+            recordList.append(mrnaExt(inIDs))
+        
+        try:
+            longestRec = recordList[0]
+        except:
+            continue
+        for rec in recordList:
+            longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
+        print(longestRec.description)
+        outRecord.append(longestRec)
+    
+    with open("Align/" + geneName + '.fas', 'w') as fp:
+        SeqIO.write(outRecord, fp, 'fasta')
+    
+    fdata = open("Align/" + geneName + '.fas', 'r').readlines()
+    with open("Align/" + geneName + '.fas', 'w') as fp:
+        for lines in fdata:
+            if '>' in lines and 'PREDICTED' in lines:
+                newLine = '>' + lines.split(' ')[2] + '_' + lines.split(' ')[3] + '|' + lines.split(' ')[0].lstrip('>')
+                fp.write('%s\n'%newLine)
+            elif '>' in lines and 'PREDICTED' not in lines:
+                newLine = '>' + lines.split(' ')[1] + '_' + lines.split(' ')[2] + '|' + lines.split(' ')[0].lstrip('>')
+                fp.write('%s\n'%newLine)
+            else:
+                fp.write('%s'%lines)
 
 
 
