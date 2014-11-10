@@ -21,12 +21,13 @@
 
 import os
 import glob
+import shutil
 import subprocess
 import platform
 import argparse
 import textwrap
 import warnings
-from src.fetchSeq import cdsImport, mrnaImport
+from src.fetchSeq import cdsImport, mrnaImport, oneGeneCdsImport, oneGeneMrnaImport
 from src.aligner import cdsAlign, mrnaAlign
 from Bio import AlignIO, SeqIO
 from StringIO import StringIO
@@ -55,6 +56,12 @@ parser.add_argument('-cds', type=str, default=None,
 
 parser.add_argument('-mrna', type=str, default=None,
                     help='Takes gene name via file for mRNA import')
+
+parser.add_argument('-gcds', type=str, default=None,
+                    help='Takes gene name via file for CDS import')
+
+parser.add_argument('-gmrna', type=str, default=None,
+                    help='Takes gene name via file for CDS import')
 
 parser.add_argument('-orgn', type=str, default=None,
                     help='Takes group name to extract sequence data')
@@ -116,7 +123,7 @@ def remDuplicate():
 
 
 def main():
-    if argmnts.impcds != None:
+    if argmnts.cds != None:
         genes = open(argmnts.cds, 'r').readlines()
         for geneName in genes:
             warnings.filterwarnings("ignore")
@@ -124,13 +131,43 @@ def main():
             remDuplicate()
             cdsAlign(geneName.rstrip('\n') + ".fas")
 
-    elif argmnts.impmrna != None:
+
+    elif argmnts.mrna != None:
         genes = open(argmnts.mrna, 'r').readlines()
         for geneName in genes:
             warnings.filterwarnings("ignore")
             mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
             remDuplicate()
             mrnaAlign(geneName.rstrip('\n') + ".fas")
+
+
+    elif argmnts.gcds != None:
+        genes = open(argmnts.gcds, 'r').readlines()
+        geneRecord = list()
+        for geneName in genes:
+            warnings.filterwarnings("ignore")
+            geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
+
+        with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
+            SeqIO.write(geneRecord, fp, "fasta")
+        
+        cdsAlign(argmnts.orgn + ".fas")
+        shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
+            
+            
+    elif argmnts.gmrna != None:
+        genes = open(argmnts.gmrna, 'r').readlines()
+        geneRecord = list()
+        for geneName in genes:
+            warnings.filterwarnings("ignore")
+            geneRecord.append(oneGeneMrnaImport(geneName.rstrip('\n'), argmnts.orgn))
+                
+        with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
+            SeqIO.write(geneRecord, fp, "fasta")
+                
+        cdsAlign(argmnts.orgn + ".fas")
+        shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
+
 
     else:
         files = glob.glob("Align/*.*")

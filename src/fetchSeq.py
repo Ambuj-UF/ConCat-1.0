@@ -174,9 +174,58 @@ def mrnaImport(geneName, group):
 
 
 
+def oneGeneCdsImport(geneName, group):
+
+    inpTerm = geneName + "[sym] AND " + group + "[orgn]"
+    Entrez.email = 'sendambuj@gmail.com'
+        
+    print("Importing CDS sequences for %s gene" %geneName)
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    records = Entrez.read(handle)
+    idList = records["IdList"][0]
+    
+    xmlcreate(ids)
+    refIds = xmlparser()
+    os.remove('export.xml')
+    recordList = list()
+    for inIDs in refIds:
+        recordList.append(cdsExt(inIDs))
+        
+    try:
+        longestRec = recordList[0]
+    except:
+        continue
+    for rec in recordList:
+        longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
+
+    return longestRec
 
 
-
+def oneGeneMrnaImport(geneName, group):
+    
+    inpTerm = geneName + "[sym] AND " + group + "[orgn]"
+    Entrez.email = 'sendambuj@gmail.com'
+    
+    print("Importing CDS sequences for %s gene" %geneName)
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    records = Entrez.read(handle)
+    idList = records["IdList"][0]
+    
+    xmlcreate(ids)
+    refIds = xmlparser()
+    os.remove('export.xml')
+    recordList = list()
+    for inIDs in refIds:
+        recordList.append(mrnaExt(inIDs))
+    
+    try:
+        longestRec = recordList[0]
+    except:
+        continue
+    for rec in recordList:
+        longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
+    
+    return longestRec
 
 
 
