@@ -50,13 +50,13 @@ parser = argparse.ArgumentParser(prog='ConCat-Align',
     '''))
 
 
-parser.add_argument('-impcds', type=str, default=None,
+parser.add_argument('-cds', type=str, default=None,
                     help='Takes gene name via file for CDS import')
 
-parser.add_argument('-impmrna', type=str, default=None,
+parser.add_argument('-mrna', type=str, default=None,
                     help='Takes gene name via file for mRNA import')
 
-parser.add_argument('-group', type=str, default=None,
+parser.add_argument('-orgn', type=str, default=None,
                     help='Takes group name to extract sequence data')
 
 parser.add_argument('-pkg', type=str, default='muscle',
@@ -66,30 +66,24 @@ parser.add_argument('-pkg', type=str, default='muscle',
 parser.add_argument('-args', type=str,
                     help='Arguments to run MAFFT. EXAMPLE: "--retree 2 --maxiterate 10"')
 
-parser.add_argument('-sep', action='store_true', default=False,
-                    help='Include if you want to run different models for different alignment files')
-
-parser.add_argument('-argf', type=str,
+parser.add_argument('-argf', type=str, default=None,
                     help='Takes argument file as input')
 
 
 argmnts = parser.parse_args()
 
 
-if argmnts.pkg == 'mafft' and argmnts.sep == False and not argmnts.args:
-    parser.error('-CMND argument is required in "mafft" mode.')
-
-if argmnts.sep == True and not argmnts.argf:
-    parser.error('-sep argument is required in "-argf" mode.')
+if argmnts.pkg == 'mafft' and not argmnts.args:
+    parser.error('-args argument is required in "mafft" mode.')
 
 if argmnts.impcds == True and argmnts.impmrna == True:
-    parser.error('-impcds argument and -impcds cannot be used together')
+    parser.error('-cds argument and -cds cannot be used together')
 
 if argmnts.impcds == True and not argmnts.group:
-    parser.error('-group argument is required in "-impcds" mode.')
+    parser.error('-orgn argument is required in "-cds" mode.')
 
 if argmnts.impmrna == True and not argmnts.group:
-    parser.error('-group argument is required in "-impmrna" mode.')
+    parser.error('-orgn argument is required in "-mrna" mode.')
 
 
 def warnfxn():
@@ -104,17 +98,17 @@ with warnings.catch_warnings():
 
 def main():
     if argmnts.impcds != None:
-        genes = open(argmnts.impcds, 'r').readlines()
+        genes = open(argmnts.cds, 'r').readlines()
         for geneName in genes:
             warnings.filterwarnings("ignore")
-            cdsImport(geneName.rstrip('\n'), argmnts.group)
+            cdsImport(geneName.rstrip('\n'), argmnts.orgn)
             cdsAlign(geneName.rstrip('\n') + ".fas")
 
     elif argmnts.impmrna != None:
-        genes = open(argmnts.impmrna, 'r').readlines()
+        genes = open(argmnts.mrna, 'r').readlines()
         for geneName in genes:
             warnings.filterwarnings("ignore")
-            mrnaImport(geneName.rstrip('\n'), argmnts.group)
+            mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
             mrnaAlign(geneName.rstrip('\n') + ".fas")
 
     else:
@@ -131,12 +125,12 @@ def main():
 
 
         elif argmnts.pkg == 'mafft':
-            if argmnts.sep == True:
+            if argmnts.argf != None:
                 with open(argmnts.argf) as f:
                     data = f.readlines()
                     dataDict = dict()
                     for lines in data:
-                        dataDict[lines.split(' = ')[0]] = (lines.split(' = ')[1])
+                        dataDict[lines.split('=')[0].lstrip(' ').rstrip(' ')] = (lines.split('=')[1].lstrip(' ').rstrip(' '))
                             
                 for filename in files:
                     fname = filename.replace('Align/', '').split('.')[0] + '.fas'
