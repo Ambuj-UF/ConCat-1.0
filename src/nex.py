@@ -285,7 +285,7 @@ def richNexusCall(runRNA,
                             newStr = newStr + '|' + data
 
                         dataList = newStr
-                        val = val.split('|')[0] + "[" + dataList + "]"
+                        val = val.split('|')[0] + "[" + dataList.lstrip("'").rstrip("'") + "]"
                         str = str + ' ' + val
 
                     lines = lines.split(' = ')[0] + ' = ' + str + ';\n'

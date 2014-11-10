@@ -28,7 +28,7 @@ import textwrap
 import warnings
 from src.fetchSeq import cdsImport, mrnaImport
 from src.aligner import cdsAlign, mrnaAlign
-from Bio import AlignIO
+from Bio import AlignIO, SeqIO
 from StringIO import StringIO
 from Bio.Alphabet import IUPAC, Gapped
 
@@ -95,6 +95,25 @@ with warnings.catch_warnings():
     warnfxn()
 
 
+def remDuplicate():
+    files = glob.glob('Align/*.fas')
+    for file in files:
+        handle = open(file, 'rU')
+        records = list(SeqIO.parse(handle, 'fasta'))
+        store = list()
+        print("Removing duplicate sequences from file %s" %file)
+        for x in records:
+            for y in [z for z in records if z.id != x.id]:
+                if x.id.split('|')[0] == y.id.split('|')[0]:
+                    if x.seq.count('-') > y.seq.count('-'):
+                        store.append(x.id)
+                    elif x.seq.count('-') <= y.seq.count('-'):
+                        store.append(y.id)
+    
+        newRec = [x for x in records if x.id not in store]
+        with open(file, 'w') as fp:
+            SeqIO.write(newRec, fp, 'fasta')
+
 
 def main():
     if argmnts.impcds != None:
@@ -102,6 +121,7 @@ def main():
         for geneName in genes:
             warnings.filterwarnings("ignore")
             cdsImport(geneName.rstrip('\n'), argmnts.orgn)
+            remDuplicate()
             cdsAlign(geneName.rstrip('\n') + ".fas")
 
     elif argmnts.impmrna != None:
@@ -109,6 +129,7 @@ def main():
         for geneName in genes:
             warnings.filterwarnings("ignore")
             mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
+            remDuplicate()
             mrnaAlign(geneName.rstrip('\n') + ".fas")
 
     else:
