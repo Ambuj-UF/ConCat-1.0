@@ -44,7 +44,7 @@ def xmlparser():
     IDs = list()
     handle = open('export.xml', 'r').readlines()
     for lines in handle:
-        if '→' in lines and 'Location' not in lines:
+        if '→' in lines and "/nuccore/" in lines and 'Location' not in lines:
             IDs.append(lines.split('→')[0].split('/')[2].split('"')[0])
     
     return IDs
@@ -179,24 +179,23 @@ def oneGeneCdsImport(geneName, group):
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
         
-    print("Importing CDS sequences for %s gene" %geneName)
+    print("Importing %s %s gene CDS sequence" %(group, geneName))
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
-    idList = records["IdList"][0]
+    ids = records["IdList"][0]
     
     xmlcreate(ids)
     refIds = xmlparser()
     os.remove('export.xml')
     recordList = list()
     for inIDs in refIds:
-        recordList.append(cdsExt(inIDs))
+        recordList.append(cdsExt(inIDs, geneName))
         
-    try:
-        longestRec = recordList[0]
-    except:
-        continue
+    longestRec = recordList[0]
     for rec in recordList:
         longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
+
+    longestRec.id = geneName
 
     return longestRec
 
@@ -206,10 +205,10 @@ def oneGeneMrnaImport(geneName, group):
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
     
-    print("Importing CDS sequences for %s gene" %geneName)
+    print("Importing %S %S gene sequences" %(group, geneName))
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
-    idList = records["IdList"][0]
+    ids = records["IdList"][0]
     
     xmlcreate(ids)
     refIds = xmlparser()
@@ -218,10 +217,7 @@ def oneGeneMrnaImport(geneName, group):
     for inIDs in refIds:
         recordList.append(mrnaExt(inIDs))
     
-    try:
-        longestRec = recordList[0]
-    except:
-        continue
+    longestRec = recordList[0]
     for rec in recordList:
         longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
     

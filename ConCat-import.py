@@ -27,6 +27,7 @@ import platform
 import argparse
 import textwrap
 import warnings
+from time import sleep
 from src.fetchSeq import cdsImport, mrnaImport, oneGeneCdsImport, oneGeneMrnaImport
 from src.aligner import cdsAlign, mrnaAlign
 from Bio import AlignIO, SeqIO
@@ -83,13 +84,13 @@ argmnts = parser.parse_args()
 if argmnts.pkg == 'mafft' and not argmnts.args:
     parser.error('-args argument is required in "mafft" mode.')
 
-if argmnts.impcds == True and argmnts.impmrna == True:
+if argmnts.cds == True and argmnts.mrna == True:
     parser.error('-cds argument and -cds cannot be used together')
 
-if argmnts.impcds == True and not argmnts.group:
+if argmnts.cds == True and not argmnts.orgn:
     parser.error('-orgn argument is required in "-cds" mode.')
 
-if argmnts.impmrna == True and not argmnts.group:
+if argmnts.mrna == True and not argmnts.orgn:
     parser.error('-orgn argument is required in "-mrna" mode.')
 
 
@@ -124,44 +125,97 @@ def remDuplicate():
 
 def main():
     if argmnts.cds != None:
-        genes = open(argmnts.cds, 'r').readlines()
+        genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
         for geneName in genes:
-            warnings.filterwarnings("ignore")
-            cdsImport(geneName.rstrip('\n'), argmnts.orgn)
-            remDuplicate()
-            cdsAlign(geneName.rstrip('\n') + ".fas")
+            try:
+                warnings.filterwarnings("ignore")
+                cdsImport(geneName.rstrip('\n'), argmnts.orgn)
+                remDuplicate()
+                cdsAlign(geneName.rstrip('\n') + ".fas")
+            except:
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Resuming parser in 5 seconds\n")
+                sleep(5)
+                try:
+                    warnings.filterwarnings("ignore")
+                    cdsImport(geneName.rstrip('\n'), argmnts.orgn)
+                    remDuplicate()
+                    cdsAlign(geneName.rstrip('\n') + ".fas")
+                except:
+                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    continue
 
 
     elif argmnts.mrna != None:
-        genes = open(argmnts.mrna, 'r').readlines()
+        genes = [x for x in open(argmnts.mrna, 'r').readlines() if x != '' and x != '\n']
         for geneName in genes:
-            warnings.filterwarnings("ignore")
-            mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
-            remDuplicate()
-            mrnaAlign(geneName.rstrip('\n') + ".fas")
+            try:
+                warnings.filterwarnings("ignore")
+                mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
+                remDuplicate()
+                mrnaAlign(geneName.rstrip('\n') + ".fas")
+            except:
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Resuming parser in 5 seconds\n")
+                sleep(5)
+                try:
+                    warnings.filterwarnings("ignore")
+                    mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
+                    remDuplicate()
+                    mrnaAlign(geneName.rstrip('\n') + ".fas")
+                except:
+                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    continue
 
 
     elif argmnts.gcds != None:
-        genes = open(argmnts.gcds, 'r').readlines()
+        genes = [x for x in open(argmnts.gcds, 'r').readlines() if x != '' and x != '\n']
         geneRecord = list()
         for geneName in genes:
-            warnings.filterwarnings("ignore")
-            geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
+            try:
+                warnings.filterwarnings("ignore")
+                geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
+            except:
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Resuming parser in 5 seconds\n")
+                sleep(5)
+                try:
+                    warnings.filterwarnings("ignore")
+                    geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
+                except:
+                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    continue
 
+            os.remove("Align/" geneName + ".log")
+    
         with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
             SeqIO.write(geneRecord, fp, "fasta")
         
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
+        
             
             
     elif argmnts.gmrna != None:
-        genes = open(argmnts.gmrna, 'r').readlines()
+        genes = [x for x in open(argmnts.gmrna, 'r').readlines() if x != '' and x != '\n']
         geneRecord = list()
         for geneName in genes:
-            warnings.filterwarnings("ignore")
-            geneRecord.append(oneGeneMrnaImport(geneName.rstrip('\n'), argmnts.orgn))
-                
+            try:
+                warnings.filterwarnings("ignore")
+                geneRecord.append(oneGeneMrnaImport(geneName.rstrip('\n'), argmnts.orgn))
+            except:
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Resuming parser in 5 seconds\n")
+                sleep(5)
+                try:
+                    warnings.filterwarnings("ignore")
+                    geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
+                except:
+                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    continue
+    
+            os.remove("Align/" geneName + ".log")
+
         with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
             SeqIO.write(geneRecord, fp, "fasta")
                 
