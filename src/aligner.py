@@ -124,6 +124,7 @@ def cleanAli(recordNuc, omit, fileName):
     handleP = open('tAligned.fas', 'rU')
     records = list(SeqIO.parse(handleP, 'fasta'))
     
+    store = list()
     for i, rec in enumerate(records):
         nucData = [x.seq for x in recordNuc if x.id in rec.id]
         nucSeqData = spliter(nucData[0], 3)
@@ -135,11 +136,18 @@ def cleanAli(recordNuc, omit, fileName):
                 sequence = sequence + Seq("NNN", generic_dna)
                 pos = pos + 1
             else:
-                sequence = sequence + nucSeqData[pos]
-                pos = pos + 1
+                try:
+                    sequence = sequence + nucSeqData[pos]
+                    pos = pos + 1
+                except:
+                    if rec.id not in store:
+                        store.append(rec.id)
         
         
         records[i].seq = Seq(str(sequence), generic_dna)
+
+    records = [x for x in records if x.id not in store]
+    print("Failed to align following sequences: %s" %store)
     
     if omit == False:
         with open("Input/" + fileName.split('.')[0] + ".nex", 'w') as fp:

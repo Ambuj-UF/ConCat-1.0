@@ -123,6 +123,26 @@ def remDuplicate():
             SeqIO.write(newRec, fp, 'fasta')
 
 
+def remGeneDuplicate():
+    handle = open("Align/" + argmnts.orgn + ".fas", 'rU')
+    records = list(SeqIO.parse(handle, "fasta"))
+    newRec = list()
+    store=list()
+    for x in records:
+        for y in records:
+            if x.id == y.id:
+                flag = True
+                if len(x.seq) > len(y.seq) and x.id not in [z.id for z in newRec]:
+                    newRec.append(x)
+                elif len(x.seq) < len(y.seq) and y.id not in [z.id for z in newRec]:
+                    newRec.append(y)
+            elif x.id != y.id and x.id not in [z.id for z in newRec]:
+                newRec.append(x)
+
+    with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
+        SeqIO.write(newRec, fp, 'fasta')
+
+
 def main():
     if argmnts.cds != None:
         genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
@@ -186,11 +206,21 @@ def main():
                     print("Failed to import %s sequence. Skipping %s" %geneName)
                     continue
 
-            os.remove("Align/" geneName + ".log")
-    
+            os.remove("Align/" + geneName.rstrip('\n') + ".log")
+
         with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
             SeqIO.write(geneRecord, fp, "fasta")
-        
+
+        fdata = open("Align/" + argmnts.orgn + ".fas", 'r').readlines()
+        with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
+            for lines in fdata:
+                if '>' in lines:
+                    fp.write('%s\n' %lines.split(' ')[0])
+                else:
+                    fp.write('%s'%lines)
+
+        remGeneDuplicate()
+    
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
         
@@ -214,11 +244,20 @@ def main():
                     print("Failed to import %s sequence. Skipping %s" %geneName)
                     continue
     
-            os.remove("Align/" geneName + ".log")
+            os.remove("Align/" + geneName.rstrip('\n') + ".log")
 
         with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
             SeqIO.write(geneRecord, fp, "fasta")
-                
+        fdata = open("Align/" + argmnts.orgn + ".fas", 'r').readlines()
+        with open("Align/" + argmnts.orgn + ".fas", 'w') as fp:
+            for lines in fdata:
+                if '>' in lines:
+                    fp.write('%s\n' %lines.split(' ')[0])
+                else:
+                    fp.write('%s'%lines)
+
+        remGeneDuplicate()
+
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
 
