@@ -145,6 +145,7 @@ def remGeneDuplicate():
 
 def main():
     if argmnts.cds != None:
+        store = list()
         genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
         for geneName in genes:
             try:
@@ -153,8 +154,9 @@ def main():
                 remDuplicate()
                 cdsAlign(geneName.rstrip('\n') + ".fas")
             except:
-                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
                 print("Resuming parser in 5 seconds\n")
+                store.append(geneName)
                 sleep(5)
                 try:
                     warnings.filterwarnings("ignore")
@@ -162,8 +164,11 @@ def main():
                     remDuplicate()
                     cdsAlign(geneName.rstrip('\n') + ".fas")
                 except:
-                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
+                    store.append(geneName)
                     continue
+    
+        print("Following genes were excluded: %s" %set(store))
 
 
     elif argmnts.mrna != None:
@@ -175,7 +180,7 @@ def main():
                 remDuplicate()
                 mrnaAlign(geneName.rstrip('\n') + ".fas")
             except:
-                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName)
+                print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
                 print("Resuming parser in 5 seconds\n")
                 sleep(5)
                 try:
@@ -184,7 +189,7 @@ def main():
                     remDuplicate()
                     mrnaAlign(geneName.rstrip('\n') + ".fas")
                 except:
-                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
                     continue
 
 
@@ -203,7 +208,7 @@ def main():
                     warnings.filterwarnings("ignore")
                     geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
                 except:
-                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    print("Failed to import %s sequence. Moving forward..." %geneName)
                     continue
 
             os.remove("Align/" + geneName.rstrip('\n') + ".log")
@@ -241,7 +246,7 @@ def main():
                     warnings.filterwarnings("ignore")
                     geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), argmnts.orgn))
                 except:
-                    print("Failed to import %s sequence. Skipping %s" %geneName)
+                    print("Failed to import %s sequence. Moving forward... %s" %geneName)
                     continue
     
             os.remove("Align/" + geneName.rstrip('\n') + ".log")
