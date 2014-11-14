@@ -97,15 +97,15 @@ if argmnts.mrna == True and not argmnts.orgn:
     parser.error('-orgn argument is required in "-mrna" mode.')
 
 
-def warnfxn():
+def _warnfxn():
     warnings.warn("deprecated", DeprecationWarning)
 
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    warnfxn()
+    _warnfxn()
 
-def is_empty(any_structure):
+def _is_empty(any_structure):
     if any_structure:
         return False
     else:
