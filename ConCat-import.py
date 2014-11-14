@@ -64,6 +64,9 @@ parser.add_argument('-gcds', type=str, default=None,
 parser.add_argument('-gmrna', type=str, default=None,
                     help='Takes gene name via file for CDS import')
 
+parser.add_argument('-pull', type=str, default=None,
+                    help='Takes species name via file for CDS import')
+
 parser.add_argument('-orgn', type=str, default=None,
                     help='Takes group name to extract sequence data')
 
