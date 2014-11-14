@@ -70,6 +70,9 @@ parser.add_argument('-pull', type=str, default=None,
 parser.add_argument('-orgn', type=str, default=None,
                     help='Takes group name to extract sequence data')
 
+parser.add_argument('-ortho', type=str, default=None,
+                    help='Takes species name for orthologue search')
+
 parser.add_argument('-pkg', type=str, default='muscle',
                     choices=['muscle', 'mafft'], required=True,
                     help='User defined program selection')
@@ -159,7 +162,7 @@ def main():
         for geneName in genes:
             try:
                 warnings.filterwarnings("ignore")
-                cdsImport(geneName.rstrip('\n'), argmnts.orgn)
+                cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
                 _remDuplicate()
                 cdsAlign(geneName.rstrip('\n') + ".fas")
             except:
@@ -169,7 +172,7 @@ def main():
                 sleep(5)
                 try:
                     warnings.filterwarnings("ignore")
-                    cdsImport(geneName.rstrip('\n'), argmnts.orgn)
+                    cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
                     _remDuplicate()
                     cdsAlign(geneName.rstrip('\n') + ".fas")
                 except:
@@ -185,7 +188,7 @@ def main():
         for geneName in genes:
             try:
                 warnings.filterwarnings("ignore")
-                mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
+                mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
                 _remDuplicate()
                 mrnaAlign(geneName.rstrip('\n') + ".fas")
             except:
@@ -194,7 +197,7 @@ def main():
                 sleep(5)
                 try:
                     warnings.filterwarnings("ignore")
-                    mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
+                    mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
                     _remDuplicate()
                     mrnaAlign(geneName.rstrip('\n') + ".fas")
                 except:
