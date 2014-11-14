@@ -111,8 +111,8 @@ def cdsImport(geneName, group, ortho):
         inpTerm = geneName + "[sym] AND " + ortho + "[orgn]"
     elif group != None:
         inpTerm = geneName + "[sym] AND " + group + "[orgn]"
+        print("Using %s as NCBI input querry" %inpTerm)
 
-    print("Using %s as NCBI input querry" %inpTerm)
     Entrez.email = 'sendambuj@gmail.com'
 
     
@@ -120,11 +120,14 @@ def cdsImport(geneName, group, ortho):
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
     idList = records["IdList"]
-    
-    inpTerm = "ortholog_gene_" + str(idList[0]) + "[group]"
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
-    records = Entrez.read(handle)
-    idList = records["IdList"]
+
+
+    if ortho != None:
+        inpTerm = "ortholog_gene_" + str(idList[0]) + "[group]"
+        print("Using %s as NCBI input querry" %inpTerm)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        records = Entrez.read(handle)
+        idList = records["IdList"]
     
     outRecord = list()
     
