@@ -38,13 +38,13 @@ except ImportError, e:
     sys.exit("Biopython not found")
 
 
-def spliter(str, num):
+def _spliter(str, num):
     '''Splits the string object'''
     return [ str[start:start+num] for start in range(0, len(str), num) ]
 
 
 
-def groupy(L):
+def _groupy(L):
     first = last = L[0]
     for n in L[1:]:
         if n - 1 == last:
@@ -55,7 +55,7 @@ def groupy(L):
     yield first, last
 
 
-def translator(recordData, ign, omit, table):
+def _translator(recordData, ign, omit, table):
     proteinSeqList = list()
     recordsFunc = recordData
     
@@ -108,7 +108,7 @@ def translator(recordData, ign, omit, table):
 
 
 
-def alignP(pkg, arguments=None):
+def _alignP(pkg, arguments=None):
     if pkg == 'muscle':
         if 'Darwin' in platform.system():
             subprocess.call("./src/muscle/muscle -in translated.fas -out tAligned.fas", shell=True)
@@ -120,14 +120,14 @@ def alignP(pkg, arguments=None):
         subprocess.call("./src/mafft/mafft.bat %s translated.fas > tAligned.fas" %arguments, shell=True)
 
 
-def cleanAli(recordNuc, omit, fileName):
+def _cleanAli(recordNuc, omit, fileName):
     handleP = open('tAligned.fas', 'rU')
     records = list(SeqIO.parse(handleP, 'fasta'))
     
     store = list()
     for i, rec in enumerate(records):
         nucData = [x.seq for x in recordNuc if x.id in rec.id]
-        nucSeqData = spliter(nucData[0], 3)
+        nucSeqData = _spliter(nucData[0], 3)
         sequence = Seq("", generic_dna); pos = 0
         for j, amino in enumerate(rec.seq):
             if amino == '-':
@@ -191,9 +191,9 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
         
         records = newRecords
 
-    records = translator(records, ign, omit, table)
-    alignP(pkg)
-    cleanAli(records, omit, inputFile)
+    records = _translator(records, ign, omit, table)
+    _alignP(pkg)
+    _cleanAli(records, omit, inputFile)
 
 
 def mrnaAlign(inputFile, pkg, arguments=None):

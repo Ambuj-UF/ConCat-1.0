@@ -280,6 +280,7 @@ def main():
         discontId = discont()
         spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
         for organism in spList:
+            warnings.filterwarnings("ignore")
             masterList = fetchall(organism, discontId)
             if masterList == None:
                 continue
@@ -307,7 +308,7 @@ def main():
                     SeqIO.write(recordObj, fp, "fasta")
 
             fdata = open("Align/" + organism + ".fas", 'r').readlines()
-            with open(organism + ".fas", 'w') as fp:
+            with open("Output/" + organism + ".fas", 'w') as fp:
                 for lines in fdata:
                     if '>' in lines:
                         fp.write('%s\n' %lines.split(' ')[0])

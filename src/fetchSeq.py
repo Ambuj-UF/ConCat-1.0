@@ -39,7 +39,7 @@ def is_empty(any_structure):
         return True
 
 
-def xmlcreate(ID):
+def _xmlcreate(ID):
     url = "http://www.ncbi.nlm.nih.gov/gene/" + ID
     xmlData = urllib2.urlopen(url)
     with open("export.xml",'wb+') as fp:
@@ -47,7 +47,7 @@ def xmlcreate(ID):
             fp.write(line)
 
 
-def xmlparser():
+def _xmlparser():
     IDs = list()
     handle = open('export.xml', 'r').readlines()
     for lines in handle:
@@ -104,8 +104,8 @@ def cdsImport(geneName, group):
     outRecord = list()
     
     for ids in idList:
-        xmlcreate(ids)
-        refIds = xmlparser()
+        _xmlcreate(ids)
+        refIds = _xmlparser()
         os.remove('export.xml')
         recordList = list()
         for inIDs in refIds:
@@ -147,8 +147,8 @@ def mrnaImport(geneName, group):
     
     outRecord = list()
     for ids in idList:
-        xmlcreate(ids)
-        refIds = xmlparser()
+        _xmlcreate(ids)
+        refIds = _xmlparser()
         os.remove('export.xml')
         recordList = list()
         for inIDs in refIds:
@@ -191,8 +191,8 @@ def oneGeneCdsImport(geneName, group):
     records = Entrez.read(handle)
     ids = records["IdList"][0]
     
-    xmlcreate(ids)
-    refIds = xmlparser()
+    _xmlcreate(ids)
+    refIds = _xmlparser()
     os.remove('export.xml')
     recordList = list()
     for inIDs in refIds:
@@ -217,8 +217,8 @@ def oneGeneMrnaImport(geneName, group):
     records = Entrez.read(handle)
     ids = records["IdList"][0]
     
-    xmlcreate(ids)
-    refIds = xmlparser()
+    _xmlcreate(ids)
+    refIds = _xmlparser()
     os.remove('export.xml')
     recordList = list()
     for inIDs in refIds:
@@ -240,7 +240,7 @@ def discont():
     return idListDiscont
 
 
-def fetchSpecies(inpTerm = None):
+def _fetch_Species(inpTerm = None):
     if inpTerm == None:
         inpTerm = "Eucaryotes[orgn] NOT Vertebrates[orgn]"
     handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
@@ -256,18 +256,28 @@ def fetchall(spName, discontId):
     records = Entrez.read(handle)
     idList = records['IdList']
     if is_empty(idList) == True:
-        print("No gene records available for %s" %spName)
+        print("No gene record available for %s" %spName)
         return None
         
-    print("Filtering non discontinued gene IDs in %s" %spName)
+    print("Filtering discontinued gene IDs in %s" %spName)
     goodIds = [i for i in idList if i not in discontId]
         
     idNameList = list()
     for idName in goodIds:
-        annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
-        print("Scanning %s %s gene" %(spName, annot.split(" ")[1]))
-        idNameList.append(annot.split(" ")[1])
-    
+        try:
+            annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
+            print("Scanning %s %s gene" %(spName, annot.split(" ")[1]))
+            idNameList.append(annot.split(" ")[1])
+        except:
+            idNameList.append(annot.split(" ")[1] + " skipped")
+            continue
+
+    idNameList = set(idNameList)
+
+    with open("Output/" + spName + "_genes.txt", 'w') as fp:
+        for gene in idNameList:
+            fp.write("%s\n" %gene)
+
     return idNameList
     
     
