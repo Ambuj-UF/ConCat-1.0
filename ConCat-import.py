@@ -112,7 +112,7 @@ def is_empty(any_structure):
         return True
 
 
-def remDuplicate():
+def _remDuplicate():
     files = glob.glob('Align/*.fas')
     for file in files:
         handle = open(file, 'rU')
@@ -132,7 +132,7 @@ def remDuplicate():
             SeqIO.write(newRec, fp, 'fasta')
 
 
-def remGeneDuplicate(filename):
+def _remGeneDuplicate(filename):
     handle = open(filename, 'rU')
     records = list(SeqIO.parse(handle, "fasta"))
     newRec = list()
@@ -160,7 +160,7 @@ def main():
             try:
                 warnings.filterwarnings("ignore")
                 cdsImport(geneName.rstrip('\n'), argmnts.orgn)
-                remDuplicate()
+                _remDuplicate()
                 cdsAlign(geneName.rstrip('\n') + ".fas")
             except:
                 print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
@@ -170,7 +170,7 @@ def main():
                 try:
                     warnings.filterwarnings("ignore")
                     cdsImport(geneName.rstrip('\n'), argmnts.orgn)
-                    remDuplicate()
+                    _remDuplicate()
                     cdsAlign(geneName.rstrip('\n') + ".fas")
                 except:
                     print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
@@ -186,7 +186,7 @@ def main():
             try:
                 warnings.filterwarnings("ignore")
                 mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
-                remDuplicate()
+                _remDuplicate()
                 mrnaAlign(geneName.rstrip('\n') + ".fas")
             except:
                 print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
@@ -195,7 +195,7 @@ def main():
                 try:
                     warnings.filterwarnings("ignore")
                     mrnaImport(geneName.rstrip('\n'), argmnts.orgn)
-                    remDuplicate()
+                    _remDuplicate()
                     mrnaAlign(geneName.rstrip('\n') + ".fas")
                 except:
                     print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
@@ -233,7 +233,7 @@ def main():
                 else:
                     fp.write('%s'%lines)
 
-        remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
+        _remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
     
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
@@ -270,7 +270,7 @@ def main():
                 else:
                     fp.write('%s'%lines)
 
-        remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
+        _remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
 
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
@@ -315,7 +315,7 @@ def main():
                     else:
                         fp.write('%s'%lines)
                     
-            remGeneDuplicate(filename = organism + ".fas")
+            _remGeneDuplicate(filename = organism + ".fas")
                 
 
     else:
