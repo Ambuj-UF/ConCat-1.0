@@ -123,8 +123,8 @@ def remDuplicate():
             SeqIO.write(newRec, fp, 'fasta')
 
 
-def remGeneDuplicate():
-    handle = open("Align/" + argmnts.orgn + ".fas", 'rU')
+def remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas"):
+    handle = open(filename, 'rU')
     records = list(SeqIO.parse(handle, "fasta"))
     newRec = list()
     store=list()
@@ -266,6 +266,38 @@ def main():
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
 
+    elif argmnts.pull != None:
+        spList = [x for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
+        masterDict = fetchall(spList)
+        for organism, val in masterDict.items():
+            geneRecord = list()
+            for inkey, geneName in val.items():
+                try:
+                    warnings.filterwarnings("ignore")
+                    geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), organism))
+                except:
+                    print("Failed to import %s sequence. Retrying in 5 seconds\n" %geneName)
+                    sleep(5)
+                    try:
+                        warnings.filterwarnings("ignore")
+                        geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), organism))
+                    except:
+                        with open("Align/" + geneName.rstrip('\n') + ".log", 'a') as fp:
+                            fp.write("Failed to import %s sequence. Moving forward... %s" %geneName)
+                        continue
+
+
+            with open("Align/" + organism + ".fas", 'w') as fp:
+                SeqIO.write(geneRecord, fp, "fasta")
+            fdata = open("Align/" + organism + ".fas", 'r').readlines()
+            with open(organism + ".fas", 'w') as fp:
+                for lines in fdata:
+                    if '>' in lines:
+                        fp.write('%s\n' %lines.split(' ')[0])
+                    else:
+                        fp.write('%s'%lines)
+                    
+            remGeneDuplicate(filename = organism + ".fas")
 
     else:
         files = glob.glob("Align/*.*")

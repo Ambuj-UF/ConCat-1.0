@@ -224,5 +224,46 @@ def oneGeneMrnaImport(geneName, group):
     return longestRec
 
 
+def discontinued():
+    Entrez.email = 'sendambuj@gmail.com'
+    distTerm = "all[filter] NOT alive[prop]"
+    handle = Entrez.esearch(db="gene", term=distTerm, rettype='xml', RetMax=10000000, warning=False)
+    records = Entrez.read(handle)
+    idListDiscont = records['IdList']
+    return idListDiscont
+
+
+def fetchSpecies(inpTerm = None):
+    if inpTerm == None:
+        inpTerm = "Eucaryotes[orgn] NOT Vertebrates[orgn]"
+    handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
+    records = Entrez.read(handle)
+    idList = records['IdList']
+    return idList
+
+
+def fetchall(spList):
+    discontId = discontinued
+    masterDict = dict()
+    for spName in spList:
+        inpTerm = spName + "[orgn]"
+        Entrez.email = 'sendambuj@gmail.com'
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
+        records = Entrez.read(handle)
+        idList = records['IdList']
+        print("Importing and filtering all the non discontinued gene IDs for %s\n" %spName)
+        goodIds = [i for i in idList if i not in discontId]
+        
+        idNameDict = dict()
+        
+        for idName in goodIds:
+            annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
+            idNameDict[idName] = (annot.split(" ")[1])
+        
+        masterDict[spName] = (idNameDict)
+    
+    return masterDict
+    
+    
 
 
