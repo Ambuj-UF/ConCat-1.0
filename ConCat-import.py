@@ -278,7 +278,7 @@ def main():
 
     elif argmnts.pull != None:
         discontId = discont()
-        spList = [x for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
+        spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
         for organism in spList:
             masterList = fetchall(organism, discontId)
             if masterList == None:
@@ -288,21 +288,24 @@ def main():
             for geneName in masterList:
                 try:
                     warnings.filterwarnings("ignore")
-                    geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), organism))
+                    recordObj = oneGeneCdsImport(geneName.rstrip('\n'), organism)
+                    geneRecord.append(recordObj)
                 except:
                     print("Failed to import %s sequence. Retrying in 5 seconds\n" %geneName)
                     sleep(5)
                     try:
                         warnings.filterwarnings("ignore")
-                        geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), organism))
+                        recordObj = oneGeneCdsImport(geneName.rstrip('\n'), organism)
+                        geneRecord.append(recordObj)
                     except:
                         with open("Align/" + geneName.rstrip('\n') + ".log", 'a') as fp:
                             fp.write("Failed to import %s sequence. Moving forward... %s" %geneName)
                         continue
 
 
-            with open("Align/" + organism + ".fas", 'w') as fp:
-                SeqIO.write(geneRecord, fp, "fasta")
+                with open("Align/" + organism + ".fas", 'a') as fp:
+                    SeqIO.write(recordObj, fp, "fasta")
+
             fdata = open("Align/" + organism + ".fas", 'r').readlines()
             with open(organism + ".fas", 'w') as fp:
                 for lines in fdata:

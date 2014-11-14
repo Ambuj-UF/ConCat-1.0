@@ -256,13 +256,13 @@ def fetchall(spName, discontId):
     records = Entrez.read(handle)
     idList = records['IdList']
     if is_empty(idList) == True:
-        print("No gene records available for %s\n" %spName)
+        print("No gene records available for %s" %spName)
         return None
         
-    print("Filtering non discontinued gene IDs in %s\n" %spName)
+    print("Filtering non discontinued gene IDs in %s" %spName)
     goodIds = [i for i in idList if i not in discontId]
         
-    idNameList = dict()
+    idNameList = list()
     for idName in goodIds:
         annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
         print("Scanning %s %s gene" %(spName, annot.split(" ")[1]))
