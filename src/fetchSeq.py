@@ -32,6 +32,13 @@ except ImportError, e:
     sys.exit("Biopython not found")
 
 
+def is_empty(any_structure):
+    if any_structure:
+        return False
+    else:
+        return True
+
+
 def xmlcreate(ID):
     url = "http://www.ncbi.nlm.nih.gov/gene/" + ID
     xmlData = urllib2.urlopen(url)
@@ -224,7 +231,7 @@ def oneGeneMrnaImport(geneName, group):
     return longestRec
 
 
-def discontinued():
+def discont():
     Entrez.email = 'sendambuj@gmail.com'
     distTerm = "all[filter] NOT alive[prop]"
     handle = Entrez.esearch(db="gene", term=distTerm, rettype='xml', RetMax=10000000, warning=False)
@@ -242,27 +249,26 @@ def fetchSpecies(inpTerm = None):
     return idList
 
 
-def fetchall(spList):
-    discontId = discontinued
-    masterDict = dict()
-    for spName in spList:
-        inpTerm = spName + "[orgn]"
-        Entrez.email = 'sendambuj@gmail.com'
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
-        records = Entrez.read(handle)
-        idList = records['IdList']
-        print("Importing and filtering all the non discontinued gene IDs for %s\n" %spName)
-        goodIds = [i for i in idList if i not in discontId]
+def fetchall(spName, discontId):
+    inpTerm = spName + "[orgn]"
+    Entrez.email = 'sendambuj@gmail.com'
+    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
+    records = Entrez.read(handle)
+    idList = records['IdList']
+    if is_empty(idList) == True:
+        print("No gene records available for %s\n" %spName)
+        return None
         
-        idNameDict = dict()
+    print("Filtering non discontinued gene IDs in %s\n" %spName)
+    goodIds = [i for i in idList if i not in discontId]
         
-        for idName in goodIds:
-            annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
-            idNameDict[idName] = (annot.split(" ")[1])
-        
-        masterDict[spName] = (idNameDict)
+    idNameList = dict()
+    for idName in goodIds:
+        annot = Entrez.efetch(db='gene', id=idName, retmode='text', rettype='brief').read()
+        print("Scanning %s %s gene" %(spName, annot.split(" ")[1]))
+        idNameList.append(annot.split(" ")[1])
     
-    return masterDict
+    return idNameList
     
     
 

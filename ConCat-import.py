@@ -28,7 +28,7 @@ import argparse
 import textwrap
 import warnings
 from time import sleep
-from src.fetchSeq import cdsImport, mrnaImport, oneGeneCdsImport, oneGeneMrnaImport
+from src.fetchSeq import cdsImport, mrnaImport, oneGeneCdsImport, oneGeneMrnaImport, fetchall, discont
 from src.aligner import cdsAlign, mrnaAlign
 from Bio import AlignIO, SeqIO
 from StringIO import StringIO
@@ -105,6 +105,12 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warnfxn()
 
+def is_empty(any_structure):
+    if any_structure:
+        return False
+    else:
+        return True
+
 
 def remDuplicate():
     files = glob.glob('Align/*.fas')
@@ -126,7 +132,7 @@ def remDuplicate():
             SeqIO.write(newRec, fp, 'fasta')
 
 
-def remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas"):
+def remGeneDuplicate(filename):
     handle = open(filename, 'rU')
     records = list(SeqIO.parse(handle, "fasta"))
     newRec = list()
@@ -227,7 +233,7 @@ def main():
                 else:
                     fp.write('%s'%lines)
 
-        remGeneDuplicate()
+        remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
     
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
@@ -264,17 +270,22 @@ def main():
                 else:
                     fp.write('%s'%lines)
 
-        remGeneDuplicate()
+        remGeneDuplicate(filename = "Align/" + argmnts.orgn + ".fas")
 
         cdsAlign(argmnts.orgn + ".fas")
         shutil.move("Input/" + argmnts.orgn + ".nex", argmnts.orgn + ".nex")
 
+
     elif argmnts.pull != None:
+        discontId = discont()
         spList = [x for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
-        masterDict = fetchall(spList)
-        for organism, val in masterDict.items():
+        for organism in spList:
+            masterList = fetchall(organism, discontId)
+            if masterList == None:
+                continue
+            
             geneRecord = list()
-            for inkey, geneName in val.items():
+            for geneName in masterList:
                 try:
                     warnings.filterwarnings("ignore")
                     geneRecord.append(oneGeneCdsImport(geneName.rstrip('\n'), organism))
@@ -301,6 +312,7 @@ def main():
                         fp.write('%s'%lines)
                     
             remGeneDuplicate(filename = organism + ".fas")
+                
 
     else:
         files = glob.glob("Align/*.*")
