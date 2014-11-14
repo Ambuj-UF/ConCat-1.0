@@ -300,7 +300,7 @@ def main():
                         geneRecord.append(recordObj)
                     except:
                         with open("Align/" + geneName.rstrip('\n') + ".log", 'a') as fp:
-                            fp.write("Failed to import %s sequence. Moving forward... %s" %geneName)
+                            fp.write("Failed to import %s sequence. Moving forward..." %geneName)
                         continue
 
 
