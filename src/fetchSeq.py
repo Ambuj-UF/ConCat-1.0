@@ -315,7 +315,7 @@ def fetchall(spName, discontId):
             print("Scanning %s %s gene" %(spName, annot.split(" ")[1]))
             idNameList.append(annot.split(" ")[1])
         except:
-            idNameList.append(annot.split(" ")[1] + " skipped")
+            idNameList.append(idName + " skipped")
             continue
 
     idNameList = set([x for x in idNameList if " skipped" not in x])
