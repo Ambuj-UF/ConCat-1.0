@@ -147,7 +147,8 @@ def _cleanAli(recordNuc, omit, fileName):
         records[i].seq = Seq(str(sequence), generic_dna)
 
     records = [x for x in records if x.id not in store]
-    print("Failed to align following sequences: %s" %store)
+    if store != []:
+        print("Failed to align following sequences: %s" %store)
     
     if omit == False:
         with open("Input/" + fileName.split('.')[0] + ".nex", 'w') as fp:

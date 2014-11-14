@@ -77,7 +77,7 @@ def cdsExt(ID, geneName):
                 cdsRange = [int(obj.lstrip('     CDS             ').split('..')[0]), int(obj.lstrip('     CDS             ').split('..')[1])]
             except ValueError:
                 try:
-                    cdsRange = [int(obj.lstrip('     CDS             ').split('..')[0].lstrip('<')), int(obj.lstrip('     CDS             ').split('..')[1])]
+                    cdsRange = [int(obj.lstrip('     CDS             ').split('..')[0].lstrip('<').lstrip('>').rstrip('<').rstrip('>')), int(obj.lstrip('     CDS             ').split('..')[1].lstrip('<').lstrip('>').rstrip('<').rstrip('>'))]
                 except ValueError:
                     try:
                         cdsRange = [int(obj.lstrip('     CDS             ').split('..')[0]), int(obj.lstrip('     CDS             ').split('..')[1].lstrip('>'))]
@@ -108,20 +108,20 @@ def cdsImport(geneName, group, ortho):
         """
 
     if ortho != None:
-        inpTerm = ortho + "[sym] AND " + group + "[orgn]"
+        inpTerm = geneName + "[sym] AND " + ortho + "[orgn]"
     elif group != None:
         inpTerm = geneName + "[sym] AND " + group + "[orgn]"
 
     print("Using %s as NCBI input querry" %inpTerm)
     Entrez.email = 'sendambuj@gmail.com'
-    
+
     
     print("Importing CDS sequences for %s gene" %geneName)
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
     idList = records["IdList"]
     
-    inpTerm = "ortholog_gene_" + str(idList1[0]) + "[group]"
+    inpTerm = "ortholog_gene_" + str(idList[0]) + "[group]"
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
     idList = records["IdList"]

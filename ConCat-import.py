@@ -93,8 +93,8 @@ if argmnts.pkg == 'mafft' and not argmnts.args:
 if argmnts.cds == True and argmnts.mrna == True:
     parser.error('-cds argument and -cds cannot be used together')
 
-if argmnts.cds == True and not argmnts.orgn:
-    parser.error('-orgn argument is required in "-cds" mode.')
+if argmnts.cds == True and argmnts.orgn == None and argmnts.ortho == None:
+    parser.error('-orgn or -ortho argument is required in "-cds" mode.')
 
 if argmnts.mrna == True and not argmnts.orgn:
     parser.error('-orgn argument is required in "-mrna" mode.')
