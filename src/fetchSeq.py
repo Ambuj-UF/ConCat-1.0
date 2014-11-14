@@ -33,6 +33,7 @@ except ImportError, e:
 
 
 def is_empty(any_structure):
+    """Checks if the datastructure is empty"""
     if any_structure:
         return False
     else:
@@ -40,6 +41,7 @@ def is_empty(any_structure):
 
 
 def _xmlcreate(ID):
+    """Creates a refseq ID containing xml page for the given gene ID"""
     url = "http://www.ncbi.nlm.nih.gov/gene/" + ID
     xmlData = urllib2.urlopen(url)
     with open("export.xml",'wb+') as fp:
@@ -48,6 +50,7 @@ def _xmlcreate(ID):
 
 
 def _xmlparser():
+    """parse refseq IDs from the xml page"""
     IDs = list()
     handle = open('export.xml', 'r').readlines()
     for lines in handle:
@@ -58,6 +61,10 @@ def _xmlparser():
 
 
 def cdsExt(ID, geneName):
+    """
+        returns sequence record object for the input gene refseq ID
+        """
+    
     retdata = Entrez.efetch(db="nucleotide", id=ID, rettype='gb', retmode='text').read()
     with open("Align/" + geneName.split('.')[0] + ".log", "a") as fp:
         if 'LOW QUALITY PROTEIN' in retdata:
@@ -86,12 +93,19 @@ def cdsExt(ID, geneName):
 
 
 def mrnaExt(ID):
+    """Extract sequence record for the given sequence ID"""
     recData = Entrez.efetch(db="nucleotide", id=ID, rettype="gb", warning=False)
     record = SeqIO.read(recData, 'genbank')
     return record
 
 
 def cdsImport(geneName, group):
+    
+    """
+        @ geneName - name of the gene
+        @ group - organism name
+        @ creates a taxon CDS aligned fasta file as output for the set of genes given as input
+        """
     
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
@@ -138,6 +152,13 @@ def cdsImport(geneName, group):
 
 
 def mrnaImport(geneName, group):
+    
+    """
+        @ geneName - name of the gene
+        @ group - organism name
+        @ creates a taxon mRNA aligned fasta file as output for the set of genes given as input
+        """
+    
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
     
@@ -182,6 +203,12 @@ def mrnaImport(geneName, group):
 
 
 def oneGeneCdsImport(geneName, group):
+    
+    """
+        @ geneName - name of the gene
+        @ group - organism name
+        @ returns - the longest CDS sequence for the corresponding taxa
+        """
 
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
@@ -209,6 +236,12 @@ def oneGeneCdsImport(geneName, group):
 
 def oneGeneMrnaImport(geneName, group):
     
+    """
+        @ geneName - name of the gene
+        @ group - organism name
+        @ returns - the longest gene mRNA sequence for the corresponding taxa
+    """
+    
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
     
@@ -232,6 +265,9 @@ def oneGeneMrnaImport(geneName, group):
 
 
 def discont():
+    
+    """Creates a list of discontinued IDs from NCBI gene database"""
+    
     Entrez.email = 'sendambuj@gmail.com'
     distTerm = "all[filter] NOT alive[prop]"
     handle = Entrez.esearch(db="gene", term=distTerm, rettype='xml', RetMax=10000000, warning=False)
@@ -241,6 +277,9 @@ def discont():
 
 
 def _fetch_Species(inpTerm = None):
+    
+    """Extracts species ID from NCBI genome database"""
+    
     if inpTerm == None:
         inpTerm = "Eucaryotes[orgn] NOT Vertebrates[orgn]"
     handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
@@ -250,6 +289,13 @@ def _fetch_Species(inpTerm = None):
 
 
 def fetchall(spName, discontId):
+    
+    """
+       @ spName - Species name
+       @ discontId - list of IDs that are discontinued in NCBI gene database
+       @ returns - list of all gene names present in the corresponding species
+        """
+    
     inpTerm = spName + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
@@ -272,7 +318,7 @@ def fetchall(spName, discontId):
             idNameList.append(annot.split(" ")[1] + " skipped")
             continue
 
-    idNameList = set(idNameList)
+    idNameList = set([x for x in idNameList if " skipped" not in x])
 
     with open("Output/" + spName + "_genes.txt", 'w') as fp:
         for gene in idNameList:
