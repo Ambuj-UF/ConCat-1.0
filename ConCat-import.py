@@ -115,8 +115,8 @@ def _is_empty(any_structure):
         return True
 
 
-def _remDuplicate():
-    files = glob.glob('Align/*.fas')
+def _remDuplicate(filename):
+    files = glob.glob('Align/' + filename)
     for file in files:
         handle = open(file, 'rU')
         records = list(SeqIO.parse(handle, 'fasta'))
@@ -163,7 +163,7 @@ def main():
             try:
                 warnings.filterwarnings("ignore")
                 cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
-                _remDuplicate()
+                _remDuplicate(geneName.rstrip('\n') + ".fas")
                 cdsAlign(geneName.rstrip('\n') + ".fas")
             except:
                 print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
@@ -173,14 +173,15 @@ def main():
                 try:
                     warnings.filterwarnings("ignore")
                     cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
-                    _remDuplicate()
+                    _remDuplicate(geneName.rstrip('\n') + ".fas")
                     cdsAlign(geneName.rstrip('\n') + ".fas")
                 except:
                     print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
                     store.append(geneName)
                     continue
-    
-        print("Following genes were excluded: %s" %set(store))
+        
+        if _is_empty(store) == False:
+            print("Following genes were excluded: %s" %set(store))
 
 
     elif argmnts.mrna != None:
@@ -189,7 +190,7 @@ def main():
             try:
                 warnings.filterwarnings("ignore")
                 mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
-                _remDuplicate()
+                _remDuplicate(geneName.rstrip('\n') + ".fas")
                 mrnaAlign(geneName.rstrip('\n') + ".fas")
             except:
                 print("Failed to import %s sequence. HTTP Connection error!!\n" %geneName.rstrip('\n'))
@@ -198,7 +199,7 @@ def main():
                 try:
                     warnings.filterwarnings("ignore")
                     mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
-                    _remDuplicate()
+                    _remDuplicate(geneName.rstrip('\n') + ".fas")
                     mrnaAlign(geneName.rstrip('\n') + ".fas")
                 except:
                     print("Failed to import %s sequence. Moving forward..." %geneName.rstrip('\n'))
