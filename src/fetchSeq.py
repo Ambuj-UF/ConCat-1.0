@@ -123,7 +123,7 @@ def cdsImport(geneName, group, ortho):
 
 
     if ortho != None:
-        inpTerm = "ortholog_gene_" + str(idList[0]) + "[group]"
+        inpTerm = "ortholog_gene_" + str(idList[0]) + "[group] AND Theria[orgn]"
         print("Using %s as NCBI input querry" %inpTerm)
         handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
         records = Entrez.read(handle)

@@ -74,7 +74,7 @@ parser.add_argument('-ortho', type=str, default=None,
                     help='Takes species name for orthologue search')
 
 parser.add_argument('-pkg', type=str, default='muscle',
-                    choices=['muscle', 'mafft'], required=True,
+                    choices=['muscle', 'mafft'],
                     help='User defined program selection')
 
 parser.add_argument('-args', type=str,
