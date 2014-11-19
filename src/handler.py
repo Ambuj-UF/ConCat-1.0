@@ -132,7 +132,7 @@ class BaseHandle:
         """
         
         idDict = self.fileOpenID()
-        print idDict
+        print("%s" %idDict)
         with open("AccessionID.txt", 'w') as fp:
             fp.write("Gene  Species  Database    Accession ID \n")
     

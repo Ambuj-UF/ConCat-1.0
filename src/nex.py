@@ -215,7 +215,7 @@ def richNexusCall(runRNA,
                         if any(fileTypes) == True:
                             try:
                                 if fileTypes[key] == 'Protein':
-                                    print key
+                                    print("%s" %key)
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
@@ -225,7 +225,7 @@ def richNexusCall(runRNA,
                                 
 
                                 else:
-                                    print key
+                                    print("%s" %key)
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
@@ -244,7 +244,7 @@ def richNexusCall(runRNA,
 
 
                         else:
-                            print key
+                            print("%s" %key)
                             try:
                                 rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                             except ZeroDivisionError:
@@ -715,7 +715,7 @@ def richNexusCall(runRNA,
         pass
     stop = timeit.default_timer()
     print("Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!")
-    print stop - start
+    print("Time elapsed: %s" %(stop - start))
 
 
 

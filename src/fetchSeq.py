@@ -145,7 +145,7 @@ def cdsImport(geneName, group, ortho):
             continue
         for rec in recordList:
             longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
-        print(longestRec.description)
+        print("%s" %longestRec.description)
         outRecord.append(longestRec)
 
     with open("Align/" + geneName + '.fas', 'w') as fp:
@@ -204,7 +204,7 @@ def mrnaImport(geneName, group, ortho):
             continue
         for rec in recordList:
             longestRec = rec if len(rec.seq) > len(longestRec.seq) else longestRec
-        print(longestRec.description)
+        print("%s" %longestRec.description)
         outRecord.append(longestRec)
     
     with open("Align/" + geneName + '.fas', 'w') as fp:
