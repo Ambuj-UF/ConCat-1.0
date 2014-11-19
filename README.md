@@ -45,7 +45,6 @@ file.name.nex - Not Allowed
 file_name.nex - Allowed
 file-name.nes - Allowed
 ```
-```
 
 #ConCat-import
 ConCat-import module conducts batch sequence alignment of raw input sequence file. Direct implementation of Muscle and Mafft sequence alignment programs can be performed through ConCat-1.0.
