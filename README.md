@@ -32,13 +32,13 @@ matrix
 Homo_sapiens CCGAACAATTCTGCGCGAGGTAGGGAGGCCATGGCG....................
 ```
 
-Ali_Type: This variable is used for defining the alignment type. It can either be DNA, Codons, Introns, Proteins or any other alignment type. Program creates a partition file for RaxML using information supplied in Ali_Type variable.
+Ali_Type: This variable is used to define alignment type. It can either be DNA, Codons, Introns, Proteins or any other alignment type. Program creates a partition file for RaxML using information supplied in Ali_Type variable.
 
 RNA_Type = True/None. If True then the ConCat program uses the alignment file for RNA structure prediction.
 
 RNA_Struc = This variable takes RNA structure as input. If you plan to enter RNA structure then avoid using RNA_Type function. Input contains RNA structure followed by comma and RNA structure starting position. By default the starting position is set to 0 (which is the starting position of alignment).
 
-NOTE: '.' character is not allowed in the filenames...
+NOTE: '.' character is not allowed in filename...
 
 ```
 file.name.nex - Not Allowed
@@ -47,7 +47,7 @@ file-name.nes - Allowed
 ```
 
 #ConCat-import
-ConCat-import module conducts batch sequence alignment of raw input sequence file. Direct implementation of Muscle and Mafft sequence alignment programs can be performed through ConCat-1.0.
+ConCat-import module conducts batch sequence alignment of raw input sequence data. Direct implementation of Muscle and Mafft sequence alignment programs can be performed through ConCat-1.0.
 
 Steps:
 ```
