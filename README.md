@@ -1,6 +1,5 @@
 #ConCat-1.0
-###Expected Project completion date: 12th November 2014
-
+###Read Manual for clear instructions
 
 Well...I am still working on the documentation and manual. 
 Until then, the following instructions might be useful. 
