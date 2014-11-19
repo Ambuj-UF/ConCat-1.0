@@ -489,42 +489,67 @@ def removePerBin(filename):
         Flag = True if '[Entropy Bin]' in lines else Flag
 
     for lines in data:
-        Flag = False if '[User percentile GC Bin]' or 'end' in lines else Flag
+        Flag = False if 'end;' in lines and Flag == True else Flag
         GCbinList.append(lines.rstrip('\n').lstrip('\tBIN ')) if Flag == True else None
         Flag = True if '[GC Bin]' in lines else Flag
 
-    binList = [RCVbinList, ENTbinList, GCbinList]
-    for listval in binList:
-        listval.remove('[25th to 75th percentile] '); listval.remove('[75th to 100 percentile] '); listval.remove('[0 to 25th percentile] ')
-    
-    for i, listval in binList:
-        for j, inval in enumerate(listval):
-            if inval != '':
-                listval[j] = inval.split(' ')[0]
-        binList[i] = listval
-    
-    binDict = [{}, {}, {}]; binKey = ['RCV', 'ENT', 'GC']
-    for j, outVal in enumerate(binList):
-        nameList = [[], [], []]; pos = [i for i, val in enumerate(outVal) if val == '']; counter = -1
-        for i, val in enumerate(outVal):
-            if i in pos:
-                counter = counter + 1
-                continue
-            else:
-                nameList[counter].append(val)
-        
-        binDict[j][binKey[j]] = (nameList)
-    
+    rcvRet = dict()
+    Flag1 = False; Flag2 = False; Flag3 = False
+    rcvRet["25-75"] = list(); rcvRet["75-100"] = list(); rcvRet["0-25"] = list()
+    for val in RCVbinList:
+        if Flag1 == True and val != "[75th to 100 percentile RCV data]" and val != "[0 to 25th percentile RCV data]" and val != '':
+            rcvRet["25-75"].append(val.split(" ")[0])
+        elif Flag2 == True and val != "[25th to 75th percentile RCV data]" and val != "[0 to 25th percentile RCV data]" and val != '':
+            rcvRet["75-100"].append(val.split(" ")[0])
+        elif Flag3 == True and val != "[75th to 100 percentile RCV data]" and val != "[25th to 75th percentile RCV data]" and val != '':
+            rcvRet["0-25"].append(val.split(" ")[0])
+        if val == "[25th to 75th percentile RCV data]":
+            Flag1 = True; Flag2 = False; Flag3 = False
+        if val == "[75th to 100 percentile RCV data]":
+            Flag2 = True; Flag1 = False; Flag3 = False
+        if val == "[0 to 25th percentile RCV data]":
+            Flag3 = True; Flag2 = False; Flag1 = False
+
+
+    entRet = dict()
+    Flag1 = False; Flag2 = False; Flag3 = False
+    entRet["25-75"] = list(); entRet["75-100"] = list(); entRet["0-25"] = list()
+    for val in ENTbinList:
+        if Flag1 == True and val != "[75th to 100 percentile Entropy data]" and val != "[0 to 25th percentile Entropy data]" and val != '':
+            entRet["25-75"].append(val.split(" ")[0])
+        elif Flag2 == True and val != "[25th to 75th percentile Entropy data]" and val != "[0 to 25th percentile Entropy data]" and val != '':
+            entRet["75-100"].append(val.split(" ")[0])
+        elif Flag3 == True and val != "[75th to 100 percentile Entropy data]" and val != "[25th to 75th percentile Entropy data]" and val != '':
+            entRet["0-25"].append(val.split(" ")[0])
+        if val == "[25th to 75th percentile Entropy data]":
+            Flag1 = True; Flag2 = False; Flag3 = False
+        if val == "[75th to 100 percentile Entropy data]":
+            Flag2 = True; Flag1 = False; Flag3 = False
+        if val == "[0 to 25th percentile Entropy data]":
+            Flag3 = True; Flag2 = False; Flag1 = False
+
+    gcRet = dict()
+    Flag1 = False; Flag2 = False; Flag3 = False
+    gcRet["25-75"] = list(); gcRet["75-100"] = list(); gcRet["0-25"] = list()
+    for val in GCbinList:
+        if Flag1 == True and val != "[75th to 100 percentile GC content]" and val != "[0 to 25th percentile GC content]" and val != '':
+            gcRet["25-75"].append(val.split(" ")[0])
+        elif Flag2 == True and val != "[25th to 75th percentile GC Content]" and val != "[0 to 25th percentile RCV data]" and val != '':
+            gcRet["75-100"].append(val.split(" ")[0])
+        elif Flag3 == True and val != "[75th to 100 percentile RCV data]" and val != "[25th to 75th percentile GC Content]" and val != '':
+            gcRet["0-25"].append(val.split(" ")[0])
+        if val == "[25th to 75th percentile GC Content]":
+            Flag1 = True; Flag2 = False; Flag3 = False
+        if val == "[75th to 100 percentile GC content]":
+            Flag2 = True; Flag1 = False; Flag3 = False
+        if val == "[0 to 25th percentile GC content]":
+            Flag3 = True; Flag2 = False; Flag1 = False
+
     newBinDict = dict()
-    for i, outVal in enumerate(binDict):
-        for key, val in outVal.items():
-            for j, inval in enumerate(val):
-                val[j] = {'25-75': inval} if j == 0 else {'75-100': inval} if j == 1 else {'0-25': inval} if j == 2 else None
-            outVal[key] = (val)
-            for inkey, item in outVal.items():
-                newBinDict[inkey] = {}
-                for i, dictVal in enumerate(item):
-                    newBinDict[inkey].update(dictVal)
+    newBinDict["RCV"] = (rcvRet)
+    newBinDict["ENT"] = (entRet)
+    newBinDict["GC"] = (gcRet)
+
     return newBinDict
 
 

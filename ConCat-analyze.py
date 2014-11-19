@@ -27,7 +27,7 @@ import textwrap
 from Bio.Nexus import Nexus
 from Bio import SeqIO
 import sys
-from src.functions import fastEvol, Convert, removePerBin
+from src.functions import fastEvol, Convert, removePerBin, setUpdate, remUsrBin
 from Bio.AlignIO import MultipleSeqAlignment
 from src.handler import NexusHandler
 
@@ -54,13 +54,10 @@ parser.add_argument('-fevol', action='store_true', default=False,
 parser.add_argument('-i', type=str, required=True,
                     help='Enter input alignnmnet file')
 
-parser.add_argument('-fin', type=str, required=True, default = 'nexus',
-                    help='Enter input alignnmnet file format')
-
 parser.add_argument('-o', type=str, required=True,
                     help='Enter output alignnmnet file')
 
-parser.add_argument('-fout', type=str, required=True, default = 'nexus',
+parser.add_argument('-fout', type=str, default = 'nexus',
                     help='Enter output alignnmnet file format')
 
 parser.add_argument('-auto', action='store_true', default=False,
@@ -69,17 +66,20 @@ parser.add_argument('-auto', action='store_true', default=False,
 parser.add_argument('-OV', type=float, default=None,
                     help='Enter the OV cutoff value for detecting fast evolving sites')
 
-parser.add_argument('-rembin', action='store_true', default=False,
+parser.add_argument('--rembin', action='store_true', default=False,
                     help='remove sections from alignment through bin selection')
 
-parser.add_argument('--RCVrem', type=str, default = None,
-                    help='Enter output alignnmnet file')
+parser.add_argument('-RCVrem', type=str, default = None,
+                    help='Enter rcv range to remove alignment section')
 
-parser.add_argument('--ENTrem', type=str, default = None,
-                    help='Enter output alignnmnet file')
+parser.add_argument('-ENTrem', type=str, default = None,
+                    help='Enter entropy range to remove alignment section')
 
-parser.add_argument('--GCrem', type=str, default = None,
-                    help='Enter output alignnmnet file')
+parser.add_argument('-GCrem', type=str, default = None,
+                    help='Enter GC range to remove alignment section')
+
+parser.add_argument('-ugcrem', type=str, default = None,
+                    help='Enter GC range to remove alignment section')
 
 
 
@@ -95,7 +95,11 @@ def main():
             """
         
         file = [args.i]
-        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        try:
+            nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        except:
+            raise TypeError("Requires nexus alignment file as input")
+        
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
         posMatrix = []
 
@@ -115,24 +119,31 @@ def main():
 
         cycles = 0
         posMatrix.sort()
-        msanewObject = msaObject[:, :posMatrix[0]]
-        for i, val in enumerate(posMatrix):
-            if i > 0:
-                if posMatrix[i] == posMatrix[-1]:
-                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
-                    break
-                else:
-                    msanewObject = msanewObject + msaObject[:, val:posMatrix[i+1]]
-    
-        msaObject = msanewObject
+        while cycles < len(posMatrix)-1:
+            if cycles == 0:
+                Position = posMatrix[0]
+                termPos =  Position - len(msaObject[1])
+                varFirst = Position-1
+                msaObject = msaObject[:, :varFirst] + msaObject[:, termPos:]
+            else:
+                Position = posMatrix[cycles+1]
+                termPos = (Position-cycles) - len(msaObject[1])
+                varFirst = Position-cycles-1
+                msaObject = msaObject[:, :varFirst] + msaObject[:, termPos:]
+            cycles = cycles + 1
+
         if args.fout == 'nexus':
             combined = nexi[0][1]
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-            combined.charsets = setUpdate(combined.charsets, posMatrix)
+            if combined.charsets != {}
+                combined.charsets = setUpdate(combined.charsets, posMatrix)
+            
             combined.write_nexus_data(filename=open(args.o, 'w'))
+
         else:
             with open(args.o, 'w') as fp:
                 SeqIO.write(msaObject, fp, args.fout)
+                    
 
     elif args.rembin == True:
         
@@ -140,8 +151,24 @@ def main():
            Removes gene alignment regions from the user selected percentile bins
         """
         
+        
+        def _twoToOne(x):
+            newList = list()
+            for x in remPos:
+                for y in x:
+                    newList.append(y+1)
+            return newList
+        
         file = [args.i]
-        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        try:
+            nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]
+        except:
+            raise TypeError("Requires nexus alignment file as input")
+        
+        if nexi[0][1].charsets.keys() == []:
+            raise KeyError("Charsets block not found in the input alignment file")
+        
+        
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(nexi[0][1]))
 
         binDict = removePerBin(file)
@@ -168,66 +195,99 @@ def main():
                 print("Bin region %s not found in GC bin" %args.GCrem)
                 pass
 
+        print("Removing following regions from the alignment: \n%s" %removeGene)
+
         remPos = []
+        #for val in removeGene:
+        #    for inval in val:
+        #        remPos.append(nexi[0][1].charsets[inval])
+        
         for val in removeGene:
             for inval in val:
-                remPos.append(nexi[1].charsets[inval])
+                remPos.append(inval)
 
-        remPos = list(set(remPos))
-        remPos.sort()
+        #remPos = _twoToOne(remPos)
 
-        msanewObject = msaObject[:, :remPos[0]]
-        for i, val in enumerate(remPos):
-            if i > 0:
-                if remPos[i] == remPos[-1]:
-                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
-                    break
-                else:
-                    msanewObject = msanewObject + msaObject[:, val:remPos[i+1]]
+        posMatrix = list(set(remPos))
+        posMatrix.sort()
+
+        try:
+            toADD = [x for x in nexi[0][1].charsets.keys() if x not in remPos]
+        except:
+            raise KeyError("Requires nexus alignment with 'Charsets' as input")
+
+        newMat=list()
+        for geneName in toADD:
+            newMat.append(msaObject[:, nexi[0][1].charsets[geneName][0]:nexi[0][1].charsets[geneName][-1]+1])
+        
+        #newMat = [msaObject[:, x-1:x] for x in range(1, len(msaObject[1])+1) if x not in posMatrix]
+        msaObject = newMat[0]
+        for i, val in enumerate(newMat):
+            if i !=0:
+                msaObject = msaObject + val
 
         if args.fout == 'nexus':
             combined = nexi[0][1]
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-            combined.charsets = setUpdate(combined.charsets, remPos)
+            combined.charsets = dict()
+            combined.taxsets = dict()
+            combined.charpartitions = dict()
             combined.write_nexus_data(filename=open(args.o, 'w'))
         else:
             with open(args.o, 'w') as fp:
                 SeqIO.write(msaObject, fp, args.fout)
 
-    elif args.remGC != None:
+
+    elif args.ugcrem != None:
         file = [args.i]
-        nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]; combined = nexi[0][1]
+        try:
+            nexi =  [(fname, Nexus.Nexus(fname)) for fname in file]; combined = nexi[0][1]
+        except:
+            raise TypeError("Requires nexus file as input")
+
+        if nexi[0][1].charsets.keys() == []:
+            raise KeyError("Charsets block not found in the input alignment file")
+
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
         
         try:
-            remKeys = remUsrBin(nexi[0][1], args.UGCrem)
+            remKeys = remUsrBin(nexi[0][1], args.ugcrem)
         except KeyError:
-            print("Bin region %s not found in GC bin" %args.GCrem)
+            print("Bin region %s not found in GC bin" %args.ugcrem)
             pass
+        
+        print("Removing following alignment regions: \n%s" %remKeys)
     
-        remPos = []
-        for val in remKeys:
-            remPos.append([x for x in combined.charsets[val]])
-            combined.charsets.pop(val, None)
-    
-        remPos.sort()
-        msanewObject = msaObject[:, :remPos[0]]
-        for i, val in enumerate(remPos):
-            if i > 0:
-                if remPos[i] == remPos[-1]:
-                    msanewObject = msanewObject + msaObject[:, val:len(msaObject[1])]
-                    break
-                else:
-                    msanewObject = msanewObject + msaObject[:, val:remPos[i+1]]
-            
+        #remPos = []
+        #for val in remKeys:s
+        #    remPos.append(combined.charsets[val])
+        
+        toADD = [x for x in nexi[0][1].charsets.keys() if x not in remKeys]
+        
+        newMat = list()
+        for geneName in toADD:
+            newMat.append(msaObject[:, nexi[0][1].charsets[geneName][0]:nexi[0][1].charsets[geneName][-1]+1])
+        
+        #posMatrix = remPos.sort()
+        #newMat = [msaObject[:, x-1:x] for x in range(1, len(msaObject[1])+1) if x not in posMatrix]
+        
+        msaObject = newMat[0]
+        for i, val in enumerate(newMat):
+            if i !=0:
+                msaObject = msaObject + val
+
         if args.fout == 'nexus':
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-            combined.charsets = setUpdate(combined.charsets, remPos)
+            combined.charsets = dict()
+            combined.taxsets = dict()
+            combined.charpartitions = dict()
             combined.write_nexus_data(filename=open(args.o, 'w'))
             
         else:
             with open(args.o, 'w') as fp:
                 SeqIO.write(msaObject, fp, args.fout)
+
+
 
 
 
