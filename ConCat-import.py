@@ -158,7 +158,12 @@ def _remGeneDuplicate(filename):
 def main():
     if argmnts.cds != None:
         store = list()
-        genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
+        
+        try:
+            genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
+        except:
+            raise IOError("%s file not found" %argmnts.cds)
+        
         for geneName in genes:
             try:
                 warnings.filterwarnings("ignore")
@@ -185,7 +190,11 @@ def main():
 
 
     elif argmnts.mrna != None:
-        genes = [x for x in open(argmnts.mrna, 'r').readlines() if x != '' and x != '\n']
+        try:
+            genes = [x for x in open(argmnts.mrna, 'r').readlines() if x != '' and x != '\n']
+        except:
+            raise IOError("%s file not found" %argmnts.mrna)
+    
         for geneName in genes:
             try:
                 warnings.filterwarnings("ignore")
@@ -207,7 +216,11 @@ def main():
 
 
     elif argmnts.gcds != None:
-        genes = [x for x in open(argmnts.gcds, 'r').readlines() if x != '' and x != '\n']
+        try:
+            genes = [x for x in open(argmnts.gcds, 'r').readlines() if x != '' and x != '\n']
+        except:
+            raise IOError("%s file not found" %argmnts.gcds)
+
         geneRecord = list()
         for geneName in genes:
             try:
@@ -245,7 +258,11 @@ def main():
             
             
     elif argmnts.gmrna != None:
-        genes = [x for x in open(argmnts.gmrna, 'r').readlines() if x != '' and x != '\n']
+        try:
+            genes = [x for x in open(argmnts.gmrna, 'r').readlines() if x != '' and x != '\n']
+        except:
+            raise IOError("%s file not found" %argmnts.gmrna)
+        
         geneRecord = list()
         for geneName in genes:
             try:
@@ -282,7 +299,12 @@ def main():
 
     elif argmnts.pull != None:
         discontId = discont()
-        spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
+        
+        try:
+            spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
+        except:
+            raise IOError("%s file not found" %argmnts.pull)
+
         for organism in spList:
             warnings.filterwarnings("ignore")
             masterList = fetchall(organism, discontId)
@@ -330,9 +352,15 @@ def main():
             for filename in files:
                 fname = filename.replace('Align/', '').split('.')[0] + '.fas'
                 if 'Darwin' in platform.system():
-                    subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                    try:
+                        subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                    except:
+                        raise RuntimeError("Failed to align %s file" %fname)
                 else:
-                    subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                    try:
+                        subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                    except:
+                        raise RuntimeError("Failed to align %s file" %fname)
 
 
         elif argmnts.pkg == 'mafft':
@@ -356,7 +384,10 @@ def main():
                 for filename in files:
                     fname = filename.replace('Align/', '').split('.')[0] + '.fas'
                     arguments = argmnts.args.replace('[', '').replace(']', '')
-                    subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
+                    try:
+                        subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
+                    except:
+                        raise RuntimeError("Failed to perform alignment for file %s" %fname)
 
         os.chdir('Output')
         files = glob.glob('*.fas')
