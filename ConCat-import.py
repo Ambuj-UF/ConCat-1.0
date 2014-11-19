@@ -355,12 +355,12 @@ def main():
                     try:
                         subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
                     except:
-                        raise RuntimeError("Failed to align %s file" %fname)
+                        raise ValueError("Failed to align %s file" %fname)
                 else:
                     try:
                         subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
                     except:
-                        raise RuntimeError("Failed to align %s file" %fname)
+                        raise ValueError("Failed to align %s file" %fname)
 
 
         elif argmnts.pkg == 'mafft':
@@ -387,7 +387,7 @@ def main():
                     try:
                         subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
                     except:
-                        raise RuntimeError("Failed to perform alignment for file %s" %fname)
+                        raise ValueError("Failed to perform alignment for file %s" %fname)
 
         os.chdir('Output')
         files = glob.glob('*.fas')
