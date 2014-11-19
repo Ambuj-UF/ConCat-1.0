@@ -2,8 +2,6 @@
 ###Read Manual for clear instructions
 
 
-####Quick instructions
-
 ###Few basic arguments
 
 ```
