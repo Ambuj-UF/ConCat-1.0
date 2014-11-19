@@ -1,4 +1,4 @@
-#ConCat-1.0
+#ConCat v1.0
 ###Read Manual for detail instructions
 
 ##Requirements:
