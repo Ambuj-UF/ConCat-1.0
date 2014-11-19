@@ -117,7 +117,12 @@ def cdsImport(geneName, group, ortho):
 
     
     print("Importing CDS sequences for %s gene" %geneName)
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+
+    try:
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
     records = Entrez.read(handle)
     idList = records["IdList"]
 
@@ -125,7 +130,12 @@ def cdsImport(geneName, group, ortho):
     if ortho != None:
         inpTerm = "ortholog_gene_" + str(idList[0]) + "[group] AND Theria[orgn]"
         print("Using %s as NCBI input querry" %inpTerm)
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        
+        try:
+            handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        except:
+            raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
         records = Entrez.read(handle)
         idList = records["IdList"]
     
@@ -179,8 +189,12 @@ def mrnaImport(geneName, group, ortho):
         inpTerm = geneName + "[sym] AND " + group + "[orgn]"
 
     Entrez.email = 'sendambuj@gmail.com'
-    
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+
+    try:
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
     records = Entrez.read(handle)
     idList = records["IdList"]
     
@@ -237,7 +251,12 @@ def oneGeneCdsImport(geneName, group):
     Entrez.email = 'sendambuj@gmail.com'
         
     print("Importing %s %s gene CDS sequence" %(group, geneName))
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    
+    try:
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
     records = Entrez.read(handle)
     ids = records["IdList"][0]
     
@@ -269,7 +288,12 @@ def oneGeneMrnaImport(geneName, group):
     Entrez.email = 'sendambuj@gmail.com'
     
     print("Importing %S %S gene sequences" %(group, geneName))
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    
+    try:
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+    
     records = Entrez.read(handle)
     ids = records["IdList"][0]
     
@@ -305,7 +329,12 @@ def _fetch_Species(inpTerm = None):
     
     if inpTerm == None:
         inpTerm = "Eucaryotes[orgn] NOT Vertebrates[orgn]"
-    handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
+    
+    try:
+        handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
     records = Entrez.read(handle)
     idList = records['IdList']
     return idList
@@ -321,7 +350,12 @@ def fetchall(spName, discontId):
     
     inpTerm = spName + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
-    handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
+    
+    try:
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
+    except:
+        raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
+
     records = Entrez.read(handle)
     idList = records['IdList']
     if is_empty(idList) == True:
