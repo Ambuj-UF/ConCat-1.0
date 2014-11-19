@@ -1,10 +1,8 @@
 #ConCat-1.0
 ###Read Manual for clear instructions
 
-Well...I am still working on the documentation and manual. 
-Until then, the following instructions might be useful. 
 
-
+####Quick instructions
 
 ###Few basic arguments
 
