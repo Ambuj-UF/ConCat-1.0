@@ -634,6 +634,11 @@ def richNexusCall(runRNA,
 
     os.remove("Results.nex")
 
+    def _checkIndex(listObject, element):
+        for i, val in enumerate(listObject):
+            if val == element:
+                return i
+
     if any(fileTypes) == True:
         f = open("Partition.txt", 'w')
         for key, value in fileTypes.iteritems():
@@ -646,10 +651,28 @@ def richNexusCall(runRNA,
 
         f = open('DatabaseID.csv', 'w')
         writer = csv.writer(f, delimiter = ',')
+        
+        geneNames = list()
+        for key, val in idDict.items():
+            for inval in val:
+                geneNames.append(inval.split(" :")[0])
+    
+        geneNames = list(set(geneNames))
 
-        writer.writerow(['Species'] + [values.split(':')[0].split('.')[0] for values in idDict[idDict.keys()[1]]])
-        for key, value in idDict.iteritems():
-            writer.writerow([key] + [values.split(':')[1] for values in value])
+        writer.writerow(['Species'] + geneNames)
+        for key, value in idDict.items():
+            indexData = list()
+            for i in range(0, len(geneNames)):
+                flag = False
+                for inval in value:
+                    if inval.split(" : ")[0] == geneNames[i]:
+                        indexData.append(inval.split(" : ")[1])
+                        flag = True
+
+                if flag == False:
+                    indexData.append("NA")
+            
+            writer.writerow([key] + indexData)
 
         f.close()
 

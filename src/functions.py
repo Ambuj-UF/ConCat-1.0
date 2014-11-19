@@ -623,14 +623,51 @@ def gcHist(gcDict):
     l = []
     for key, val in gcDict.items():
         l.append(int(val))
-    gcArray = array('l', l)
-    avg = average(l); var = variance(avg, l); sigma = stDev(var); num_bins = 20
-    n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
-    y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
-    plt.plot(bins, y, 'r--')
-    plt.xlabel('GC Values'); plt.ylabel('(Percentage Gene Count)/100')
-    plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
-    plt.subplots_adjust(left=0.15)
+    
+    counter = 0
+    newDict = dict()
+    while counter < 100:
+        newDict[str(counter) + "-" + str(counter + 10)] = 0
+        counter = counter + 10
+    
+
+    for key, val in gcDict.items():
+        counter = 0
+        while counter < 100:
+            if float(val) > float(counter) and float(val) <= float(counter + 10):
+                newDict[str(counter) + "-" + str(counter + 10)] = newDict[str(counter) + "-" + str(counter + 10)] + 1
+                break
+            else:
+                counter = counter + 10
+
+    def _dictUpdate(dictData):
+        for key, val in dictData.items():
+            dictData[int(key.split('-')[0])] = dictData.pop(key)
+        dictData = collections.OrderedDict(sorted(dictData.items()))
+        return dictData
+
+    def _negDictUpdate(dictData):
+        for key, val in dictData.items():
+            dictData[str(key) + "-" + str(key+10)] = dictData.pop(key)
+        dictData = collections.OrderedDict(sorted(dictData.items()))
+        return dictData
+
+    newDict = _dictUpdate(newDict)
+    newDict = _negDictUpdate(newDict)
+
+
+    plt.bar(range(len(newDict)), newDict.values(), align='center')
+    plt.xticks(range(len(newDict)), newDict.keys())
+
+
+    #gcArray = array('l', l)
+    #avg = average(l); var = variance(avg, l); sigma = stDev(var); num_bins = 20
+    #n, bins, patches = plt.hist(gcArray, num_bins, normed=1, facecolor='green', alpha=0.5)
+    #y = mlab.normpdf(bins, float(sum(l))/len(l), sigma)
+    #plt.plot(bins, y, 'r--')
+    #plt.xlabel('GC Values'); plt.ylabel('(Percentage Gene Count)/100')
+    #plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
+    #plt.subplots_adjust(left=0.15)
     plt.savefig('GCplot.png')
 
 
