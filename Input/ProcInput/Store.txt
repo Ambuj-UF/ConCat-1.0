@@ -1,7 +1,0 @@
-ConCat
-======
-
-Alignment Concatenation Program (Under Development phase)
-===========================================
-
-This folder is used for storing nexus files after trimming the database IDs from the taxon names

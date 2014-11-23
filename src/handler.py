@@ -828,9 +828,17 @@ class NexusHandler:
         entropyValDict = dict()
         entropyDict = {}
         msaObject = MultipleSeqAlignment(self.combineToRecord(combined))
+        totalLength = len(list(combined.charsets))
+    
         for i, mkeys in enumerate(combined.charsets):
             if mkeys.count(".nex") == 1:
-                print("Entropy Calculation |    %s|    %s" %(time.strftime("%c"), mkeys))
+                if float(i)/totalLength*100 < 10:
+                    print("Entropy Calculation |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                elif 10 <= float(i)/totalLength*100 < 100:
+                    print("Entropy Calculation |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                else:
+                    print("Entropy Calculation |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                
                 start = combined.charsets[mkeys][0]
                 end = combined.charsets[mkeys][-1]
                 if checkDNA(msaObject[:, start:end][1].seq) == True:
@@ -979,23 +987,34 @@ class NexusHandler:
         MSA = MultipleSeqAlignment(self.combineToRecord(combined))
 
         missingList = {}
-        for i,key in enumerate(combined.charsets):
-            try:
-                start = combined.charsets[key][0]
-                end = combined.charsets[key][-1]
+        totalLength = len(list(combined.charsets))
+        counter = 0
         
-                n = 0
-                while n < len(MSA):
-                    dataSeq = MSA[n][start:end].seq
-                    if self.validate(dataSeq) == True:
-                        try:
-                            missingList[key].append(MSA[n].id)
-                        except KeyError:
-                            missingList[key] = [(MSA[n].id)]
-                    n = n + 1
+        for i,key in enumerate(combined.charsets):
+            if key.count(".nex") == 1:
+                if float(i)/totalLength*100 < 10:
+                    print("Missing Scan        |    %s|    %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+                elif 10 <= float(i)/totalLength*100 < 100:
+                    print("Missing Scan        |    %s|   %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+                else:
+                    print("Missing Scan        |    %s|  %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+            
+                try:
+                    start = combined.charsets[key][0]
+                    end = combined.charsets[key][-1]
+        
+                    n = 0
+                    while n < len(MSA):
+                        dataSeq = MSA[n][start:end].seq
+                        if self.validate(dataSeq) == True:
+                            try:
+                                missingList[key].append(MSA[n].id)
+                            except KeyError:
+                                missingList[key] = [(MSA[n].id)]
+                        n = n + 1
     
-            except IndexError:
-                pass
+                except IndexError:
+                    pass
 
         if missingList == {}:
             print("Running ConCat-build|    %s|    No missing taxa found" %(time.strftime("%c")))
@@ -1035,8 +1054,20 @@ class NexusHandler:
         save_path = 'ProcInput'
         
         idDataDict = dict()
+        
+        print("Start ConCat-build  |    %s|    Creating database ID-less files for Concatenation" %(time.strftime("%c")))
+        
+        totalLength = len(file_list)
+        counter = 0
 
         for filename in file_list:
+            if float(counter)/totalLength*100 < 10:
+                print("Extract ID's        |    %s|    %.2f percent extraction completed  |    Extracting from and transferring %s file" %(time.strftime("%c"), float(counter)/totalLength*100, filename))
+            elif 10 <= float(counter)/totalLength*100 < 100:
+                print("Extract ID's        |    %s|   %.2f percent extraction completed  |    Extracting from and transferring %s file" %(time.strftime("%c"), float(counter)/totalLength*100, filename))
+            else:
+                print("Extract ID's        |    %s|  %.2f percent extraction completed  |    Extracting from and transferring %s file" %(time.strftime("%c"), float(counter)/totalLength*100, filename))
+            counter = counter + 1
             completeName = os.path.join(save_path, filename.split('.')[0] + ".nex")
             fp = open(completeName, 'w')
             flist = [filename]

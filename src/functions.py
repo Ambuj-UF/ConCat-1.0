@@ -21,6 +21,7 @@
 import sys
 import glob
 import os
+import time
 import operator
 import math
 import functools
@@ -368,14 +369,37 @@ def GCcontent(combined):
         """
     GCdict = dict()
     msa = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
+    totalLength = len(list(combined.charsets))
+    counter = 0
     for key, val in combined.charsets.items():
+        if float(counter)/totalLength*100 < 10:
+            print("GC Content          |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+        elif 10 <= float(counter)/totalLength*100 < 100:
+            print("GC Content          |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+        else:
+            print("GC Content          |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+        
+        counter = counter + 1
+        
+        missingCounter = 0
+        if key != 'RNA_Stem' and key != 'RNA_Loop' and key != "'RNA_Stem'" and key != "'RNA_Loop'":
+            
+            try:
+                msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
+                for inval in msaGene:
+                    if list(set(inval))[0] == "?" and len(list(set(inval))[0]) == 1:
+                        missingCounter = missingCounter + 1
+
+            except KeyError:
+                continue
+        
         if key != 'RNA_Stem' and key != 'RNA_Loop' and key != "'RNA_Stem'" and key != "'RNA_Loop'":
             gcCount = 0
             try:
                 msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
                 for inval in msaGene:
                     gcCount = gcCount + inval.seq.count('G') + inval.seq.count('g') + inval.seq.count('C') + inval.seq.count('c')
-                GCdict[key] = (float(gcCount)/(len(msaGene)*len(msaGene[1]))*100)
+                    GCdict[key] = (float(gcCount)/((len(msaGene)-missingCounter)*len(msaGene[1]))*100)
             except KeyError:
                 continue
 

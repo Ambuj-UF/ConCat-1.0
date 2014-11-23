@@ -99,6 +99,7 @@ def richNexusCall(runRNA,
         print("Running ConCat-build|    %s|    --------- Extracting database ID's ---------" %(time.strftime("%c")))
         idDictData = NexusHandler('').managePipes()
         os.chdir("Input/ProcInput")
+        
         file_list = glob.glob("*.nex")
         os.chdir("..")
         if runBlock == True:
@@ -214,10 +215,22 @@ def richNexusCall(runRNA,
                 pass
 
 
+    def _rcvPrint(counterRCV, totalLength):
+        if float(counterRCV)/totalLength*100 < 10:
+            print("RCV Calculation     |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+        elif 10 <= float(counterRCV)/totalLength*100 < 100:
+            print("RCV Calculation     |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+        else:
+            print("RCV Calculation     |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+
+
     if calRCVvalue == True:
         print("RCV Calculation     |    %s|    --------Initiating RCV Calculation--------" %(time.strftime("%c")))
         newMSA = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
         rcvDict = dict()
+        
+        totalLength = len(combined.charsets)
+        counterRCV = 0
 
         try:
             for key, val in combined.charsets.items():
@@ -226,47 +239,63 @@ def richNexusCall(runRNA,
                         if any(fileTypes) == True:
                             try:
                                 if fileTypes[key] == 'Protein':
-                                    print("RCV Calculation     |    %s|    %s" %(time.strftime("%c"), key))
+                                    _rcvPrint(counterRCV, totalLength)
+                                    
+                                    
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("RCV Calculation     |    %s|    %s alignment not found" %(time.strftime("%c"), key))
+                                        print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                         #print("Alignment files not found \n")
+                                        
+                                    counterRCV = counterRCV + 1
                                 
 
                                 else:
-                                    print("RCV Calculation     |    %s|    %s" %(time.strftime("%c"), key))
+                                    _rcvPrint(counterRCV, totalLength)
+                                    #print("RCV Calculation     |    %s|    %s" %(time.strftime("%c"), key))
+                                    
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("RCV Calculation     |    %s|    %s alignment not found" %(time.strftime("%c"), key))
+                                        print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                         #print("Alignment files not found \n")
+                                        
+                                    counterRCV = counterRCV + 1
                     
                             except KeyError:
-                                print("Setting %s alignment type to default alignment type 'DNA'" %key)
+                                
+                                _rcvPrint(counterRCV, totalLength)
+                                #print("Setting %s alignment type to default alignment type 'DNA'" %key)
+                                
                                 print("RCV Calculation     |    %s|    %s" %(time.strftime("%c"), key))
                                 try:
                                     rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                 except ZeroDivisionError:
                                     pass
                                 except IndexError:
-                                    print("RCV Calculation     |    %s|    %s alignment not found" %(time.strftime("%c"), key))
+                                    print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                     #print("Alignment files not found \n")
+                                    
+                                counterRCV = counterRCV + 1
 
 
                         else:
-                            print("RCV Calculation     |    %s|    %s" %(time.strftime("%c"), key))
+                            _rcvPrint(counterRCV, totalLength)
+                            
                             try:
                                 rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                             except ZeroDivisionError:
                                 pass
                             except IndexError:
-                                print("RCV Calculation     |    %s|    %s alignment not found" %(time.strftime("%c"), key))
+                                print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                 #print("Alignment files not found \n")
+                                
+                            counterRCV = counterRCV + 1
             
                 except KeyError:
                     continue
