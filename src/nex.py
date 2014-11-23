@@ -22,6 +22,8 @@
 import glob
 import sys
 import csv
+import time
+import platform
 from handler import *
 from functions import *
 import timeit
@@ -47,6 +49,12 @@ def richNexusCall(runRNA,
                   pbin,
                   usrGCbin
                   ):
+    
+    print("INFO                |    %s|    %s|    ------------- ConCat v1.0 ------------------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+    print("INFO                |    %s|    %s|    -----Copyright (C) {2014} Ambuj Kumar-------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+    print("INFO                |    %s|    %s|    ----------Kimball-Braun Lab group-----------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+    print("INFO                |    %s|    %s|    -----You are using python version %s-----" %(time.strftime("%c"), time.strftime("%H:%M:%S"), platform.python_version()))
+    #print("Start ConCat-build |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), sys.version))
     
     start = timeit.default_timer()
     def transferRNA(file_list):
@@ -79,7 +87,8 @@ def richNexusCall(runRNA,
             pass
         retVal = [typeDict, RNAstruc]
         return retVal
-                
+
+    print("Start ConCat-build  |    %s|    %s|    -------------- Loading Files ---------------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
 
     if pipeID == True:
         usr_inpT = 1
@@ -87,7 +96,7 @@ def richNexusCall(runRNA,
         usr_inpT = 2
 
     if usr_inpT == 1:
-        
+        print("Running ConCat-build|    %s|    %s|    --------- Extracting database ID's ---------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
         idDictData = NexusHandler('').managePipes()
         os.chdir("Input/ProcInput")
         file_list = glob.glob("*.nex")
@@ -102,10 +111,11 @@ def richNexusCall(runRNA,
         os.chdir("ProcInput")
         
         if spellScan == True:
-            print("Please wait! Searchng for spelling mistakes \n")
-            print("---------------------------------------------------------------------------")
+            print("Running ConCat-build|    %s|    %s|    Searchng for spelling mistakes" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            #print("Please wait! Searchng for spelling mistakes \n")
+            #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
-            print("---------------------------------------------------------------------------")
+            #print("---------------------------------------------------------------------------")
         else:
             pass
 
@@ -126,7 +136,9 @@ def richNexusCall(runRNA,
             
             nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
     
+        print("Running ConCat-build|    %s|    %s|    ----------Initiating concatenation----------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
         combined = Nexus.combine(nexi)
+        print("Running ConCat-build|    %s|    %s|    ---------- Conatenation completed ----------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
         os.chdir("../..")
 
     elif usr_inpT == 2:
@@ -141,10 +153,10 @@ def richNexusCall(runRNA,
         fileTypes = transferRNAret[0]
         
         if spellScan == True:
-            print("Please wait! Checking spelling mistakes \n")
-            print("---------------------------------------------------------------------------")
+            print("Running ConCat-build|    %s|    %s|    Searchng for spelling mistakes" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
-            print("---------------------------------------------------------------------------")
+            #print("---------------------------------------------------------------------------")
         else:
             pass
 
@@ -165,8 +177,10 @@ def richNexusCall(runRNA,
 
             nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
 
-
+        print("Running ConCat-build|    %s|    %s|    -----Initiating concatenation-----" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
         combined = Nexus.combine(nexi)
+        print("Running ConCat-build|    %s|    %s|    ----- Conatenation completed -----" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+
         os.chdir("..")
 
     RNAstrucData = transferRNAret[1]
@@ -200,11 +214,8 @@ def richNexusCall(runRNA,
                 pass
 
 
-
-    print("Concatenation completed! \n")
-
     if calRCVvalue == True:
-        print("Calculating RCV values for following genes \n")
+        print("RCV Calculation     |    %s|    %s|    --------Initiating RCV Calculation--------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
         newMSA = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
         rcvDict = dict()
 
@@ -215,50 +226,54 @@ def richNexusCall(runRNA,
                         if any(fileTypes) == True:
                             try:
                                 if fileTypes[key] == 'Protein':
-                                    print("%s" %key)
+                                    print("RCV Calculation     |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVprotCal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("Alignment files not found \n")
+                                        print("RCV Calculation     |    %s|    %s|    %s alignment not found" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
+                                        #print("Alignment files not found \n")
                                 
 
                                 else:
-                                    print("%s" %key)
+                                    print("RCV Calculation     |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
                                     try:
                                         rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("Alignment files not found \n")
+                                        print("RCV Calculation     |    %s|    %s|    %s alignment not found" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
+                                        #print("Alignment files not found \n")
                     
                             except KeyError:
                                 print("Setting %s alignment type to default alignment type 'DNA'" %key)
+                                print("RCV Calculation     |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
                                 try:
                                     rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                                 except ZeroDivisionError:
                                     pass
                                 except IndexError:
-                                    print("Alignment files not found \n")
+                                    print("RCV Calculation     |    %s|    %s|    %s alignment not found" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
+                                    #print("Alignment files not found \n")
 
 
                         else:
-                            print("%s" %key)
+                            print("RCV Calculation     |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
                             try:
                                 rcvDict[key] = ("[ %s ]" % RCVcal(newMSA[:, combined.charsets[key][0]:combined.charsets[key][-1]]))
                             except ZeroDivisionError:
                                 pass
                             except IndexError:
-                                print("Alignment files not found \n")
+                                print("RCV Calculation     |    %s|    %s|    %s alignment not found" %(time.strftime("%c"), time.strftime("%H:%M:%S"), key))
+                                #print("Alignment files not found \n")
             
                 except KeyError:
                     continue
         except TypeError:
+            print("RCV Calculation     |    %s|    %s|    Type error in RCV Calculation. Skipping this step" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
             print("Type error in RCV Calculation. Skipping this step \n")
             pass
-
-        print("RCV Calculation Completed \n")
         
     else:
         pass
@@ -322,11 +337,14 @@ def richNexusCall(runRNA,
         with open('RYoutput.phy', 'w') as fp:
             SeqIO.write(msaDataRY, fp, 'phylip-relaxed')
     
-        print("Your output is saved in RYoutput.phy file \n")
+
+        #print("Your output is saved in RYoutput.phy file \n")
+        print("RY Coding           |    %s|    %s|    Your output is saved in RYoutput.phy file" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
 
     try:
         BaseHandle(2).nexML("Results.nex")
-        print("Your NEXML file is stored in 'Results.xml' file \n")
+        print("Writing Nexml       |    %s|    %s|    Your NEXML file is stored in 'Results.xml' file" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        #print("Your NEXML file is stored in 'Results.xml' file \n")
     except:
         pass
 
@@ -341,7 +359,8 @@ def richNexusCall(runRNA,
         
         d = dict()
         
-        print("Extracting taxanomy data from Taxanomy.csv file\n")
+        print("Editing taxa names  |    %s|    %s|    Extracting taxanomy data from Taxanomy.csv file" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        #print("Extracting taxanomy data from Taxanomy.csv file\n")
         try:
             for row in csv.reader(open("Taxanomy.csv", 'rU')):
                 d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
@@ -386,14 +405,16 @@ def richNexusCall(runRNA,
         fopen.close()
 
     if cutOff != None:
-        print("Searching fast evolving sites")
+        print("Fast Evolving Sites |    %s|    %s|    Searching fast evolving sites" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        #print("Searching fast evolving sites")
         fast_evolv_site = fastEvol(combined, cutOff)
         if fast_evolv_site != []:
             with open('Fast_Evolving_Sites', 'w') as fp:
                 for val in fast_evolv_site:
                     fp.write("%s\n" %val[0].split('_')[1])
         else:
-            print("No fast Evolving site found")
+            print("Fast Evolving Sites |    %s|    %s|    No fast Evolving site found" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            #print("No fast Evolving site found")
 
     if GC == True:
         gcDict = GCcontent(combined)
@@ -652,7 +673,8 @@ def richNexusCall(runRNA,
 
     if any(fileTypes) == True:
         
-        print("Writing alignment partition data to 'Partition.txt' file\n")
+        print("Creating Partition  |    %s|    %s|    Writing alignment partition data to 'Partition.txt' file" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        #print("Writing alignment partition data to 'Partition.txt' file\n")
         f = open("Partition.txt", 'w')
         for key, value in fileTypes.items():
             if key in combined.charsets:
@@ -662,7 +684,8 @@ def richNexusCall(runRNA,
     # Write IDs to csv file
     if usr_inpT == 1:
         
-        print("Writing database ID's to 'DatabaseID.csv' file\n")
+        print("Database ID         |    %s|    %s|    Writing database ID's to 'DatabaseID.csv' file" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        #print("Writing database ID's to 'DatabaseID.csv' file\n")
         
         f = open('DatabaseID.csv', 'w')
         writer = csv.writer(f, delimiter = ',')
@@ -729,7 +752,9 @@ def richNexusCall(runRNA,
     except:
         pass
     stop = timeit.default_timer()
-    print("Your final concatenated alignment is saved in Combined.nex \nHave a nice day!!\n")
+
+    print("Running ConCat-build|    %s|    %s|    ------ Processing completed ------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+    print("\nYour final concatenated alignment is saved in Combined.nex \nHave a nice day!!\n")
 
     if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
         print("ResultsEditedTaxon.nex contains concatenated alignment with edited taxon names\n")
