@@ -326,7 +326,7 @@ def richNexusCall(runRNA,
 
     try:
         BaseHandle(2).nexML("Results.nex")
-        print("Your NEXML file is stored in Results.xml \n")
+        print("Your NEXML file is stored in 'Results.xml' file \n")
     except:
         pass
 
@@ -337,15 +337,16 @@ def richNexusCall(runRNA,
             return False
 
 
-    if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
+    if nullTest(addTaxName) == True:
+        
         d = dict()
-        for row in csv.reader(open('Taxanomy.csv', 'rU')):
+        
+        print("Extracting taxanomy data from Taxanomy.csv file\n")
+        for row in csv.reader(open("Taxanomy.csv", 'rU')):
             d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
 
-    taxDict = dict()
-    #print d
+        taxDict = dict()
 
-    if nullTest(addTaxName) == True:
         nameList = addTaxName.split(',')
         for lines in nameList:
             tID = lines.rstrip('\n')
@@ -362,7 +363,7 @@ def richNexusCall(runRNA,
             combined = taxanomyClass(taxDict, combined).addTaxanomy()
 
         sequences = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
-        fopen = open('ResultsEditedTaxon.nex', 'w')
+        fopen = open("ResultsEditedTaxon.nex", 'w')
         SeqIO.write(sequences, fopen, "nexus")
         fopen.close()
 
@@ -376,7 +377,7 @@ def richNexusCall(runRNA,
             counter = counter + 1
 
         sequences = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
-        fopen = open('ResultsEditedTaxon.nex', 'w')
+        fopen = open("ResultsEditedTaxon.nex", 'w')
         SeqIO.write(sequences, fopen, "nexus")
         fopen.close()
 
@@ -646,6 +647,8 @@ def richNexusCall(runRNA,
                 return i
 
     if any(fileTypes) == True:
+        
+        print("Writing alignment partition data to 'Partition.txt' file\n")
         f = open("Partition.txt", 'w')
         for key, value in fileTypes.iteritems():
             if key in combined.charsets:
@@ -654,7 +657,9 @@ def richNexusCall(runRNA,
 
     # Write IDs to csv file
     if usr_inpT == 1:
-
+        
+        print("Writing database ID's to 'DatabaseID.csv' file\n")
+        
         f = open('DatabaseID.csv', 'w')
         writer = csv.writer(f, delimiter = ',')
         
@@ -720,8 +725,12 @@ def richNexusCall(runRNA,
     except:
         pass
     stop = timeit.default_timer()
-    print("Your final concatenated alignment is saved in Combined.nex \n Have a nice day!!")
-    print("Time elapsed: %s" %(stop - start))
+    print("Your final concatenated alignment is saved in Combined.nex \nHave a nice day!!\n")
+
+    if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
+        print("ResultsEditedTaxon.nex contains concatenated alignment with edited taxon names\n")
+
+    print("Time elapsed: %s seconds" %(stop - start))
 
 
 
