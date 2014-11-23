@@ -674,7 +674,7 @@ def richNexusCall(runRNA,
     
         geneNames = list(set(geneNames))
 
-        writer.writerow(['Species'] + geneNames)
+        writer.writerow(['Species'] + [x.rstrip(".nex") for x in geneNames])
         for key, value in idDict.items():
             indexData = list()
             for i in range(0, len(geneNames)):
