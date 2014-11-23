@@ -352,7 +352,12 @@ def richNexusCall(runRNA,
             for key in d:
                 taxDict[key] = [d[key][inkey] for inkey in d[key] if inkey == tID]
     
-            taxDict.pop("Species", [tID])
+            if "Species" in taxDict.keys():
+                taxDict.pop("Species", [tID])
+            elif "species" in taxDict.keys():
+                taxDict.pop("species", [tID])
+            else:
+                raise KeyError("Species header not found in Taxanomy.csv file. Check the first coloumn header.")
     
             combined = taxanomyClass(taxDict, combined).addTaxanomy()
 
