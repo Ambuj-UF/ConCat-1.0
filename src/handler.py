@@ -434,10 +434,6 @@ class taxanomyClass:
         combined = self.combined
         taxDict = self.taxDict
         
-        taxaNotFound = [x for x in taxDict.keys() if x not in combined.matrix.keys()]
-        if taxaNotFound != []:
-            print("Following taxa were not found in the alignment files: %s\n" %taxaNotFound)
-        
         for key, data in combined.matrix.items():
             if key.split('_')[0] + '_' + key.split('_')[1] in taxDict.keys():
                 taxID = taxDict[key.split('_')[0] + '_' + key.split('_')[1]]

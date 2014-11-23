@@ -342,12 +342,16 @@ def richNexusCall(runRNA,
         d = dict()
         
         print("Extracting taxanomy data from Taxanomy.csv file\n")
-        for row in csv.reader(open("Taxanomy.csv", 'rU')):
-            d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
+        try:
+            for row in csv.reader(open("Taxanomy.csv", 'rU')):
+                d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
+        except:
+            raise IOError("Taxanomy.csv file not found in ConCat home directory")
 
         taxDict = dict()
 
-        nameList = addTaxName.split(',')
+        nameList = addTaxName.split('-')
+        print nameList
         for lines in nameList:
             tID = lines.rstrip('\n')
             for key in d:

@@ -99,7 +99,7 @@ parser.add_argument('-GC', action='store_true', default=False,
                     help='Include if you want to calculate GC content')
 
 parser.add_argument('-addT', type=str, default=None,
-                    choices=['Class', 'Family', 'Order', 'Phylum', 'Kingdom'],
+                    choices=['Class', 'Family', 'Order', 'Phylum', 'Kingdom', 'Class-Family', 'Class-Family-Order', 'Class-Family-Order-Phylum', 'Class-Family-Order-Phylum-Kingdom'],
                     help='Enter the txaonomy classes to add in the final alignment taxa name. Sperate Multiple values using comma (-addT Class,Family,Order)')
 
 parser.add_argument('-remT', type=int, default=None,
