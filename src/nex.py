@@ -351,7 +351,7 @@ def richNexusCall(runRNA,
         taxDict = dict()
 
         nameList = addTaxName.split('-')
-        print nameList
+        
         for lines in nameList:
             tID = lines.rstrip('\n')
             for key in d:
