@@ -165,7 +165,7 @@ def main():
         except:
             raise TypeError("Requires nexus alignment file as input")
         
-        if nexi[0][1].charsets.keys() == []:
+        if list(nexi[0][1].charsets.keys()) == []:
             raise KeyError("Charsets block not found in the input alignment file")
         
         
@@ -212,7 +212,7 @@ def main():
         posMatrix.sort()
 
         try:
-            toADD = [x for x in nexi[0][1].charsets.keys() if x not in remPos]
+            toADD = [x for x in list(nexi[0][1].charsets.keys()) if x not in remPos]
         except:
             raise KeyError("Requires nexus alignment with 'Charsets' as input")
 
@@ -245,7 +245,7 @@ def main():
         except:
             raise TypeError("Requires nexus file as input")
 
-        if nexi[0][1].charsets.keys() == []:
+        if list(nexi[0][1].charsets.keys()) == []:
             raise KeyError("Charsets block not found in the input alignment file")
 
         msaObject = MultipleSeqAlignment(NexusHandler(1).combineToRecord(combined))
@@ -262,7 +262,7 @@ def main():
         #for val in remKeys:s
         #    remPos.append(combined.charsets[val])
         
-        toADD = [x for x in nexi[0][1].charsets.keys() if x not in remKeys]
+        toADD = [x for x in list(nexi[0][1].charsets.keys()) if x not in remKeys]
         
         newMat = list()
         for geneName in toADD:

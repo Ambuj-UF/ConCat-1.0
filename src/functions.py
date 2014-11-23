@@ -657,7 +657,7 @@ def gcHist(gcDict):
 
 
     plt.bar(range(len(newDict)), newDict.values(), align='center')
-    plt.xticks(range(len(newDict)), newDict.keys())
+    plt.xticks(range(len(newDict)), list(newDict.keys()))
 
 
     #gcArray = array('l', l)

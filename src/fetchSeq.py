@@ -106,7 +106,7 @@ def cdsImport(geneName, group, ortho):
         @ group - organism name
         @ creates a taxon CDS aligned fasta file as output for the set of genes given as input
         """
-
+    
     if ortho != None:
         inpTerm = geneName + "[sym] AND " + ortho + "[orgn]"
     elif group != None:

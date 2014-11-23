@@ -435,11 +435,11 @@ class taxanomyClass:
         taxDict = self.taxDict
         
         for key, data in combined.matrix.items():
-            if key.split('_')[0] + '_' + key.split('_')[1] in taxDict.keys():
+            if key.split('_')[0] + '_' + key.split('_')[1] in list(taxDict.keys()):
                 taxID = taxDict[key.split('_')[0] + '_' + key.split('_')[1]]
                 combined.matrix[key + '_' + taxID[0]] = combined.matrix.pop(key)
         for i, labels in enumerate(combined.taxlabels):
-            if labels.split('_')[0] + '_' + labels.split('_')[1] in taxDict.keys():
+            if labels.split('_')[0] + '_' + labels.split('_')[1] in list(taxDict.keys()):
                 taxID = taxDict[labels.split('_')[0] + '_' + labels.split('_')[1]]
                 combined.taxlabels[i] = labels + '_' + taxID[0]
 
@@ -879,7 +879,7 @@ class NexusHandler:
         listGap=[]
         n = 0
         while n < len(combined.charsets):
-            list1 = combined.charsets[combined.charsets.keys()[n]]
+            list1 = combined.charsets[list(combined.charsets.keys())[n]]
             for val in positions:
                 if val in list1:
                     list1.remove(val)
@@ -896,7 +896,7 @@ class NexusHandler:
 
         p = 0
         while p < len(combined.charsets):
-            combined.charsets[combined.charsets.keys()[p]] = (listGap[p])
+            combined.charsets[list(combined.charsets.keys())[p]] = (listGap[p])
             p = p + 1
 
         return combined
@@ -934,7 +934,7 @@ class NexusHandler:
         listGap = []
         n = 0
         while n < len(entropyDict):
-            list1 = entropyDict[entropyDict.keys()[n]]
+            list1 = entropyDict[list(entropyDict.keys())[n]]
             for val in positions:
                 if val in list1:
                     list1.remove(val)
@@ -950,7 +950,7 @@ class NexusHandler:
     
         p = 0
         while p < len(entropyDict):
-            entropyDict[entropyDict.keys()[p]] = (listGap[p])
+            entropyDict[list(entropyDict.keys())[p]] = (listGap[p])
             p = p + 1
 
         for key, val in entropyDict.items():
@@ -1068,7 +1068,7 @@ class NexusHandler:
     def runRNAOperation(self, procRNAdict, combined):
         Flag = True
         for key, val in procRNAdict.items():
-            if val[-1] -1 > len(combined.matrix[combined.matrix.keys()[0]]):
+            if val[-1] -1 > len(combined.matrix[list(combined.matrix.keys())[0]]):
                 print("Please check the RNA structure manual entry in alignment files \n Looks like the length of RNA structure is greater than the length of alignment. It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment \nSkipping RNA structure matrix construction\n")
                 Flag = False
             if Flag:
