@@ -7,6 +7,11 @@ BioPython and python 2.7 and above
 
 Handling different file formats: Importance of ConCat lies in its ability to store and generate rich annotation data. It allows user to define several features in alignment file through ConCat block. Thus, it is important for ConCat to use nexus files as input for extended functionality. To make this easier, ConCat -convert function scans alignment files in any file format and converts it into nexus file format. 
 
+Alignment file present in Input directory contains database ID's embedded in  the taxon names. Use -pipe argument to concatenate this dataset.
+
+``` 
+python ConCat-build.py -pipe
+```
 
 ConCat block architecture:
 
