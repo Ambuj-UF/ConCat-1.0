@@ -654,7 +654,7 @@ def richNexusCall(runRNA,
         
         print("Writing alignment partition data to 'Partition.txt' file\n")
         f = open("Partition.txt", 'w')
-        for key, value in fileTypes.iteritems():
+        for key, value in fileTypes.items():
             if key in combined.charsets:
                 f.write('%s, %s = %s-%s\n' % (value, key.split('.')[0], combined.charsets[key][0], combined.charsets[key][-1]))
         f.close()
