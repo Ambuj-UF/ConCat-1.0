@@ -866,8 +866,11 @@ class NexusHandler:
            matrix.
            
         """
+        try:
+            matrixNew = combined.matrix
+        except AttributeError:
+            raise IOError("Files not found in Input directory")
         
-        matrixNew = combined.matrix
         listID = combined.taxlabels
         records = []
         

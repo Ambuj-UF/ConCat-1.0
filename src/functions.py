@@ -381,14 +381,14 @@ def GCcontent(combined):
         
         counter = counter + 1
         
-        missingCounter = 0
+        charCount = 0
         if key != 'RNA_Stem' and key != 'RNA_Loop' and key != "'RNA_Stem'" and key != "'RNA_Loop'":
             
             try:
                 msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
                 for inval in msaGene:
-                    if list(set(inval))[0] == "?" and len(list(set(inval))[0]) == 1:
-                        missingCounter = missingCounter + 1
+                    charCount = charCount + inval.seq.count('G') + inval.seq.count('g') + inval.seq.count('C') + inval.seq.count('c')
+                    charCount = charCount + inval.seq.count('A') + inval.seq.count('a') + inval.seq.count('T') + inval.seq.count('t')
 
             except KeyError:
                 continue
@@ -399,7 +399,7 @@ def GCcontent(combined):
                 msaGene = msa[:, combined.charsets[key][0]:combined.charsets[key][-1]]
                 for inval in msaGene:
                     gcCount = gcCount + inval.seq.count('G') + inval.seq.count('g') + inval.seq.count('C') + inval.seq.count('c')
-                    GCdict[key] = (float(gcCount)/((len(msaGene)-missingCounter)*len(msaGene[1]))*100)
+                    GCdict[key] = ((float(gcCount)/charCount)*100)
             except KeyError:
                 continue
 
