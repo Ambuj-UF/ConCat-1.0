@@ -433,12 +433,19 @@ class taxanomyClass:
         
         combined = self.combined
         taxDict = self.taxDict
+        
+        taxaNotFound = [x for x in taxDict.keys() if x not in combined.matrix.keys()]
+        if taxaNotFound != []:
+            print("Following taxa were not found in the alignment files: %s\n" %taxaNotFound)
+        
         for key, data in combined.matrix.items():
-            taxID = [taxDict[inkey] for inkey in taxDict if key.split('_')[0] + '_' + key.split('_')[1]  == inkey]
-            combined.matrix[key + '_' + taxID[0][0]] = combined.matrix.pop(key)
+            if key.split('_')[0] + '_' + key.split('_')[1] in taxDict.keys():
+                taxID = taxDict[key.split('_')[0] + '_' + key.split('_')[1]]
+                combined.matrix[key + '_' + taxID[0]] = combined.matrix.pop(key)
         for i, labels in enumerate(combined.taxlabels):
-            taxID = [taxDict[inkey] for inkey in taxDict if labels.split('_')[0] + '_' + labels.split('_')[1]  == inkey]
-            combined.taxlabels[i] = labels + '_' + taxID[0][0]
+            if labels.split('_')[0] + '_' + labels.split('_')[1] in taxDict.keys():
+                taxID = taxDict[labels.split('_')[0] + '_' + labels.split('_')[1]]
+                combined.taxlabels[i] = labels + '_' + taxID[0]
 
         return combined
 
@@ -456,7 +463,9 @@ class taxanomyClass:
         for i, labels in enumerate(combined.taxlabels):
             if labels.count('_') >= 1:
                 combined.taxlabels[i] = '_'.join(labels.split('_')[:-1])
+        
         combined.taxsets.clear()
+
         return combined
 
 

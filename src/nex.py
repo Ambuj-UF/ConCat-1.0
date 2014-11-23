@@ -339,10 +339,11 @@ def richNexusCall(runRNA,
 
     if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
         d = dict()
-        for row in csv.reader(open('Taxanomy.csv')):
+        for row in csv.reader(open('Taxanomy.csv', 'rU')):
             d['%s' % row[0]] = {'Family': row[1], 'Order': row[2], 'Class': row[3], 'Phylum': row[4], 'Kingdom': row[5]}
 
     taxDict = dict()
+    #print d
 
     if nullTest(addTaxName) == True:
         nameList = addTaxName.split(',')
