@@ -182,7 +182,7 @@ class BaseHandle:
             while n < len(idList):
                 for i, j in zip(value, idList[n]):
                     if 1.0 > float([x == y for (x, y) in zip(i, j)].count(True))/len(j) > 0.8:
-                        print("Running ConCat-build|    %s|    %s|    Found %s in gene %s but gene %s (has %s)" %(time.strftime("%c"), time.strftime("%H:%M:%S"), i, keyList[counter-1], keyList[n], j))
+                        print("Running ConCat-build|    %s|    Found %s in gene %s but gene %s (has %s)" %(time.strftime("%c"), i, keyList[counter-1], keyList[n], j))
                         #print("Found " + i + " in gene " + keyList[counter-1] + " but gene " + keyList[n] + " (has " + j+")\n")
             
                 n = n + 1
@@ -518,7 +518,7 @@ class NexusHandler:
         fp = open("RNAConsensus.txt", 'w')
 
         for name in newFileList:
-            print("RNA structure     |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), name))
+            print("RNA structure     |    %s|    %s" %(time.strftime("%c"), name))
             fp.write("[ %s ]\n" % name.split('.')[0])
             fp.write(subprocess.check_output("RNAalifold < %s" % name, shell = True))
             fp.write('\n\n')
@@ -815,7 +815,7 @@ class NexusHandler:
             
         """
         
-        print("Entropy Calculation |    %s|    %s|    -------Initiating Entropy Calculation-------" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        print("Entropy Calculation |    %s|    -------Initiating Entropy Calculation-------" %(time.strftime("%c")))
                                              
         dna = set("ATGC-N?")
         
@@ -830,7 +830,7 @@ class NexusHandler:
         msaObject = MultipleSeqAlignment(self.combineToRecord(combined))
         for i, mkeys in enumerate(combined.charsets):
             if mkeys.count(".nex") == 1:
-                print("Entropy Calculation |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), mkeys))
+                print("Entropy Calculation |    %s|    %s" %(time.strftime("%c"), mkeys))
                 start = combined.charsets[mkeys][0]
                 end = combined.charsets[mkeys][-1]
                 if checkDNA(msaObject[:, start:end][1].seq) == True:
@@ -998,7 +998,7 @@ class NexusHandler:
                 pass
 
         if missingList == {}:
-            print("Running ConCat-build|    %s|    %s|    No missing taxa found" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            print("Running ConCat-build|    %s|    No missing taxa found" %(time.strftime("%c")))
             #print("No missing taxa found")
         
         else:
@@ -1076,10 +1076,10 @@ class NexusHandler:
         Flag = True
         for key, val in procRNAdict.items():
             if val[-1] -1 > len(combined.matrix[list(combined.matrix.keys())[0]]):
-                print("Running ConCat-build|    %s|    %s|    Please check the RNA structure manual entry in alignment files" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
-                print("Running ConCat-build|    %s|    %s|    Looks like the length of RNA structure is greater than the length of alignment." %(time.strftime("%c"), time.strftime("%H:%M:%S")))
-                print("Running ConCat-build|    %s|    %s|    It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
-                print("Running ConCat-build|    %s|    %s|    Skipping RNA structure matrix construction" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+                print("Running ConCat-build|    %s|    Please check the RNA structure manual entry in alignment files" %(time.strftime("%c")))
+                print("Running ConCat-build|    %s|    Looks like the length of RNA structure is greater than the length of alignment." %(time.strftime("%c")))
+                print("Running ConCat-build|    %s|    It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment" %(time.strftime("%c")))
+                print("Running ConCat-build|    %s|    Skipping RNA structure matrix construction" %(time.strftime("%c")))
                 
                 #print("Please check the RNA structure manual entry in alignment files \n Looks like the length of RNA structure is greater than the length of alignment. It usually happens when you put wrong RNA structure starting position which causes final RNA structure position in the respective alignment file to exceed the total length of alignment \nSkipping RNA structure matrix construction\n")
                 Flag = False
@@ -1098,7 +1098,7 @@ class NexusHandler:
         
         
         #print("Checking for missing taxa in alignment files \n")
-        print("Running ConCat-build|    %s|    %s|    Checking for missing taxa in alignment files" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+        print("Running ConCat-build|    %s|    Checking for missing taxa in alignment files" %(time.strftime("%c")))
         combined = self.missingScan(combined)
         
         if runShanon == True:
@@ -1113,7 +1113,7 @@ class NexusHandler:
             pass
         
         if runRNA == True:
-            print("Running ConCat-build|    %s|    %s|    Constructing RNA structure matrix" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            print("Running ConCat-build|    %s|    Constructing RNA structure matrix" %(time.strftime("%c")))
             #print("Constructing RNA structure matrix \n")
             try:
                 self.RNAfoldConsensus()
@@ -1121,10 +1121,10 @@ class NexusHandler:
                 try:
                     combined = self.runRNAOperation(procRNAdict, combined)
                 except:
-                    print("Running ConCat-build|    %s|    %s|    Cant find RNA data" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+                    print("Running ConCat-build|    %s|    Cant find RNA data" %(time.strftime("%c")))
                     #print("Cant find RNA data \n")
             except OSError:
-                print("Running ConCat-build|    %s|    %s|    RNAfold not found. Skipping this step" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+                print("Running ConCat-build|    %s|    RNAfold not found. Skipping this step" %(time.strftime("%c")))
                 #print("RNAfold not found \n Skipping this step")
     
     
@@ -1173,7 +1173,7 @@ class NexusHandler:
                 if delTaxa in combined.taxlabels: combined.taxlabels.remove(delTaxa)
             
             else:
-                print("Running ConCat-build|    %s|    %s|    %s not found in the alignment. Check for spelling mistakes in taxa editing input file" %(time.strftime("%c"), time.strftime("%H:%M:%S"), delTaxa))
+                print("Running ConCat-build|    %s|    %s not found in the alignment. Check for spelling mistakes in taxa editing input file" %(time.strftime("%c"), delTaxa))
                 #print("%s not found in the alignment. Check for spelling mistakes in taxa editing input file" % delTaxa)
         combined = self.missingScan(combined)
         if usr_inpT == 1:
@@ -1212,7 +1212,7 @@ class NexusHandler:
         combined = self.msaToMatrix(align, combined)
 
         if runRNA == True:
-            print("Running ConCat-build|    %s|    %s|    Constructing RNA structure matrix" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            print("Running ConCat-build|    %s|    Constructing RNA structure matrix" %(time.strftime("%c")))
             #print("Constructing RNA structure matrix \n")
             try:
                 self.RNAfoldConsensus()
@@ -1221,10 +1221,10 @@ class NexusHandler:
                 try:
                     combined = self.runRNAOperation(procRNAdict, combined)
                 except:
-                    print("Running ConCat-build|    %s|    %s|    Cant find RNA data" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+                    print("Running ConCat-build|    %s|    Cant find RNA data" %(time.strftime("%c")))
                     #print("Cant find RNA data \n")
             except OSError:
-                print("Running ConCat-build|    %s|    %s|    RNAfold not found. Skipping this step" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+                print("Running ConCat-build|    %s|    RNAfold not found. Skipping this step" %(time.strftime("%c")))
                 #print("RNAfold not found \n Skipping this step")
         else:
             pass
@@ -1253,7 +1253,7 @@ class NexusHandler:
                     ):
 
         if includeTax.isatty() == False:
-            print("Running ConCat-build|    %s|    %s|    Removing taxon absent in include taxon file supplied by user" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            print("Running ConCat-build|    %s|    Removing taxon absent in include taxon file supplied by user" %(time.strftime("%c")))
             #print("Removing taxon absent in include taxon file supplied by user \n")
             
             listInclude = []
@@ -1275,7 +1275,7 @@ class NexusHandler:
         elif excludeTax.isatty() == False:
             
             #print("Removing taxon \n")
-            print("Running ConCat-build|    %s|    %s|    Removing taxon" %(time.strftime("%c"), time.strftime("%H:%M:%S")))
+            print("Running ConCat-build|    %s|    Removing taxon" %(time.strftime("%c")))
             listExclude = []
             for lines in excludeTax:
                 listExclude.append(lines.rstrip('\n'))
