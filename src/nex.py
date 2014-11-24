@@ -51,6 +51,8 @@ def richNexusCall(runRNA,
                   ):
     
     
+    
+    
     """ 
         richNexusCall controls all the concatenation and annotation handling process embedded in ConCat-build module.
         Its a part of ConCat package and governed by its liscense. Please see the LICENSE file that should have been
@@ -61,7 +63,27 @@ def richNexusCall(runRNA,
         Bug reports welcome: email me at ambuj@ufl.edu
         or contact PI's of Kimball-Braun lab group, University of Florida.
         
+        @runRNA - RNAfold RNA structure prediction argument
+        @includeTax - Authority file argument to include a list of taxon for concatenation
+        @excludeTax - Authority file argument to exclude a list of taxon for concatenation
+        @runShannon - Argument to initiate entropy calculation
+        @calRCVvalue - RCV value calculation argument
+        @addTaxName - Add a group name to the current taxon name via extracting data from Taxanomy file [Class, Order, Phylum, Family, Kingdom]
+        @remTaxName - Removes n number of groups from taxon name
+        @pipeID - Extracts database IDs from the taxon names and prepare files for concatenation
+        @RYcodingCall - Argument to initiate RY coding
+        @spellScan - Initiate taxon name spell check function
+        @runBlock - Argument that tells ConCat to read ConCat block in input files
+        @cutOff - OV value cutoff for fast evolving site detection
+        @rbin - Initiates data binning on the basis of their corresponding RCV values 
+        @ebin - Initiates data binning on the basis of their corresponding entropy score
+        @GC - Argument to initiate GC content calculation
+        @gcbin - Initiates data binning on the basis of their corresponding GC content
+        @pbin - Initiates data binning in 3 groups (0-25, 25-75 and 75-100 percentiles) for RCV, Entropy and GC content
+        @usrGCbin - Performes data binning via user defined partitions
+        
         """
+    
     
     
     print("INFO                |    %s|    ------------- ConCat v1.0 ------------------" %(time.strftime("%c")))
