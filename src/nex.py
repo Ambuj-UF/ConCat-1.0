@@ -57,6 +57,7 @@ def richNexusCall(runRNA,
     #print("Start ConCat-build |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), sys.version))
     
     start = timeit.default_timer()
+    
     def transferRNA(file_list):
         file_list = glob.glob("*.nex")
         typeDict = dict()
@@ -96,7 +97,9 @@ def richNexusCall(runRNA,
         usr_inpT = 2
 
     if usr_inpT == 1:
+        
         print("Running ConCat-build|    %s|    --------- Extracting database ID's ---------" %(time.strftime("%c")))
+        
         idDictData = NexusHandler('').managePipes()
         os.chdir("Input/ProcInput")
         
@@ -112,12 +115,16 @@ def richNexusCall(runRNA,
         os.chdir("ProcInput")
         
         if spellScan == True:
+            
             print("Running ConCat-build|    %s|    Searchng for spelling mistakes" %(time.strftime("%c")))
+            
             #print("Please wait! Searchng for spelling mistakes \n")
             #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
             #print("---------------------------------------------------------------------------")
+            
             print("Running ConCat-build|    %s|    Spell check done" %(time.strftime("%c")))
+        
         else:
             pass
 
@@ -139,8 +146,11 @@ def richNexusCall(runRNA,
             nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
     
         print("Running ConCat-build|    %s|    ----------Initiating concatenation----------" %(time.strftime("%c")))
+
         combined = Nexus.combine(nexi)
+
         print("Running ConCat-build|    %s|    ---------- Conatenation completed ----------" %(time.strftime("%c")))
+
         os.chdir("../..")
 
     elif usr_inpT == 2:
@@ -155,11 +165,15 @@ def richNexusCall(runRNA,
         fileTypes = transferRNAret[0]
         
         if spellScan == True:
+            
             print("Running ConCat-build|    %s|    Searchng for spelling mistakes" %(time.strftime("%c")))
+            
             #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
             #print("---------------------------------------------------------------------------")
+            
             print("Running ConCat-build|    %s|    Spell check done" %(time.strftime("%c")))
+
         else:
             pass
 
@@ -181,7 +195,9 @@ def richNexusCall(runRNA,
             nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
 
         print("Running ConCat-build|    %s|    -----Initiating concatenation-----" %(time.strftime("%c")))
+
         combined = Nexus.combine(nexi)
+
         print("Running ConCat-build|    %s|    ----- Conatenation completed -----" %(time.strftime("%c")))
 
         os.chdir("..")
@@ -303,6 +319,7 @@ def richNexusCall(runRNA,
             
                 except KeyError:
                     continue
+
         except TypeError:
             print("WARNING             |    %s|    Error in RCV Calculation. Skipping this step" %(time.strftime("%c")))
             #print("Type error in RCV Calculation. Skipping this step \n")
@@ -376,6 +393,7 @@ def richNexusCall(runRNA,
 
     try:
         BaseHandle(2).nexML("Results.nex")
+        
         print("Writing Nexml       |    %s|    Your NEXML file is stored in 'Results.xml' file" %(time.strftime("%c")))
         #print("Your NEXML file is stored in 'Results.xml' file \n")
     except:
@@ -708,6 +726,7 @@ def richNexusCall(runRNA,
         
         print("Creating Partition  |    %s|    Writing alignment partition data to 'Partition.txt' file" %(time.strftime("%c")))
         #print("Writing alignment partition data to 'Partition.txt' file\n")
+        
         f = open("Partition.txt", 'w')
         for key, value in fileTypes.items():
             if key in combined.charsets:
