@@ -51,13 +51,12 @@ def richNexusCall(runRNA,
                   ):
     
     
-    """ richNexusCall controls all the concatenation and annotation handling process embedded in ConCat-build module.
+    """ 
+        richNexusCall controls all the concatenation and annotation handling process embedded in ConCat-build module.
         Its a part of ConCat package and governed by its liscense. Please see the LICENSE file that should have been
         included as part of this package.
     
-        richNexusCall performes most of its function via nexus data structure format.
-        Based upon 'NEXUS: An extensible file format for systematic information'
-        Maddison, Swofford, Maddison. 1997. Syst. Biol. 46(4):590-621
+        richNexusCall performes most of its function by storing and processing data in NEXUS format.
     
         Bug reports welcome: email me at ambuj@ufl.edu
         or contact PI's of Kimball-Braun lab group, University of Florida.
