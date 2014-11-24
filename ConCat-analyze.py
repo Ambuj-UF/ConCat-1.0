@@ -135,7 +135,7 @@ def main():
         if args.fout == 'nexus':
             combined = nexi[0][1]
             combined = NexusHandler(1).msaToMatrix(msaObject, combined)
-            if combined.charsets != {}
+            if combined.charsets != {}:
                 combined.charsets = setUpdate(combined.charsets, posMatrix)
             
             combined.write_nexus_data(filename=open(args.o, 'w'))

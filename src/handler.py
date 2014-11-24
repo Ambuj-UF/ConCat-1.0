@@ -1140,7 +1140,7 @@ class NexusHandler:
         #print("Checking for missing taxa in alignment files \n")
         print("Running ConCat-build|    %s|    Checking for missing taxa in alignment files" %(time.strftime("%c")))
         combined = self.missingScan(combined)
-        
+        entropyStore = dict()
         if runShanon == True:
             
             entropyDetails = self.entropyCal(combined)
@@ -1244,6 +1244,7 @@ class NexusHandler:
             pass
     
         positions = Nexus.Nexus.gaponly(combined, include_missing = True)
+        entropyStore = dict()
         if runShanon == True:
             
             entropyDetails = self.entropyCal(combined)
