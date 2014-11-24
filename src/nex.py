@@ -1,7 +1,7 @@
 ################################################################################################################
 # Handles the rich annotation nexus files                                                                      #
 #                                                                                                              #
-# Copyright (C) {2014}  {Ambuj Kumar, Kimball-Brain lab group, Biology Department, University of Florida}      #
+# Copyright (C) {2014}  {Ambuj Kumar, Kimball-Braun lab group, Biology Department, University of Florida}      #
 #                                                                                                              #
 # This program is free software: you can redistribute it and/or modify                                         #
 # it under the terms of the GNU General Public License as published by                                         #
@@ -49,6 +49,19 @@ def richNexusCall(runRNA,
                   pbin,
                   usrGCbin
                   ):
+    
+    
+    # richNexusCall controls all the concatenation and annotation handling process embedded in ConCat-build module.
+    # Its a part of ConCat package and governed by its liscense. Please see the LICENSE file that should have been
+    # included as part of this package.
+    #
+    # richNexusCall performes most of its function via nexus data structure format.
+    # Based upon 'NEXUS: An extensible file format for systematic information'
+    # Maddison, Swofford, Maddison. 1997. Syst. Biol. 46(4):590-621
+    #
+    # Bug reports welcome: email me at ambuj@ufl.edu
+    # or contact PI's of Kimball-Braun lab group, University of Florida.
+    
     
     print("INFO                |    %s|    ------------- ConCat v1.0 ------------------" %(time.strftime("%c")))
     print("INFO                |    %s|    -----Copyright (C) {2014} Ambuj Kumar-------" %(time.strftime("%c")))
