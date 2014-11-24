@@ -68,7 +68,7 @@ def richNexusCall(runRNA,
         @excludeTax - Authority file argument to exclude a list of taxon for concatenation
         @runShannon - Argument to initiate entropy calculation
         @calRCVvalue - RCV value calculation argument
-        @addTaxName - Add a group name to the current taxon name via extracting data from Taxanomy file [Class, Order, Phylum, Family, Kingdom]
+        @addTaxName - Add a group name to the current taxon name via extracting data from Taxanomy file [Family, Order, Class, Phylum, Kingdom]
         @remTaxName - Removes n number of groups from taxon name
         @pipeID - Extracts database IDs from the taxon names and prepare files for concatenation
         @RYcodingCall - Argument to initiate RY coding
