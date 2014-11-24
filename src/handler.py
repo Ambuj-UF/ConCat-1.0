@@ -833,11 +833,11 @@ class NexusHandler:
         for i, mkeys in enumerate(combined.charsets):
             if mkeys.count(".nex") == 1:
                 if float(i)/totalLength*100 < 10:
-                    print("Entropy Calculation |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                    print("Entropy Calculation |    %s|    %.2f percent completed             |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
                 elif 10 <= float(i)/totalLength*100 < 100:
-                    print("Entropy Calculation |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                    print("Entropy Calculation |    %s|   %.2f percent completed             |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
                 else:
-                    print("Entropy Calculation |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
+                    print("Entropy Calculation |    %s|  %.2f percent completed             |    %s" %(time.strftime("%c"), float(i)/totalLength*100, mkeys))
                 
                 start = combined.charsets[mkeys][0]
                 end = combined.charsets[mkeys][-1]
@@ -996,11 +996,11 @@ class NexusHandler:
         for i,key in enumerate(combined.charsets):
             if key.count(".nex") == 1:
                 if float(i)/totalLength*100 < 10:
-                    print("Missing Scan        |    %s|    %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+                    print("Missing Scan        |    %s|    %.2f percent completed             |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
                 elif 10 <= float(i)/totalLength*100 < 100:
-                    print("Missing Scan        |    %s|   %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+                    print("Missing Scan        |    %s|   %.2f percent completed             |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
                 else:
-                    print("Missing Scan        |    %s|  %.2f percent extraction completed  |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
+                    print("Missing Scan        |    %s|  %.2f percent completed             |    Scanning missing taxa in %s" %(time.strftime("%c"), float(i)/totalLength*100, key))
             
                 try:
                     start = combined.charsets[key][0]
@@ -1024,6 +1024,8 @@ class NexusHandler:
             #print("No missing taxa found")
         
         else:
+            
+            print("Missing Scan        |    %s|    --------------- Processing Output ---------------" %(time.strftime("%c")))
 
             for key, val in missingList.items():
                 missingList["Missing_"+key] = missingList.pop(key)
@@ -1036,6 +1038,8 @@ class NexusHandler:
         
             else:
                 combined.taxsets.update(missingList)
+            
+            print("Missing Scan        |    %s|    ---------- Missing scan step completed ----------" %(time.strftime("%c")))
         
         return combined
 
@@ -1058,7 +1062,7 @@ class NexusHandler:
         
         idDataDict = dict()
         
-        print("Start ConCat-build  |    %s|    Creating database ID-less files for Concatenation" %(time.strftime("%c")))
+        print("Running ConCat-build|    %s|    Creating database ID-less files for Concatenation" %(time.strftime("%c")))
         
         totalLength = len(file_list)
         counter = 0
@@ -1095,6 +1099,8 @@ class NexusHandler:
             combined.write_nexus_data(fp)
             fp.close()
         os.chdir("..")
+        
+        print("Extract ID's        |    %s|   ---------- ID extraction and file transfer done ----------" %(time.strftime("%c")))
         
         return idDataDict
 
@@ -1168,6 +1174,9 @@ class NexusHandler:
             pass
         
         if usr_inpT == 1:
+            
+            print("Running ConCat-build|    %s|    ---------------- Updating taxsets ---------------" %(time.strftime("%c")))
+            
             os.chdir('Input')
             listIDs = BaseHandle(2).fileOpenID()
             os.chdir('..')
@@ -1180,6 +1189,9 @@ class NexusHandler:
                 listIDs['Database_IDs_' + idKey] = listIDs.pop(idKey)
                 
             combined.taxsets.update(listIDs)
+    
+            print("Running ConCat-build|    %s|    ----------------- Taxsets updated ---------------" %(time.strftime("%c")))
+    
             
         else:
             pass
@@ -1211,6 +1223,7 @@ class NexusHandler:
                 #print("%s not found in the alignment. Check for spelling mistakes in taxa editing input file" % delTaxa)
         combined = self.missingScan(combined)
         if usr_inpT == 1:
+            print("Running ConCat-build|    %s|    ---------------- Updating taxsets ---------------" %(time.strftime("%c")))
             os.chdir('Input')
             listIDs = BaseHandle(2).fileOpenID()
             os.chdir('..')
@@ -1224,6 +1237,8 @@ class NexusHandler:
                 listIDs['Database_IDs_' + idKey] = listIDs.pop(idKey)
         
             combined.taxsets.update(listIDs)
+    
+            print("Running ConCat-build|    %s|    ----------------- Taxsets updated ---------------" %(time.strftime("%c")))
     
         else:
             pass

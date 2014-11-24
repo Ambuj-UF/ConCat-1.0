@@ -256,7 +256,11 @@ def fastEvol(combined, cutOff):
         @parameter combined - is a 3D nexus data matrix.
         @cutOff - OV cutoff values supplied by user.
         Returns - Fast evolving sites and their corresponding OV values.
+
         """
+    
+    print("Fast-Evol           |    %s|   ---------------- Detecting Fast Evolving Sites ---------------" %(time.strftime("%c")))
+    
     if cutOff == None:
         listPos = []
     else:
@@ -271,7 +275,16 @@ def fastEvol(combined, cutOff):
             i = i + 1
 
         OVdict = dict()
+        totalLength = len(charList)
         for i, val in enumerate(charList):
+            
+            if float(i)/totalLength*100 < 10:
+                print("Fast-Evol           |    %s|    %.2f percent completed" %(time.strftime("%c"), float(i)/totalLength*100))
+            elif 10 <= float(i)/totalLength*100 < 100:
+                print("Fast-Evol           |    %s|   %.2f percent completed" %(time.strftime("%c"), float(i)/totalLength*100))
+            else:
+                print("Fast-Evol           |    %s|  %.2f percent completed" %(time.strftime("%c"), float(i)/totalLength*100))
+            
             val = list(''.join(val).replace('?', '')); posVal = []
             if len(set(val)) == 1:
                 posVal.append(0)
@@ -289,6 +302,9 @@ def fastEvol(combined, cutOff):
             OVdict['Position_%s' %i] = (sum(posVal)/k)
         
         listPos = [[x, val] for x, val in OVdict.items() if val > cutOff]
+
+    print("Fast-Evol           |    %s|   -------------------- Fast-Evol completed -------------------" %(time.strftime("%c")))
+
     return listPos
 
 
@@ -373,11 +389,11 @@ def GCcontent(combined):
     counter = 0
     for key, val in combined.charsets.items():
         if float(counter)/totalLength*100 < 10:
-            print("GC Content          |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+            print("GC Content          |    %s|    %.2f percent completed             |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
         elif 10 <= float(counter)/totalLength*100 < 100:
-            print("GC Content          |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+            print("GC Content          |    %s|   %.2f percent completed             |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
         else:
-            print("GC Content          |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
+            print("GC Content          |    %s|  %.2f percent completed             |    %s" %(time.strftime("%c"), float(counter)/totalLength*100, key))
         
         counter = counter + 1
         

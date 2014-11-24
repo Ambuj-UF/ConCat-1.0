@@ -117,6 +117,7 @@ def richNexusCall(runRNA,
             #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
             #print("---------------------------------------------------------------------------")
+            print("Running ConCat-build|    %s|    Spell check done" %(time.strftime("%c")))
         else:
             pass
 
@@ -158,6 +159,7 @@ def richNexusCall(runRNA,
             #print("---------------------------------------------------------------------------")
             BaseHandle(2).fuzyName()
             #print("---------------------------------------------------------------------------")
+            print("Running ConCat-build|    %s|    Spell check done" %(time.strftime("%c")))
         else:
             pass
 
@@ -217,15 +219,17 @@ def richNexusCall(runRNA,
 
     def _rcvPrint(counterRCV, totalLength):
         if float(counterRCV)/totalLength*100 < 10:
-            print("RCV Calculation     |    %s|    %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+            print("RCV Calculation     |    %s|    %.2f percent completed             |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
         elif 10 <= float(counterRCV)/totalLength*100 < 100:
-            print("RCV Calculation     |    %s|   %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+            print("RCV Calculation     |    %s|   %.2f percent completed             |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
         else:
-            print("RCV Calculation     |    %s|  %.2f percent extraction completed  |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
+            print("RCV Calculation     |    %s|  %.2f percent completed             |    %s" %(time.strftime("%c"), float(counterRCV)/totalLength*100, key))
 
 
     if calRCVvalue == True:
-        print("RCV Calculation     |    %s|    --------Initiating RCV Calculation--------" %(time.strftime("%c")))
+        
+        print("RCV Calculation     |    %s|    ---------- Initiating RCV Calculation ----------" %(time.strftime("%c")))
+        
         newMSA = MultipleSeqAlignment(NexusHandler('fname').combineToRecord(combined))
         rcvDict = dict()
         
@@ -247,7 +251,7 @@ def richNexusCall(runRNA,
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
+                                        print("WARNING             |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                         #print("Alignment files not found \n")
                                         
                                     counterRCV = counterRCV + 1
@@ -262,7 +266,7 @@ def richNexusCall(runRNA,
                                     except ZeroDivisionError:
                                         pass
                                     except IndexError:
-                                        print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
+                                        print("WARNING             |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                         #print("Alignment files not found \n")
                                         
                                     counterRCV = counterRCV + 1
@@ -278,7 +282,7 @@ def richNexusCall(runRNA,
                                 except ZeroDivisionError:
                                     pass
                                 except IndexError:
-                                    print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
+                                    print("WARNING             |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                     #print("Alignment files not found \n")
                                     
                                 counterRCV = counterRCV + 1
@@ -292,7 +296,7 @@ def richNexusCall(runRNA,
                             except ZeroDivisionError:
                                 pass
                             except IndexError:
-                                print("RCV Calculation     |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
+                                print("WARNING             |    %s|Skipping RCV calculation for above file|    %s alignment not found" %(time.strftime("%c"), key))
                                 #print("Alignment files not found \n")
                                 
                             counterRCV = counterRCV + 1
@@ -300,8 +304,8 @@ def richNexusCall(runRNA,
                 except KeyError:
                     continue
         except TypeError:
-            print("RCV Calculation     |    %s|    Type error in RCV Calculation. Skipping this step" %(time.strftime("%c")))
-            print("Type error in RCV Calculation. Skipping this step \n")
+            print("WARNING             |    %s|    Error in RCV Calculation. Skipping this step" %(time.strftime("%c")))
+            #print("Type error in RCV Calculation. Skipping this step \n")
             pass
         
     else:
@@ -434,7 +438,7 @@ def richNexusCall(runRNA,
         fopen.close()
 
     if cutOff != None:
-        print("Fast Evolving Sites |    %s|    Searching fast evolving sites" %(time.strftime("%c")))
+        
         #print("Searching fast evolving sites")
         fast_evolv_site = fastEvol(combined, cutOff)
         if fast_evolv_site != []:
