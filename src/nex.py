@@ -176,7 +176,7 @@ def richNexusCall(runRNA,
                     if 'BEGIN MacClade;' in lines:
                         flagF = True
                     if flagF == False:
-                        fp.write('%s', lines)
+                        fp.write('%s' %lines)
                 fp.close()
             
             nexi = [(fname, Nexus.Nexus(fname)) for fname in file_list]
@@ -624,13 +624,18 @@ def richNexusCall(runRNA,
 
         counter = 0
         counterTax = 0
+        quoteFlag = False
+        
         for lines in d:
             if "CHARSET" in lines:
+                quoteFlag = True
                 fp.write("\t%s\n" % newList[counter])
                 counter = counter + 1
             elif "TAXSET" in lines:
                 fp.write("\t%s\n" % listTAXarrange[counterTax])
                 counterTax = counterTax + 1
+            elif "CHARPARTITION" in lines and quoteFlag == True:
+                continue
             else:
                 fp.write(lines)
     

@@ -182,7 +182,7 @@ class BaseHandle:
             while n < len(idList):
                 for i, j in zip(value, idList[n]):
                     if 1.0 > float([x == y for (x, y) in zip(i, j)].count(True))/len(j) > 0.8:
-                        print("Running ConCat-build|    %s|    Found %s in gene %s but gene %s (has %s)" %(time.strftime("%c"), i, keyList[counter-1], keyList[n], j))
+                        print("WARNING             |    %s|    Found %s in gene %s but gene %s (has %s)" %(time.strftime("%c"), i, keyList[counter-1], keyList[n], j))
                         #print("Found " + i + " in gene " + keyList[counter-1] + " but gene " + keyList[n] + " (has " + j+")\n")
             
                 n = n + 1
