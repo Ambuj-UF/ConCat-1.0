@@ -57,6 +57,9 @@ parser = argparse.ArgumentParser(prog='ConCat',
 
 group = parser.add_mutually_exclusive_group()
 
+parser.add_argument('-i', type=str, default=None,
+                    help='Enter the data folder name')
+
 parser.add_argument('-ftype', type=str, default='nexus',
                     choices=['fasta', 'nexus', 'phylip', 'phylip-interleived', 'phylip-relaxed'],
                     help='Enter the input file format for Concatenation. Default is nexus.')
@@ -177,6 +180,7 @@ def main():
                           args.gcbin,
                           args.pbin,
                           args.ugcbin
+                          args.i
                           )
     
         else:
@@ -201,6 +205,7 @@ def main():
                           args.gcbin,
                           args.pbin,
                           args.ugcbin
+                          args.i
                           )
                       
             Convert('nexus', args.otype, 'Combined.nex')

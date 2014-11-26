@@ -47,7 +47,8 @@ def richNexusCall(runRNA,
                   GC,
                   gcbin,
                   pbin,
-                  usrGCbin
+                  usrGCbin,
+                  iDir
                   ):
     
     
@@ -92,6 +93,31 @@ def richNexusCall(runRNA,
     print("INFO                |    %s|    -----You are using python version %s-----" %(time.strftime("%c"), platform.python_version()))
     #print("Start ConCat-build |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), sys.version))
     
+    print("INFO                |    %s|    --- Transferring files to Input Diectory ---" %(time.strftime("%c"))),
+    
+    if iDir != None:
+        try:
+            ifiles = glob.glob(iDir + "/*.nex")
+        
+            toolbar_width = len(ifiles)
+        
+            # setup toolbar
+            sys.stdout.write("[%s]" % (" " * toolbar_width))
+            sys.stdout.flush()
+            sys.stdout.write("\b" * (toolbar_width+1)) # return to start of line, after '['
+
+            for i in xrange(toolbar_width):
+                shutil.copy2(ifiles[i], "Input")
+                sys.stdout.write(">"),
+                sys.stdout.flush()
+                
+            sys.stdout.write("\n")
+        
+            print("INFO                |    %s|    ----------- All file transferred -----------" %(time.strftime("%c")))
+
+        except:
+            raise IOError("Data files not found")
+
     start = timeit.default_timer()
     
     def transferRNA(file_list):
