@@ -100,18 +100,11 @@ def richNexusCall(runRNA,
             ifiles = glob.glob(iDir + "/*.nex")
         
             toolbar_width = len(ifiles)
-        
-            # setup toolbar
-            sys.stdout.write("[%s]" % (" " * toolbar_width))
-            sys.stdout.flush()
-            sys.stdout.write("\b" * (toolbar_width+1)) # return to start of line, after '['
-
             for i in xrange(toolbar_width):
                 shutil.copy2(ifiles[i], "Input")
-                sys.stdout.write(">"),
-                sys.stdout.flush()
+                print("\r%s%s" %(float(i)/toolbar_width, "%")),
                 
-            sys.stdout.write("\n")
+            print("\n")
         
             print("INFO                |    %s|    ----------- All file transferred -----------" %(time.strftime("%c")))
 
