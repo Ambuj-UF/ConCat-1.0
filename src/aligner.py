@@ -27,13 +27,13 @@ import platform
 import subprocess
 
 try:
-    from Bio import SeqIO
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord
-    from Bio.Seq import _translate_str
-    from Bio.Data import CodonTable
-    from Bio.Alphabet import generic_dna
-    from Bio.Alphabet import IUPAC
+    from Utils.Bio import SeqIO
+    from Utils.Bio.Seq import Seq
+    from Utils.Bio.SeqRecord import SeqRecord
+    from Utils.Bio.Seq import _translate_str
+    from Utils.Bio.Data import CodonTable
+    from Utils.Bio.Alphabet import generic_dna
+    from Utils.Bio.Alphabet import IUPAC
 except ImportError, e:
     sys.exit("Biopython not found")
 
@@ -97,7 +97,8 @@ def _translator(recordData, ign, omit, table):
                 seqT = seqT[:j] + 'Z' + seqT[j+1:]
         
         proteinSeqList.append(SeqRecord(Seq(seqT, IUPAC.protein), id=rec.id, name=rec.name, description=rec.description))
-    
+
+
     
     with open('translated.fas', 'w') as fp:
         SeqIO.write(proteinSeqList, fp, 'fasta')
@@ -163,12 +164,15 @@ def _cleanAli(recordNuc, omit, fileName):
 
 def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
     
+    
+    
     codonTables = ['Ascidian Mitochondrial', 'SGC9', 'Coelenterate Mitochondrial', 'Protozoan Mitochondrial', 'Vertebrate Mitochondrial', 'Plant Plastid', 'Thraustochytrium Mitochondrial', 'Blepharisma Macronuclear', 'Mold Mitochondrial', 'Invertebrate Mitochondrial', 'Standard', 'Trematode Mitochondrial', 'Scenedesmus obliquus Mitochondrial', 'Euplotid Nuclear', 'Yeast Mitochondrial', 'Spiroplasma', 'Alternative Flatworm Mitochondrial', 'Ciliate Nuclear', 'SGC8', 'Alternative Yeast Nuclear', 'Hexamita Nuclear', 'SGC5', 'SGC4', 'SGC3', 'SGC2', 'SGC1', 'SGC0', 'Flatworm Mitochondrial', 'Dasycladacean Nuclear', 'Chlorophycean Mitochondrial', 'Mycoplasma', 'Bacterial', 'Echinoderm Mitochondrial']
+    
     
     if CT == None:
         table = CodonTable.ambiguous_dna_by_id[1]
     elif CT != None and CT in codonTables:
-        table = CodonTable.ambiguous_generic_by_name[CodonTable]
+        table = CodonTable.ambiguous_generic_by_name[CT]
     else:
         table = CodonTable.ambiguous_generic_by_name['Standard']
 
@@ -178,6 +182,7 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
     for j, rec in enumerate(records):
         if 'TAA' in rec.seq[-3:] or 'TGA' in rec.seq[-3:] or 'TAG' in rec.seq[-3:]:
             records[j].seq = rec.seq[0:-3]
+
 
     if omit == True:
         badQuality = list()
@@ -191,6 +196,7 @@ def cdsAlign(inputFile, pkg='muscle', omit=False, ign=False, CT=None):
                 newRecords.append(rec)
         
         records = newRecords
+
 
     records = _translator(records, ign, omit, table)
     _alignP(pkg)

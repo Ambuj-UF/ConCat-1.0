@@ -26,17 +26,22 @@ import operator
 import math
 import functools
 
+fullpath = os.getcwd() + "/src/Utils"
+sys.path.append(fullpath)
+
 try:
     import matplotlib.mlab as mlab
     import matplotlib.pyplot as plt
+    gcFlag = True
 except:
-    sys.exit("ConCat requires 1.8 or higher version of Numpy")
+    print("matplotlib not found on your system. Skipping GC plot")
+    gcFlag = False
 
 from array import array
 from Bio import AlignIO
 from handler import *
-from Bio.Alphabet import IUPAC, Gapped
-from Bio import SeqIO
+from Utils.Bio.Alphabet import IUPAC, Gapped
+from Utils.Bio import SeqIO
 
 
 
@@ -236,14 +241,14 @@ def ConvertAll(inp_format):
         @parameter inp_format - Input file format.
         """
     
-    os.chdir('Input'); files = glob.glob("*.*")
+    os.chdir('Input'); files = [x for x in glob.glob("*.*") if '.md' not in x]
     for filename in files:
         if '.nex' not in filename:
             try:
                 alignment = AlignIO.read(open(filename), inp_format, alphabet=Gapped(IUPAC.protein))
                 g = open(filename.split(".")[0] + '.nex', 'w')
                 g.write(alignment.format("nexus")); g.close()
-            except ValueError:
+            except ImportError:
                 print("Error raised in importing %s file" %filename)
                 continue
 
@@ -419,7 +424,11 @@ def GCcontent(combined):
             except KeyError:
                 continue
 
-    gcHist(GCdict)
+    if gcFlag != False:
+        gcHist(GCdict)
+    else:
+        gcStat(GCdict)
+    
     return GCdict
 
 def percentile(N, percent, key=lambda x:x):
@@ -655,6 +664,19 @@ def stDev(variance): return math.sqrt(average(variance))
 
 ######################################################################################################
 
+
+def _dictUpdate(dictData):
+    for key, val in dictData.items():
+        dictData[int(key.split('-')[0])] = dictData.pop(key)
+    dictData = collections.OrderedDict(sorted(dictData.items()))
+    return dictData
+
+def _negDictUpdate(dictData):
+    for key, val in dictData.items():
+        dictData[str(key) + "-" + str(key+10)] = dictData.pop(key)
+    dictData = collections.OrderedDict(sorted(dictData.items()))
+    return dictData
+
 def gcHist(gcDict):
     """
         Histogram plot of GC values
@@ -680,21 +702,8 @@ def gcHist(gcDict):
             else:
                 counter = counter + 10
 
-    def _dictUpdate(dictData):
-        for key, val in dictData.items():
-            dictData[int(key.split('-')[0])] = dictData.pop(key)
-        dictData = collections.OrderedDict(sorted(dictData.items()))
-        return dictData
-
-    def _negDictUpdate(dictData):
-        for key, val in dictData.items():
-            dictData[str(key) + "-" + str(key+10)] = dictData.pop(key)
-        dictData = collections.OrderedDict(sorted(dictData.items()))
-        return dictData
-
     newDict = _dictUpdate(newDict)
     newDict = _negDictUpdate(newDict)
-
 
     plt.bar(range(len(newDict)), newDict.values(), align='center')
     plt.xticks(range(len(newDict)), list(newDict.keys()))
@@ -709,6 +718,32 @@ def gcHist(gcDict):
     #plt.title(r'Histogram of GC Content: #mean=%s,  #sigma=%s \n\n' %(float(sum(l))/len(l), sigma))
     #plt.subplots_adjust(left=0.15)
     plt.savefig('GCplot.png')
+
+
+def gcStat(gcDict):
+    newDict = dict()
+    
+    counter = 0
+    while counter < 100:
+        newDict[str(counter) + "-" + str(counter + 10)] = 0
+        counter = counter + 10
+    
+    for key, val in gcDict.items():
+        counter = 0
+        while counter < 100:
+            if float(val) > float(counter) and float(val) <= float(counter + 10):
+                newDict[str(counter) + "-" + str(counter + 10)] = newDict[str(counter) + "-" + str(counter + 10)] + 1
+                break
+            else:
+                counter = counter + 10
+
+    newDict = _dictUpdate(newDict)
+    newDict = _negDictUpdate(newDict)
+
+    with open("gcStat.txt", 'w') as fp:
+        for key, val in newDict.items():
+            fp.write("%s - %s\n" %(key, val))
+
 
 
 def setUpdate(sets, positions):

@@ -20,11 +20,19 @@
 ################################################################################################################
 
 import sys
+import os
+
+fullpath = os.getcwd() + "/src/Utils"
+sys.path.append(fullpath)
+
+
 
 try:
-    import Bio
+    import src.Utils.Bio
 except ImportError, e:
     sys.exit('BioPython not found on your system. Program Terminated')
+
+
 
 try:
     import argparse
@@ -59,6 +67,12 @@ group = parser.add_mutually_exclusive_group()
 
 parser.add_argument('-i', type=str, default=None,
                     help='Enter the data folder name')
+
+parser.add_argument('-log', type=str, default=None,
+                    help='Enter the log file name')
+
+parser.add_argument('-o', type=str, default=None,
+                    help='Enter the output file name')
 
 parser.add_argument('-ftype', type=str, default='nexus',
                     choices=['fasta', 'nexus', 'phylip', 'phylip-interleived', 'phylip-relaxed'],
@@ -155,6 +169,15 @@ if args.pbin == True:
         parser.error('-rcv,-shannon or -GC argument is required in "-pbin" mode.')
 
 
+if args.log != None:
+    logfile = open(args.log, "w")
+    logfile.write("ConCat-build log file\n\n")
+    logfile.write("Command used -\n")
+    logfile.write("python " + " ".join(sys.argv) + "\n\n")
+    logfile.write("Operation log\n\n")
+    sys.stdout = open(args.log, 'a')
+    logfile.close()
+
 
 def main():
     if args.convert == True:
@@ -180,7 +203,8 @@ def main():
                           args.gcbin,
                           args.pbin,
                           args.ugcbin,
-                          args.i
+                          args.i,
+                          args.o
                           )
     
         else:
@@ -205,10 +229,14 @@ def main():
                           args.gcbin,
                           args.pbin,
                           args.ugcbin,
-                          args.i
+                          args.i,
+                          args.o
                           )
-                      
-            Convert('nexus', args.otype, 'Combined.nex')
+
+            if args.o != None:
+                Convert('nexus', args.otype, args.o)
+            else:
+                Convert('nexus', args.otype, 'Combined.nex')
 
 
 

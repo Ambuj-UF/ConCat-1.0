@@ -19,16 +19,19 @@
 ################################################################################################################
 
 
+import sys
+import os
 
+fullpath = os.getcwd() + "/src/Utils"
+sys.path.append(fullpath)
 
 
 import argparse
 import textwrap
-from Bio.Nexus import Nexus
-from Bio import SeqIO
-import sys
+from src.bioLoader.Nexus import Nexus
+from src.bioLoader import SeqIO
 from src.functions import fastEvol, Convert, removePerBin, setUpdate, remUsrBin
-from Bio.AlignIO import MultipleSeqAlignment
+from src.bioLoader.AlignIO import MultipleSeqAlignment
 from src.handler import NexusHandler
 
 

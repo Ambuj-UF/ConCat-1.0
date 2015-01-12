@@ -19,14 +19,16 @@
 #                                                                                                              #
 ################################################################################################################
 
-import glob
+
 import sys
 import csv
+import glob
 import time
+#import timeit
 import platform
 from handler import *
 from functions import *
-import timeit
+
 
 
 
@@ -48,7 +50,8 @@ def richNexusCall(runRNA,
                   gcbin,
                   pbin,
                   usrGCbin,
-                  iDir
+                  iDir,
+                  outfile
                   ):
     
     
@@ -62,7 +65,7 @@ def richNexusCall(runRNA,
         richNexusCall performes most of its function by storing and processing data in NEXUS format.
     
         Bug reports welcome: email me at ambuj@ufl.edu
-        or contact PI's of Kimball-Braun lab group, University of Florida.
+        or contact Dr. Edward L. Braun or Dr. Rebecca T. Kimball, PI's of Kimball-Braun lab group, University of Florida.
         
         @runRNA - RNAfold RNA structure prediction argument
         @includeTax - Authority file argument to include a list of taxon for concatenation
@@ -82,6 +85,8 @@ def richNexusCall(runRNA,
         @gcbin - Initiates data binning on the basis of their corresponding GC content
         @pbin - Initiates data binning in 3 groups (0-25, 25-75 and 75-100 percentiles) for RCV, Entropy and GC content
         @usrGCbin - Performes data binning via user defined partitions
+        @iDir - Takes data as input from user supplied input directory
+        @outfile - Output filename
         
         """
     
@@ -93,16 +98,27 @@ def richNexusCall(runRNA,
     print("INFO                |    %s|    -----You are using python version %s-----" %(time.strftime("%c"), platform.python_version()))
     #print("Start ConCat-build |    %s|    %s|    %s" %(time.strftime("%c"), time.strftime("%H:%M:%S"), sys.version))
     
-    print("INFO                |    %s|    --- Transferring files to Input Diectory ---" %(time.strftime("%c"))),
     
     if iDir != None:
+        
+        print("INFO                |    %s|    --------- Cleaning Input directory ---------" %(time.strftime("%c")))
+        files = glob.glob("Input/*.nex")
+        for file in files:
+            os.remove(file)
+        
+        
+        print("INFO                |    %s|    --- Transferring files to Input Diectory ---" %(time.strftime("%c"))),
+        
         try:
             ifiles = glob.glob(iDir + "/*.nex")
         
             toolbar_width = len(ifiles)
             for i in xrange(toolbar_width):
                 shutil.copy2(ifiles[i], "Input")
-                print("\r%s%s" %(float(i)/toolbar_width, "%")),
+                p = str((float(i)/toolbar_width)*100)[:4]
+                sys.stdout.write("\r%s%%" %p)
+                sys.stdout.flush()
+                #print("\r%s%s" %(float(i)/toolbar_width, "%")),
                 
             print("\n")
         
@@ -111,9 +127,16 @@ def richNexusCall(runRNA,
         except:
             raise IOError("Data files not found")
 
-    start = timeit.default_timer()
+
+    #start = timeit.default_timer()
     
     def transferRNA(file_list):
+        try:
+            os.mkdir("../RNAdata")
+        except OSError:
+            shutil.rmtree("../RNAdata")
+            os.mkdir("../RNAdata")
+        
         file_list = glob.glob("*.nex")
         typeDict = dict()
         RNAfileList = []
@@ -152,6 +175,12 @@ def richNexusCall(runRNA,
         usr_inpT = 2
 
     if usr_inpT == 1:
+        
+        try:
+            os.mkdir("Input/ProcInput")
+        except OSError:
+            shutil.rmtree("Input/ProcInput")
+            os.mkdir("Input/ProcInput")
         
         print("Running ConCat-build|    %s|    --------- Extracting database ID's ---------" %(time.strftime("%c")))
         
@@ -397,7 +426,7 @@ def richNexusCall(runRNA,
             if 'charset' in lines or 'taxset' in lines or 'charpartition' in lines:
                 if 'taxset Database_IDs' in lines:
                     l1 = lines.split(' = ')[1].split(';')[0]
-                    str = ''
+                    strn = ''
                     for i, val in enumerate(l1.split(' ')):
                         dataList = [lval for j, lval in enumerate(val.split('|')) if j>=1]
                         newStr = ''
@@ -406,9 +435,9 @@ def richNexusCall(runRNA,
 
                         dataList = newStr
                         val = val.split('|')[0] + "[" + dataList.lstrip("'").rstrip("'") + "]"
-                        str = str + ' ' + val
+                        strn = strn + ' ' + val
 
-                    lines = lines.split(' = ')[0] + ' = ' + str + ';\n'
+                    lines = lines.split(' = ')[0] + ' = ' + strn + ';\n'
         
                 str1 = lines
                 str2 = lines.split(' ')[0]
@@ -515,7 +544,7 @@ def richNexusCall(runRNA,
         #print("Searching fast evolving sites")
         fast_evolv_site = fastEvol(combined, cutOff)
         if fast_evolv_site != []:
-            with open('Fast_Evolving_Sites', 'w') as fp:
+            with open('Fast_Evolving_Sites.txt', 'w') as fp:
                 for val in fast_evolv_site:
                     fp.write("%s\n" %val[0].split('_')[1])
         else:
@@ -557,7 +586,12 @@ def richNexusCall(runRNA,
 
         binData = binPercent(rcvDict, entropyDict, gcDict, combined, calRCVvalue, runShannon, GC)
 
-    with open("Combined.nex", 'w') as fp:
+    if outfile != None:
+        writeOut = outfile
+    else:
+        writeOut = "Combined.nex"
+
+    with open(writeOut, 'w') as fp:
         file1 = open("Results.nex", 'r')
         d = file1.readlines()
         list1 = []
@@ -567,6 +601,7 @@ def richNexusCall(runRNA,
                 list1.append(lines)
             if "CHARSET RNA_" in lines:
                 list2.append(lines)
+
         newList = []
         newlines = [newline for newline in list1 if newline not in list2]
         newList.append(newlines)
@@ -844,34 +879,50 @@ def richNexusCall(runRNA,
         pass
 
 
-    os.chdir("Input/ProcInput")
-    inFiles = glob.glob("*.nex")
-    for f in inFiles:
-        os.remove(f)
-    
-
-    os.chdir("../../RNAdata")
-    files = glob.glob("*.*")
     try:
-        for filename in files:
-            if filename.split(".")[1] == 'py' or filename.split(".")[1] == 'pyc' or filename.split(".")[1] == 'md':
-                continue
-            else:
-                try:
-                    os.remove(filename)
-                except:
-                    pass
+        shutil.rmtree("Input/ProcInput")
     except:
         pass
-    stop = timeit.default_timer()
+
+    #os.chdir("Input/ProcInput")
+    #inFiles = glob.glob("*.nex")
+    #for f in inFiles:
+        #os.remove(f)
+    
+
+    #os.chdir("../..")
+
+    try:
+        shutil.rmtree("RNAdata")
+    except OSError:
+        pass
+
+    #files = glob.glob("*.*")
+    #try:
+        #for filename in files:
+            #if filename.split(".")[1] == 'py' or filename.split(".")[1] == 'pyc' or filename.split(".")[1] == 'md':
+                #continue
+            #else:
+                #try:
+                    #os.remove(filename)
+                #except:
+                    #pass
+    #except:
+        #pass
+
+    #stop = timeit.default_timer()
 
     print("Running ConCat-build|    %s|    ------ Processing completed ------" %(time.strftime("%c")))
-    print("\nYour final concatenated alignment is saved in Combined.nex \nHave a nice day!!\n")
+
+    if outfile != None:
+        print("\nYour final concatenated alignment is saved in %s \nHave a nice day!!\n" %outfile)
+    else:
+        print("\nYour final concatenated alignment is saved in Combined.nex \nHave a nice day!!\n")
 
     if nullTest(addTaxName) == True or nullTest(remTaxName) == True:
         print("ResultsEditedTaxon.nex contains concatenated alignment with edited taxon names\n")
 
-    print("Time elapsed: %s seconds" %(stop - start))
+    #print("Time elapsed: %s seconds" %(stop - start))
 
 
 

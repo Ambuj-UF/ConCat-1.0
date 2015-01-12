@@ -20,7 +20,14 @@
 
 
 import os
+import sys
+
+fullpath = os.getcwd() + "/src/Utils"
+sys.path.append(fullpath)
+
+
 import glob
+import time
 import shutil
 import subprocess
 import platform
@@ -30,9 +37,9 @@ import warnings
 from time import sleep
 from src.fetchSeq import cdsImport, mrnaImport, oneGeneCdsImport, oneGeneMrnaImport, fetchall, discont
 from src.aligner import cdsAlign, mrnaAlign
-from Bio import AlignIO, SeqIO
+from src.Utils.Bio import AlignIO, SeqIO
 from StringIO import StringIO
-from Bio.Alphabet import IUPAC, Gapped
+from src.Utils.Bio.Alphabet import IUPAC, Gapped
 
 
 parser = argparse.ArgumentParser(prog='ConCat-Align',
@@ -51,6 +58,12 @@ parser = argparse.ArgumentParser(prog='ConCat-Align',
     
     '''))
 
+
+parser.add_argument('-i', type=str, default=None,
+                    help='Raw sequence input folder name')
+
+parser.add_argument('-log', type=str, default=None,
+                    help='Enter log file name')
 
 parser.add_argument('-cds', type=str, default=None,
                     help='Takes gene name via file for CDS import')
@@ -98,6 +111,12 @@ if argmnts.cds == True and argmnts.orgn == None and argmnts.ortho == None:
 
 if argmnts.mrna == True and not argmnts.orgn:
     parser.error('-orgn argument is required in "-mrna" mode.')
+
+try:
+    os.mkdir("Align")
+except OSError:
+    shutil.rmtree("Align")
+    os.mkdir("Align")
 
 
 def _warnfxn():
@@ -161,10 +180,15 @@ def main():
         
         try:
             genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
-        except:
-            raise IOError("%s file not found" %argmnts.cds)
+        except IOError:
+            print("%s file not found. Using %s as gene name" %(argmnts.cds, argmnts.cds))
+            genes = argmnts.cds
         
         for geneName in genes:
+            #warnings.filterwarnings("ignore")
+            #cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
+            #_remDuplicate(geneName.rstrip('\n') + ".fas")
+            #cdsAlign(geneName.rstrip('\n') + ".fas")
             try:
                 warnings.filterwarnings("ignore")
                 cdsImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
@@ -193,7 +217,8 @@ def main():
         try:
             genes = [x for x in open(argmnts.mrna, 'r').readlines() if x != '' and x != '\n']
         except:
-            raise IOError("%s file not found" %argmnts.mrna)
+            print("%s file not found. Using %s as gene name" %(argmnts.mrna, argmnts.mrna))
+            genes = argmnts.mrna
     
         for geneName in genes:
             try:
@@ -303,7 +328,8 @@ def main():
         try:
             spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
         except:
-            raise IOError("%s file not found" %argmnts.pull)
+            print("%s file not found. Using %s as species name" %(argmnts.pull, argmnts.pull))
+            spList = argmnts.pull
 
         for organism in spList:
             warnings.filterwarnings("ignore")
@@ -334,7 +360,7 @@ def main():
                     SeqIO.write(recordObj, fp, "fasta")
 
             fdata = open("Align/" + organism + ".fas", 'r').readlines()
-            with open("Output/" + organism + ".fas", 'w') as fp:
+            with open(organism + ".fas", 'w') as fp:
                 for lines in fdata:
                     if '>' in lines:
                         fp.write('%s\n' %lines.split(' ')[0])
@@ -345,20 +371,34 @@ def main():
                 
 
     else:
-        files = glob.glob("Align/*.*")
-        files.remove('Align/README.txt')
+        try:
+            ifolder = argmnts.i
+        except:
+            raise IOError("Input directory name required. Use -i argument to suuply input directory name")
+        
+        try:
+            files = [x for x in glob.glob(ifolder + "/*.*") if '.txt' not in x]
+        except:
+            raise IOError("Input directory %s not found in" %argmnts.i)
+
+
+        try:
+            os.mkdir("FastaAligned")
+        except:
+            shutil.rmtree("FastaAligned")
+            os.mkdir("FastaAligned")
 
         if argmnts.pkg == 'muscle':
             for filename in files:
                 fname = filename.replace('Align/', '').split('.')[0] + '.fas'
                 if 'Darwin' in platform.system():
                     try:
-                        subprocess.call("./src/muscle/muscle -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                        subprocess.call("./src/muscle/muscle -in %s -out FastaAligned/%s -verbose -refine" %(filename, fname), shell=True)
                     except:
                         raise ValueError("Failed to align %s file" %fname)
                 else:
                     try:
-                        subprocess.call("./src/muscle/muscleLinux -in %s -out Output/%s -verbose -refine" %(filename, fname), shell=True)
+                        subprocess.call("./src/muscle/muscleLinux -in %s -out FastaAligned/%s -verbose -refine" %(filename, fname), shell=True)
                     except:
                         raise ValueError("Failed to align %s file" %fname)
 
@@ -374,7 +414,7 @@ def main():
                 for filename in files:
                     fname = filename.replace('Align/', '').split('.')[0] + '.fas'
                     try:
-                        subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
+                        subprocess.call("./src/mafft/mafft.bat %s %s > FastaAligned/%s" %(dataDict[filename.replace('Align/', '')], filename, fname), shell=True)
                     except:
                         print("Error in argument passed for %s in %s file" %(filename.replace('Align/', ''), argmnts.argf))
                         continue
@@ -385,11 +425,11 @@ def main():
                     fname = filename.replace('Align/', '').split('.')[0] + '.fas'
                     arguments = argmnts.args.replace('[', '').replace(']', '')
                     try:
-                        subprocess.call("./src/mafft/mafft.bat %s %s > Output/%s" %(arguments, filename, fname), shell=True)
+                        subprocess.call("./src/mafft/mafft.bat %s %s > FastaAligned/%s" %(arguments, filename, fname), shell=True)
                     except:
                         raise ValueError("Failed to perform alignment for file %s" %fname)
 
-        os.chdir('Output')
+        os.chdir("FastaAligned")
         files = glob.glob('*.fas')
 
         for filename in files:
@@ -405,7 +445,33 @@ def main():
 
         os.chdir('..')
 
+        #try:
+            #shutil.rmtree("FastaAligned")
+        #except:
+            #pass
+            
+    if argmnts.log != None:
+        logfile = argmnts.log
+    else:
+        logfile = "logData.log"
 
+    logfile = open(argmnts.log, "w")
+    logfile.write("ConCat-import log file\n\n")
+    logfile.write("Date logged - %s\n\n" %time.strftime("%c"))
+    logfile.write("Command used -\n")
+    logfile.write("python " + " ".join(sys.argv) + "\n\n")
+    logfile.close()
+            
+    flog = glob.glob("Align/*.log")
+    
+    if flog != []:
+        for files in flog:
+            logData = open(files, 'r').readlines()
+            with open(argmnts.log, 'a') as fp:
+                fp.write("%s log data\n" %files)
+                fp.write("%s\n\n" %logData)
+
+    shutil.rmtree("Align")
 
 
 if __name__ == "__main__":

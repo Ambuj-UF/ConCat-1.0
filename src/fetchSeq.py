@@ -25,9 +25,11 @@ import os
 import sys
 import urllib2
 
+
+
 try:
-    from Bio import Entrez
-    from Bio import SeqIO
+    from Utils.Bio import Entrez
+    from Utils.Bio import SeqIO
 except ImportError, e:
     sys.exit("Biopython not found")
 
@@ -119,7 +121,7 @@ def cdsImport(geneName, group, ortho):
     print("Importing CDS sequences for %s gene" %geneName)
 
     try:
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 
@@ -132,7 +134,7 @@ def cdsImport(geneName, group, ortho):
         print("Using %s as NCBI input querry" %inpTerm)
         
         try:
-            handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+            handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
         except:
             raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 
@@ -191,7 +193,7 @@ def mrnaImport(geneName, group, ortho):
     Entrez.email = 'sendambuj@gmail.com'
 
     try:
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 
@@ -253,7 +255,7 @@ def oneGeneCdsImport(geneName, group):
     print("Importing %s %s gene CDS sequence" %(group, geneName))
     
     try:
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 
@@ -287,10 +289,10 @@ def oneGeneMrnaImport(geneName, group):
     inpTerm = geneName + "[sym] AND " + group + "[orgn]"
     Entrez.email = 'sendambuj@gmail.com'
     
-    print("Importing %S %S gene sequences" %(group, geneName))
+    print("Importing %s %s gene sequences" %(group, geneName))
     
     try:
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
     
@@ -331,7 +333,7 @@ def _fetch_Species(inpTerm = None):
         inpTerm = "Eucaryotes[orgn] NOT Vertebrates[orgn]"
     
     try:
-        handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000, warning=False)
+        handle = Entrez.esearch(db="genome", term=inpTerm, rettype='xml', RetMax=10000)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 
@@ -352,7 +354,7 @@ def fetchall(spName, discontId):
     Entrez.email = 'sendambuj@gmail.com'
     
     try:
-        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000, warning=False)
+        handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=1000000)
     except:
         raise RuntimeError("Failed to import sequence from NCBI. Check your internet connection.\nThis might also occur due to NCBI failure")
 

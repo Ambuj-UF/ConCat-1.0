@@ -1,0 +1,2189 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.Coevol1</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        Package&nbsp;Coevol1
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.Coevol1-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package Coevol1</h1><p class="nomargin-top"><span class="codelink"><a href="src.Coevol1-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+
+Detects intra and inter molecular coevolving sites and proteins
+
+Program runs in three different mode - Inter, Intra and Mega
+
+
+                                    Mega mode
+
+In Mega mode program calculates pairwise distance between amino acid/cds sequences 
+of all the taxon present in the input dataset and performs pearson correlation
+analysis to detect coevolution statistics.
+
+
+
+Based on
+
+Hua Zhou, Eric Jakobsson (2013)
+Predicting Protein-Protein Interaction by the Mirrortree Method: Possibilities and Limitations.
+PLoS One 8(12): e81100.
+
+
+
+                                Inter and Intra mode
+
+In Intra and Inter mode, program estimates site coevolution statistics using CAPS method.
+Program also allows user to choose between standard pearson correlation coefficient method
+implimented in CAPS program and Gobels site correlation test algorithm. 
+
+Program allows user to restrict the execution to the selected list of alignment positions
+to reduce the execution runtime in the cases where the user wants to test correlation
+between specific alignment sites.
+
+It can also detect the presence/absence of interatomic interactions, such as the hydrogen bonds,
+at the coevolving sites.
+
+
+
+Based upon 
+
+'CAPS: coevolution analysis using protein sequences'
+Fares MA, McNally D. Bioinformatics. 2006 Nov 15;22(22):2821-2.
+
+Gobel U, Sander C, Schneider R and Valencia A. (1994) Proteins, 18, 309-317.
+
+Manish C.Saraf, Gregory L.Moore and Costas D.Maranas.
+Using multiple sequence correlation analysis to characterize functionally important protein regions.
+Protein Engineering vol. 16 no. 6 pp. 397-406, 2003
+
+
+
+
+            &quot;Site Correlation&quot; - Inter and Intra Mode
+
+BLOSUM values are normalized by the time of divergence between
+sequences. BLOSUM values (Bek) are thus weighted for the transition 
+between amino acids e and k using the time (t) since the divergence 
+between sequences i and j:
+
+                  &#952;_ek(ij) = Bek*(t^-1)(ij)
+
+The assumption made in equation 1 is that the different types of amino 
+acid transitions (slight to radical amino acid changes) in a particular 
+site follow a Poisson distribution along time. The greater the time since 
+the divergence between sequences i and j the greater the probability of 
+having a radical change. A linear relationship is thus assumed between the 
+BLOSUM values and time. Synonymous substitutions per site (dSij) are silent 
+mutations, as they do not affect the amino acid composition of the protein. 
+These mutations are therefore neutrally fixed in the gene. Assuming that 
+synonymous sites are not saturated or under constraints, dS is proportional 
+to the time since the two sequences compared diverged. Time (t) therefore is 
+measured as dS.
+
+The next step is the estimation of the mean &#952; parameter for each site (&#952;C~) 
+of the alignment, so that:
+
+               &#952;C~ = (1/T)sigma[1-&gt;T]&#952;_ek(S)
+
+Here S refers to each pairwise comparison, while T stands for the total number
+of pairwise sequence comparisons, and thus:
+
+                      T = N*(N-1)/2
+
+Where N is the total number of sequences in the alignment.
+
+The variability of each pairwise amino acid transition compared to that of 
+the site column is estimated as:
+
+                D&#710;_ek = (&#952;_ek(ij) - &#952;C~)^2
+
+The mean variability for the corrected BLOSUM transition values is:
+
+           DC= (1/T)*sigma[1-&gt;T](&#952;_ek(S)&#8722;&#952;C~)2
+
+The coevolution between amino acid sites (A and B) is estimated thereafter by 
+measuring the correlation in the pairwise amino acid variability, relative to 
+the mean pairwise variability per site, between them. This covariation is 
+measured as the correlation between their D&#710; ek values. 
+
+The mean correlation coefficient and its variance are then estimated. Correlation 
+coefficients are then tested for significance under a normal distribution.
+
+The statistical power of the test is optimised by analysing sites showing:
+
+                     DC &gt; phi &#8722; 2&#963;_phi
+
+Here, phi is the parametric value of DC and &#963; is the standard deviation of phi.
+
+Pair-wise comparisons including gaps in any or both sites at any sequence are 
+excluded from the analysis.
+
+
+
+Execution commands example
+
+&gt;&gt;&gt; import Coevol
+&gt;&gt;&gt; from Coevol import coevol
+
+Mega mode
+&gt;&gt;&gt; fileList = [&quot;file1.nex&quot;, &quot;file2.nex&quot;, &quot;file3.nex&quot;]
+&gt;&gt;&gt; output = coevol(fileList, method = &quot;Mega&quot;)
+
+Inter mode
+
+Default run
+&gt;&gt;&gt; fileList = [&quot;file1.nex&quot;, &quot;file2.nex&quot;]
+&gt;&gt;&gt; coevol(fileList, method = &quot;Inter&quot;, corr=&quot;Pearson&quot;, rCut=0.9)
+
+With pdb coordinates and selected positions
+&gt;&gt;&gt; list1 = [9, 10, 11, 15, 16, 17, 18, 19, 20, 42, 43, 44]
+&gt;&gt;&gt; list2 = [600, 601, 602, 603, 604, 605, 624, 625, 626]
+
+&gt;&gt;&gt; coevol(fileList, type=&quot;cds&quot;, method = &quot;Inter&quot;, pdbfile=&quot;1T5C.pdb&quot;, chain1=&quot;A&quot;, chain2=&quot;A&quot;, atom_interval1=&quot;4-339&quot;, atom_interval2=&quot;75-224&quot;, select1=list1, select2=list2, corr=&quot;Gobel&quot;)
+
+Intra mode
+&gt;&gt;&gt; coevol(fileList, method = &quot;Intra&quot;, pdbfile=&quot;1T5C.pdb&quot;, chain1=&quot;A&quot;, atom_interval1=&quot;4-339&quot;, corr=&quot;Pearson&quot;)
+
+</pre>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1.CoevolError-class.html" class="summary-name">CoevolError</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_average"></a><span class="summary-sig-name">_average</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_average">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_variance"></a><span class="summary-sig-name">_variance</span>(<span class="summary-sig-arg">avg</span>,
+        <span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_variance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_stDev"></a><span class="summary-sig-name">_stDev</span>(<span class="summary-sig-arg">variance</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_stDev">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sort_dict_by_val"></a><span class="summary-sig-name">_sort_dict_by_val</span>(<span class="summary-sig-arg">d</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_sort_dict_by_val">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sort_dict_by_key"></a><span class="summary-sig-name">_sort_dict_by_key</span>(<span class="summary-sig-arg">d</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_sort_dict_by_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sort_dict_by_val_doub"></a><span class="summary-sig-name">_sort_dict_by_val_doub</span>(<span class="summary-sig-arg">d</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_sort_dict_by_val_doub">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sort_list_by_key"></a><span class="summary-sig-name">_sort_list_by_key</span>(<span class="summary-sig-arg">l</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_sort_list_by_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_difference"></a><span class="summary-sig-name">_get_difference</span>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_get_difference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_spliter"></a><span class="summary-sig-name">_spliter</span>(<span class="summary-sig-arg">str</span>,
+        <span class="summary-sig-arg">num</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_spliter">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="Blossum"></a><span class="summary-sig-name">Blossum</span>(<span class="summary-sig-arg">a1</span>,
+        <span class="summary-sig-arg">a2</span>)</span><br />
+      Blosum matrix data return function</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#Blossum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#hydrophob" class="summary-sig-name">hydrophob</a>()</span><br />
+      Contains Hydrophobicity and molecular weight data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#hydrophob">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="z_table"></a><span class="summary-sig-name">z_table</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#z_table">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="li_synonymous"></a><span class="summary-sig-name">li_synonymous</span>(<span class="summary-sig-arg">recordObj</span>)</span><br />
+      returns synonymous distance(ds) as divergence time</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#li_synonymous">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_deg_transvers"></a><span class="summary-sig-name">_deg_transvers</span>(<span class="summary-sig-arg">codon1</span>,
+        <span class="summary-sig-arg">codon2</span>,
+        <span class="summary-sig-arg">L</span>,
+        <span class="summary-sig-arg">Ts</span>,
+        <span class="summary-sig-arg">Tv</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_deg_transvers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_calculate_A_B"></a><span class="summary-sig-name">_calculate_A_B</span>(<span class="summary-sig-arg">Ts</span>,
+        <span class="summary-sig-arg">Tv</span>,
+        <span class="summary-sig-arg">L</span>,
+        <span class="summary-sig-arg">A</span>,
+        <span class="summary-sig-arg">B</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_calculate_A_B">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_poisson"></a><span class="summary-sig-name">_poisson</span>(<span class="summary-sig-arg">distance</span>,
+        <span class="summary-sig-arg">long</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_poisson">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_poisson_dist"></a><span class="summary-sig-name">_poisson_dist</span>(<span class="summary-sig-arg">seq1</span>,
+        <span class="summary-sig-arg">se2</span>)</span><br />
+      Poisson distance</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_poisson_dist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_relative_distance"></a><span class="summary-sig-name">_relative_distance</span>(<span class="summary-sig-arg">distance</span>,
+        <span class="summary-sig-arg">sorted_dist</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_relative_distance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_optimize"></a><span class="summary-sig-name">_optimize</span>(<span class="summary-sig-arg">record</span>)</span><br />
+      Optimize distance as divergence time</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_optimize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#_thetaEK" class="summary-sig-name" onclick="show_private();">_thetaEK</a>(<span class="summary-sig-arg">records</span>,
+        <span class="summary-sig-arg">optimize_dist</span>)</span><br />
+      Divergence time based optimized blosum scores for amino acid alignment</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaEK">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#_thetaEKcds" class="summary-sig-name" onclick="show_private();">_thetaEKcds</a>(<span class="summary-sig-arg">records</span>,
+        <span class="summary-sig-arg">optimize_dist</span>)</span><br />
+      Divergence time based optimized blosum scores for cds alignment</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaEKcds">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_meanTheta"></a><span class="summary-sig-name">_meanTheta</span>(<span class="summary-sig-arg">posScore</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_meanTheta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_variability"></a><span class="summary-sig-name">_variability</span>(<span class="summary-sig-arg">posScore</span>,
+        <span class="summary-sig-arg">meanDist</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_variability">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_meanVar"></a><span class="summary-sig-name">_meanVar</span>(<span class="summary-sig-arg">varDist</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_meanVar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#_thetaParam" class="summary-sig-name" onclick="show_private();">_thetaParam</a>(<span class="summary-sig-arg">meanVarDict</span>)</span><br />
+      returns alignment positions with mean variability scores greated
+than the parametric value of mean variability</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaParam">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pearson_def"></a><span class="summary-sig-name">pearson_def</span>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>)</span><br />
+      Pearson correlation test</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#pearson_def">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_correlation"></a><span class="summary-sig-name">_correlation</span>(<span class="summary-sig-arg">varDist</span>,
+        <span class="summary-sig-arg">varDist2</span>,
+        <span class="summary-sig-arg">cory</span>,
+        <span class="summary-sig-arg">coreNum</span>,
+        <span class="summary-sig-arg">output</span>)</span><br />
+      returns site correlation scores</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_correlation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#gobel_correlation" class="summary-sig-name">gobel_correlation</a>(<span class="summary-sig-arg">val1</span>,
+        <span class="summary-sig-arg">val2</span>)</span><br />
+      For a given pair of sequences (k, l), each substitution
+at a position (i or j) is associated with a similarity
+score (Xikl and Xjkl, respectively) obtained from the
+McLachlan scoring matrix.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#gobel_correlation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_exec_gobel_correlation"></a><span class="summary-sig-name">_exec_gobel_correlation</span>(<span class="summary-sig-arg">posScore1</span>,
+        <span class="summary-sig-arg">posScore2</span>,
+        <span class="summary-sig-arg">cory</span>,
+        <span class="summary-sig-arg">coreNum</span>)</span><br />
+      Executes Gobel's alignment position substitution correlation method</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_exec_gobel_correlation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_meanCor"></a><span class="summary-sig-name">_meanCor</span>(<span class="summary-sig-arg">corScore</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_meanCor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_corVar"></a><span class="summary-sig-name">_corVar</span>(<span class="summary-sig-arg">corScore</span>,
+        <span class="summary-sig-arg">avgCorr</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_corVar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="groupy"></a><span class="summary-sig-name">groupy</span>(<span class="summary-sig-arg">L</span>)</span><br />
+      Create group of continuous data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#groupy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_zscore"></a><span class="summary-sig-name">_zscore</span>(<span class="summary-sig-arg">corScore</span>,
+        <span class="summary-sig-arg">avgCorr</span>,
+        <span class="summary-sig-arg">varCorr</span>)</span><br />
+      calculates z score</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_zscore">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pvalue"></a><span class="summary-sig-name">pvalue</span>(<span class="summary-sig-arg">zval</span>,
+        <span class="summary-sig-arg">zData</span>)</span><br />
+      calculates p value from z score</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#pvalue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_step_down_pval"></a><span class="summary-sig-name">_step_down_pval</span>(<span class="summary-sig-arg">pvals</span>)</span><br />
+      Retruns Bonferroni stepdown adjusted p-values</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_step_down_pval">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_resample"></a><span class="summary-sig-name">_resample</span>(<span class="summary-sig-arg">corScore</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_resample">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_unlist"></a><span class="summary-sig-name">_unlist</span>(<span class="summary-sig-arg">listSect</span>,
+        <span class="summary-sig-arg">pos</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_unlist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_hydrophobData"></a><span class="summary-sig-name">_hydrophobData</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_hydrophobData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#_hydrophobicity" class="summary-sig-name" onclick="show_private();">_hydrophobicity</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">posVectorStore2</span>,
+        <span class="summary-sig-arg">positions</span>,
+        <span class="summary-sig-arg">hydroDict</span>,
+        <span class="summary-sig-arg">molDict</span>,
+        <span class="summary-sig-arg">pH</span>=<span class="summary-sig-default">7</span>)</span><br />
+      Calculates hydrophobicity and molecular weight correlation scores...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_hydrophobicity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_modulate"></a><span class="summary-sig-name">_modulate</span>(<span class="summary-sig-arg">number</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_modulate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_varTonewVar"></a><span class="summary-sig-name">_varTonewVar</span>(<span class="summary-sig-arg">varDist</span>,
+        <span class="summary-sig-arg">posCorExec</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_varTonewVar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_removeDuplPos"></a><span class="summary-sig-name">_removeDuplPos</span>(<span class="summary-sig-arg">positions</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_removeDuplPos">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="PDBParser"></a><span class="summary-sig-name">PDBParser</span>(<span class="summary-sig-arg">file</span>)</span><br />
+      PDB file parser</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#PDBParser">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_aa_distance"></a><span class="summary-sig-name">_aa_distance</span>(<span class="summary-sig-arg">list1</span>,
+        <span class="summary-sig-arg">list2</span>)</span><br />
+      distance = sqrt((x1-x2)^2+(y1-y2)^2+(z1-z2)^2)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_aa_distance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_central_geometry"></a><span class="summary-sig-name">_central_geometry</span>(<span class="summary-sig-arg">Obj</span>)</span><br />
+      Calculate central geometric coordinates of the amnio acid</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_central_geometry">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_return_dist"></a><span class="summary-sig-name">_return_dist</span>(<span class="summary-sig-arg">pos1</span>,
+        <span class="summary-sig-arg">pos2</span>,
+        <span class="summary-sig-arg">pdbData</span>,
+        <span class="summary-sig-arg">chain1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain2</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Calculates amino acid residue distance</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_return_dist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_return_dist_hb"></a><span class="summary-sig-name">_return_dist_hb</span>(<span class="summary-sig-arg">pos1</span>,
+        <span class="summary-sig-arg">pos2</span>,
+        <span class="summary-sig-arg">pdbData</span>,
+        <span class="summary-sig-arg">chain1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain2</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Calculates H-bond forming atom distance</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_return_dist_hb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#hbond_angle" class="summary-sig-name">hbond_angle</a>(<span class="summary-sig-arg">list1</span>,
+        <span class="summary-sig-arg">list2</span>,
+        <span class="summary-sig-arg">list3</span>)</span><br />
+      If P1 is the vertex of then...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#hbond_angle">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="hydrogen_bond"></a><span class="summary-sig-name">hydrogen_bond</span>(<span class="summary-sig-arg">distance</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#hydrogen_bond">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_matchy_pdb"></a><span class="summary-sig-name">_matchy_pdb</span>(<span class="summary-sig-arg">pdb_keys</span>,
+        <span class="summary-sig-arg">rangeVal</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_matchy_pdb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#_adjust_pdb_pos" class="summary-sig-name" onclick="show_private();">_adjust_pdb_pos</a>(<span class="summary-sig-arg">pdbData</span>,
+        <span class="summary-sig-arg">chain1</span>,
+        <span class="summary-sig-arg">chain2</span>,
+        <span class="summary-sig-arg">atom_interval1</span>,
+        <span class="summary-sig-arg">atom_interval2</span>)</span><br />
+      Adjusts amino acid positions in PDB file according to the atom_interval data
+@pdbData - Parsed PDB data dictionary
+@chain1 - First alignment chan ID
+@chain2 - Secind alignment chain ID
+@atom_interval1 - PDB file amino acid position in the first alignment
+@atom_interval2 - PDB file amino acid position in the second alignment</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_adjust_pdb_pos">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="PDBTest"></a><span class="summary-sig-name">PDBTest</span>(<span class="summary-sig-arg">pdbfile</span>,
+        <span class="summary-sig-arg">newPos</span>,
+        <span class="summary-sig-arg">chain1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval2</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#PDBTest">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_datasplit"></a><span class="summary-sig-name">_datasplit</span>(<span class="summary-sig-arg">dataObj</span>,
+        <span class="summary-sig-arg">coreNum</span>)</span><br />
+      Program to split data according to the number of available cores
+@Input - List of sequence records
+@Output - List of sublist with sequence data after splitting as per the number of cores.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_datasplit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sortPos"></a><span class="summary-sig-name">_sortPos</span>(<span class="summary-sig-arg">positions</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_sortPos">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="collect_record"></a><span class="summary-sig-name">collect_record</span>(<span class="summary-sig-arg">fileObj</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#collect_record">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="posVecStore_update"></a><span class="summary-sig-name">posVecStore_update</span>(<span class="summary-sig-arg">posVectorStoreObj</span>,
+        <span class="summary-sig-arg">selector</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#posVecStore_update">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="selection"></a><span class="summary-sig-name">selection</span>(<span class="summary-sig-arg">recordObj</span>,
+        <span class="summary-sig-arg">selector</span>)</span><br />
+      Creates a record object with alignment positions defined via selector variable</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#selection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_translate"></a><span class="summary-sig-name">_translate</span>(<span class="summary-sig-arg">sequence</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#_translate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#mirrorTree" class="summary-sig-name">mirrorTree</a>(<span class="summary-sig-arg">file1</span>,
+        <span class="summary-sig-arg">file2</span>,
+        <span class="summary-sig-arg">mat</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Utilizes pearson correlation coefficinet as a key relationship
+to define correlation between the pairwise distance among the
+taxon pairs between two protein alignments.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#mirrorTree">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#execute_coevol" class="summary-sig-name">execute_coevol</a>(<span class="summary-sig-arg">records</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">records2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">itype</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">cds</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">pH</span>=<span class="summary-sig-default">7</span>,
+        <span class="summary-sig-arg">rCut</span>=<span class="summary-sig-default">0.9</span>,
+        <span class="summary-sig-arg">fname1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">fname2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">pdbfile</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">corr</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">Pearson</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">cores</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">select1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">select2</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Executes coevolution module...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#execute_coevol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.Coevol1-module.html#coevol" class="summary-sig-name">coevol</a>(<span class="summary-sig-arg">files</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">folder</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">itype</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">cds</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">pH</span>=<span class="summary-sig-default">7</span>,
+        <span class="summary-sig-arg">rCut</span>=<span class="summary-sig-default">0.9</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">Intra</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">pdbfile</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">chain2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">atom_interval2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">select1</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">select2</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">corr</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">Pearson</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">cores</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Performs intra-alignment coevolution test</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.Coevol1-pysrc.html#coevol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#cero_fold" class="summary-name">cero_fold</a> = <code title="{'ATG': 'M', 'TAA': '-', 'TAG': '-', 'TGA': '-', 'TGG': 'W'}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ATG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">M</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#two_fold" class="summary-name">two_fold</a> = <code title="{'AAA': 'K',
+ 'AAC': 'N',
+ 'AAG': 'K',
+ 'AAT': 'N',
+ 'CAA': 'Q',
+ 'CAC': 'H',
+ 'CAG': 'Q',
+ 'CAT': 'H',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">C</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#four_fold" class="summary-name">four_fold</a> = <code title="{'ACA': 'T',
+ 'ACC': 'T',
+ 'ACG': 'T',
+ 'ACT': 'T',
+ 'ATA': 'I',
+ 'ATC': 'I',
+ 'ATT': 'I',
+ 'CCA': 'P',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ACA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ACC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ACG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ACT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#six_fold" class="summary-name">six_fold</a> = <code title="{'AGA': 'R',
+ 'AGC': 'S',
+ 'AGG': 'R',
+ 'AGT': 'S',
+ 'CGA': 'R',
+ 'CGC': 'R',
+ 'CGG': 'R',
+ 'CGT': 'R',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">C</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="purines"></a><span class="summary-name">purines</span> = <code title="{'A': 'Pur1', 'B': 'Pur2'}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">A</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Pur1</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">B</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Pur2</code><code class="variable-quote">'</code><code class="variable-group">}</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="pyrimidines"></a><span class="summary-name">pyrimidines</span> = <code title="{'C': 'Pyr2', 'T': 'Pyr1'}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">C</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Pyr2</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Pyr1</code><code class="variable-quote">'</code><code class="variable-group">}</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#codonGroups" class="summary-name">codonGroups</a> = <code title="[{'ATG': 'M', 'TAA': '-', 'TAG': '-', 'TGA': '-', 'TGG': 'W'},
+ {'AAA': 'K',
+  'AAC': 'N',
+  'AAG': 'K',
+  'AAT': 'N',
+  'CAA': 'Q',
+  'CAC': 'H',
+  'CAG': 'Q',
+..."><code class="variable-group">[</code><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ATG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">M</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#codonDict" class="summary-name">codonDict</a> = <code title="{'AAA': 'K',
+ 'AAC': 'N',
+ 'AAG': 'K',
+ 'AAT': 'N',
+ 'ACA': 'T',
+ 'ACC': 'T',
+ 'ACG': 'T',
+ 'ACT': 'T',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'src.Coevol1'"><code class="variable-quote">'</code><code class="variable-string">src.Coevol1</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="key"></a><span class="summary-name">key</span> = <code title="'TCA'"><code class="variable-quote">'</code><code class="variable-string">TCA</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.Coevol1-module.html#sections" class="summary-name">sections</a> = <code title="{'AGA': 'R',
+ 'AGC': 'S',
+ 'AGG': 'R',
+ 'AGT': 'S',
+ 'CGA': 'R',
+ 'CGC': 'R',
+ 'CGG': 'R',
+ 'CGT': 'R',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">AGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">C</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="val"></a><span class="summary-name">val</span> = <code title="'S'"><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="hydrophob"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">hydrophob</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#hydrophob">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Contains Hydrophobicity and molecular weight data
+
+Column1 =&gt; Hydrophobicity data at pH 7
+Column2 =&gt; Hydrophobicity data at pH 2
+Column3 =&gt; Molecular weight
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_thetaEK"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_thetaEK</span>(<span class="sig-arg">records</span>,
+        <span class="sig-arg">optimize_dist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaEK">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Divergence time based optimized blosum scores for amino acid alignment
+
+@records - Alignment record object
+@optimize_dist - divergence time
+    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_thetaEKcds"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_thetaEKcds</span>(<span class="sig-arg">records</span>,
+        <span class="sig-arg">optimize_dist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaEKcds">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Divergence time based optimized blosum scores for cds alignment
+
+@records - Alignment record object
+@optimize_dist - divergence time
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_thetaParam"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_thetaParam</span>(<span class="sig-arg">meanVarDict</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#_thetaParam">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+returns alignment positions with mean variability scores greated
+than the parametric value of mean variability
+
+This step is used to optimize the statistical power of the test
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="gobel_correlation"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">gobel_correlation</span>(<span class="sig-arg">val1</span>,
+        <span class="sig-arg">val2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#gobel_correlation">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+For a given pair of sequences (k, l), each substitution
+at a position (i or j) is associated with a similarity
+score (Xikl and Xjkl, respectively) obtained from the
+McLachlan scoring matrix. The expression used for computing
+the correlation coef&#174;cient (rij) between two sequence positions
+(i, j) in the alignment is
+
+r = 2/N(N-1)(sigma[k=1-&gt;N-1]sigma[l=k+1-&gt;N](x_ikl - &lt;Xi&gt;)/si)((x_jkl - &lt;Xj&gt;)/si)
+
+where si and sj are the standard deviations of the scores x_ikl
+and x_jkl at positions i and j about their means &lt;Xi&gt; and &lt;Xj&gt;,
+respectively. The use of weights in computing the correlation
+coeficient has been avoided since they not only penalize genuinely
+correlated signals in a group of similar sequences but often cannot
+be quantifed in a universal fashion.
+
+Based on:
+
+Manish C.Saraf, Gregory L.Moore and Costas D.Maranas.
+Using multiple sequence correlation analysis to characterize functionally important protein regions.
+Protein Engineering vol. 16 no. 6 pp. 397-406, 2003
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_hydrophobicity"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_hydrophobicity</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">posVectorStore2</span>,
+        <span class="sig-arg">positions</span>,
+        <span class="sig-arg">hydroDict</span>,
+        <span class="sig-arg">molDict</span>,
+        <span class="sig-arg">pH</span>=<span class="sig-default">7</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#_hydrophobicity">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Calculates hydrophobicity and molecular weight correlation scores
+@data - First alignment columns
+@posVectorStore2 - Second alignment columns
+@positions - Blosum score based coevolving positions
+@hydrodict - Dictionary element containing hydrophobicity data
+@molDict - Dictionary element containing molecular weight data
+@pH - standard pH value of input dataset in test environment
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="hbond_angle"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">hbond_angle</span>(<span class="sig-arg">list1</span>,
+        <span class="sig-arg">list2</span>,
+        <span class="sig-arg">list3</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#hbond_angle">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+If P1 is the vertex of then
+angle = arcos((P12**2 + P13**2 - P23**2) / (2 * P12 * P13))
+where P12 is the length of the segment from P1 to P2, calculated by
+sqrt((P1x - P2x)**2 + (P1y - P2y)**2 + + (P1z - P2z)**2)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_adjust_pdb_pos"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_adjust_pdb_pos</span>(<span class="sig-arg">pdbData</span>,
+        <span class="sig-arg">chain1</span>,
+        <span class="sig-arg">chain2</span>,
+        <span class="sig-arg">atom_interval1</span>,
+        <span class="sig-arg">atom_interval2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#_adjust_pdb_pos">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Adjusts amino acid positions in PDB file according to the atom_interval data
+@pdbData - Parsed PDB data dictionary
+@chain1 - First alignment chan ID
+@chain2 - Secind alignment chain ID
+@atom_interval1 - PDB file amino acid position in the first alignment
+@atom_interval2 - PDB file amino acid position in the second alignment
+
+@returns - Adjusted PDB data dictionary
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="mirrorTree"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">mirrorTree</span>(<span class="sig-arg">file1</span>,
+        <span class="sig-arg">file2</span>,
+        <span class="sig-arg">mat</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#mirrorTree">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Utilizes pearson correlation coefficinet as a key relationship
+to define correlation between the pairwise distance among the
+taxon pairs between two protein alignments.
+
+Distances are calculated using Kimura's distance method. This is 
+a rough-and-ready distance formula for approximating PAM distance 
+by simply measuring the fraction of amino acids, p, that differs 
+between two sequences and computing the distance as (Kimura, 1983)
+
+            D = - loge ( 1 - p - 0.2 * p^2 )
+            
+This is very quick to do but has some obvious limitations. It does 
+not take into account which amino acids differ or to what amino acids 
+they change, so some information is lost. The units of the distance 
+measure are the fraction of amino acids differing, as also in the case 
+of the PAM distance. If the fraction of amino acids differing gets larger 
+than about 0.8541 the distance becomes infinite.
+
+
+Based on
+
+Hua Zhou, Eric Jakobsson (2013)
+Predicting Protein-Protein Interaction by the Mirrortree Method: Possibilities and Limitations.
+PLoS One 8(12): e81100.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="execute_coevol"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">execute_coevol</span>(<span class="sig-arg">records</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">records2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">itype</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">cds</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">pH</span>=<span class="sig-default">7</span>,
+        <span class="sig-arg">rCut</span>=<span class="sig-default">0.9</span>,
+        <span class="sig-arg">fname1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">fname2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">pdbfile</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">chain1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">chain2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">atom_interval1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">atom_interval2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">corr</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">Pearson</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">cores</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">select1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">select2</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#execute_coevol">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Executes coevolution module
+@records - First alignment record
+@records2 - Second alignment record
+@itype - Test type (cds or amino acid[aa])
+@pH - corresponding body pH for the input data
+@rCut - r correlation score cutoff value
+@fname1 - First alignment filename
+@fname2 - Second alignmnet filename
+@pdbfile - PDB file
+@chain1 - PDB chain ID for the first alignment
+@chain2 - PDB chain ID for the second alignment
+@atom_interval1 - Range of PDB amino acid in reference to the first alignment
+@atom_interval2 - Range of PDB amino acid in reference to the second alignment
+@corr - Correlation test type
+@cores - Number of cores to run coevol
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="coevol"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">coevol</span>(<span class="sig-arg">files</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">folder</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">itype</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">cds</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">pH</span>=<span class="sig-default">7</span>,
+        <span class="sig-arg">rCut</span>=<span class="sig-default">0.9</span>,
+        <span class="sig-arg">method</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">Intra</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">pdbfile</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">chain1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">chain2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">atom_interval1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">atom_interval2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">select1</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">select2</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">corr</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">Pearson</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">cores</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.Coevol1-pysrc.html#coevol">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Performs intra-alignment coevolution test
+
+@files - Input file list
+@itype - Test type (cds or amino acid[aa])
+@pH - corresponding body pH for the input data
+@rCut - r correlation score cutoff value
+@method - Type of coevol execution (Intra, Inter or Mega)
+@pdbfile - PDB file
+@chain1 - PDB chain ID for the first alignment
+@chain2 - PDB chain ID for the second alignment
+@atom_interval1 - Range of PDB amino acid in reference to the first alignment
+@atom_interval2 - Range of PDB amino acid in reference to the second alignment
+@select1 - Alignment1 selected positions to execute coevolution analysis
+@select2 - Alignment2 selected positions to execute coevolution analysis
+@corr - Correlation test type
+@cores - Number of cores to run coevol
+
+
+-&gt; Multiprocessing mode is currently inactive
+
+
+Note - If you execute Coevol in cds mode and supply selected positions then 
+make sure you enter all three positions of codon sites that codes for the 
+specific amino acid position in the alignment.
+
+
+Execution command
+
+&gt;&gt;&gt; from Coevol import coevol
+
+Mega mode
+
+&gt;&gt;&gt; fileList = [&quot;file1.nex&quot;, &quot;file2.nex&quot;, &quot;file3.nex&quot;]
+&gt;&gt;&gt; output = coevol(fileList, method = &quot;Mega&quot;)
+
+or
+
+&gt;&gt;&gt; output = coevol(folder=&quot;folder_name&quot;, method=&quot;Mega&quot;)
+
+
+Inter mode
+&gt;&gt;&gt; coevol('file1.nex', 'file2.nex', method = &quot;Inter&quot;, pdbfile=&quot;1T5C.pdb&quot;, chain1=&quot;A&quot;, chain2=&quot;A&quot;, 
+    atom_interval1=&quot;4-339&quot;, atom_interval2=&quot;75-224&quot;, corr=&quot;Gobel&quot;)
+
+Intra mode
+&gt;&gt;&gt; coevol('file.nex', method = &quot;Intra&quot;, pdbfile=&quot;1T5C.pdb&quot;, chain1=&quot;A&quot;, atom_interval1=&quot;4-339&quot;, corr=&quot;Pearson&quot;)
+
+    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="cero_fold"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cero_fold</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ATG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">M</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">W</code><code class="variable-quote">'</code><code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="two_fold"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">two_fold</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Q</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">H</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Q</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">H</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="four_fold"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">four_fold</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ACA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ATA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">I</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ATC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">I</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ATT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">I</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CCA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">P</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="six_fold"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">six_fold</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="codonGroups"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">codonGroups</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">ATG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">M</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">-</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">TGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">W</code><code class="variable-quote">'</code><code class="variable-group">}</code><code class="variable-op">,</code>
+ <code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">AAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">AAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">AAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">CAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Q</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">CAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">H</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+  <code class="variable-quote">'</code><code class="variable-string">CAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Q</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="codonDict"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">codonDict</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AAA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">K</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AAT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">N</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ACT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">T</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="sections"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">sections</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">AGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">S</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGA</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGC</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGG</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">CGT</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">R</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Jan 11 13:12:05 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

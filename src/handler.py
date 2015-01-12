@@ -31,17 +31,17 @@ import subprocess
 import math
 import collections
 
-
-from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
-from collections import Counter
 from sets import Set
-from Bio.SeqRecord import SeqRecord
-from Bio.Align import MultipleSeqAlignment
-from Bio import SeqIO
-from Bio import AlignIO
-from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
-from Bio.Nexus import Nexus
+from collections import Counter
+
+from Utils.Bio import SeqIO
+from Utils.Bio import AlignIO
+from Utils.Bio.Seq import Seq
+from Utils.Bio.Nexus import Nexus
+from Utils.Bio.SeqRecord import SeqRecord
+from Utils.Bio.Alphabet import generic_dna
+from Utils.Bio.Align import MultipleSeqAlignment
+from Utils.Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 
 
 
@@ -866,6 +866,7 @@ class NexusHandler:
            matrix.
            
         """
+        
         try:
             matrixNew = combined.matrix
         except AttributeError:
@@ -880,8 +881,9 @@ class NexusHandler:
         for i, sequence in enumerate(records):
             newrecord = SeqRecord(records[i], id = listID[i])
             records[i] = newrecord
-
-        return records
+    
+    
+        return SeqRecord(records)
 
 
 
