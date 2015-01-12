@@ -1,7 +1,7 @@
 #ConCat v1.0
 
 ###BioPython is not a prerequisite for ConCat anymore
-###Coevolution module is under development. Check Coevolver folder for currently added coevolution functionalities. Suggestions are invited. 
+###Coevolution module is under development. Check src/Coevolver/__init__.py folder for currently added coevolution functionalities. Suggestions are invited. 
 
 ###Read Manual for detail instructions
 
