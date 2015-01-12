@@ -179,7 +179,7 @@ def main():
                           args.GC,
                           args.gcbin,
                           args.pbin,
-                          args.ugcbin
+                          args.ugcbin,
                           args.i
                           )
     
@@ -204,7 +204,7 @@ def main():
                           args.GC,
                           args.gcbin,
                           args.pbin,
-                          args.ugcbin
+                          args.ugcbin,
                           args.i
                           )
                       
