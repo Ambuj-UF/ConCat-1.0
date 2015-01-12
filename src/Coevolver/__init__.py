@@ -128,6 +128,11 @@
     >>> fileList = ["file1.nex", "file2.nex", "file3.nex"]
     >>> output = coevol(fileList, method = "Mega")
     
+    or
+    
+    >>> output = coevol(folder="folder_name", method="Mega")
+    
+    
     Inter mode
     
     Default run
