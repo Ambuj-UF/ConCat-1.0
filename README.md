@@ -1,4 +1,7 @@
 #ConCat v1.0
+
+###BioPython is not a prerequisite for ConCat anymore
+
 ###Read Manual for detail instructions
 
 ##Requirements:
