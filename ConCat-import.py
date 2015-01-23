@@ -181,8 +181,8 @@ def main():
         try:
             genes = [x for x in open(argmnts.cds, 'r').readlines() if x != '' and x != '\n']
         except IOError:
-            print("%s file not found. Using %s as gene name" %(argmnts.cds, argmnts.cds))
-            genes = argmnts.cds
+            print("\n%s file not found. Using %s as gene name\n" %(argmnts.cds, argmnts.cds))
+            genes = [argmnts.cds]
         
         for geneName in genes:
             #warnings.filterwarnings("ignore")
@@ -217,10 +217,14 @@ def main():
         try:
             genes = [x for x in open(argmnts.mrna, 'r').readlines() if x != '' and x != '\n']
         except:
-            print("%s file not found. Using %s as gene name" %(argmnts.mrna, argmnts.mrna))
-            genes = argmnts.mrna
+            print("\n%s file not found. Using %s as gene name" %(argmnts.mrna, argmnts.mrna))
+            genes = [argmnts.mrna]
     
         for geneName in genes:
+            #warnings.filterwarnings("ignore")
+            #mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
+            #_remDuplicate(geneName.rstrip('\n') + ".fas")
+            #mrnaAlign(geneName.rstrip('\n') + ".fas")
             try:
                 warnings.filterwarnings("ignore")
                 mrnaImport(geneName.rstrip('\n'), argmnts.orgn, argmnts.ortho)
@@ -329,7 +333,7 @@ def main():
             spList = [x.rstrip("\n") for x in open(argmnts.pull, 'r').readlines() if x != '' and x != '\n']
         except:
             print("%s file not found. Using %s as species name" %(argmnts.pull, argmnts.pull))
-            spList = argmnts.pull
+            spList = [argmnts.pull]
 
         for organism in spList:
             warnings.filterwarnings("ignore")
@@ -374,7 +378,7 @@ def main():
         try:
             ifolder = argmnts.i
         except:
-            raise IOError("Input directory name required. Use -i argument to suuply input directory name")
+            raise IOError("Input directory name required. Use -i argument to supply input directory name")
         
         try:
             files = [x for x in glob.glob(ifolder + "/*.*") if '.txt' not in x]
@@ -451,11 +455,11 @@ def main():
             #pass
             
     if argmnts.log != None:
-        logfile = argmnts.log
+        logfileName = argmnts.log
     else:
-        logfile = "logData.log"
+        logfileName = "logData.log"
 
-    logfile = open(argmnts.log, "w")
+    logfile = open(logfileName, "w")
     logfile.write("ConCat-import log file\n\n")
     logfile.write("Date logged - %s\n\n" %time.strftime("%c"))
     logfile.write("Command used -\n")

@@ -200,7 +200,7 @@ def mrnaImport(geneName, group, ortho):
     records = Entrez.read(handle)
     idList = records["IdList"]
     
-    inpTerm = "ortholog_gene_" + str(idList1[0]) + "[group]"
+    inpTerm = "ortholog_gene_" + str(idList[0]) + "[group]"
     handle = Entrez.esearch(db="gene", term=inpTerm, rettype='xml', RetMax=300, warning=False)
     records = Entrez.read(handle)
     idList = records["IdList"]
